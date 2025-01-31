@@ -1,0 +1,84 @@
+[package]
+name = "nil"
+
+[package.version]
+workspace = true
+
+[package.description]
+workspace = true
+
+[package.edition]
+workspace = true
+
+[package.rust-version]
+workspace = true
+
+[lib]
+name = "nil_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[lints]
+workspace = true
+
+[dependencies]
+anyhow = "1.0"
+itertools = "0.14"
+tauri-plugin-dialog = "2.2"
+tauri-plugin-process = "2.2"
+thiserror = "2.0"
+
+[dependencies.serde]
+version = "1.0"
+features = ["derive"]
+
+[dependencies.nil-client]
+version = "*"
+path = "../../nil-client"
+
+[dependencies.nil-core]
+version = "*"
+path = "../../nil-core"
+
+[dependencies.nil-server]
+version = "*"
+path = "../../nil-server"
+
+[dependencies.tauri]
+version = "2.2"
+features = ["protocol-asset", "rustls-tls"]
+
+[dependencies.tokio]
+version = "1.43"
+features = ["full"]
+
+[dependencies.tracing]
+version = "0.1"
+optional = true
+features = ["release_max_level_off"]
+
+[dependencies.tracing-subscriber]
+version = "0.3"
+optional = true
+features = ["chrono", "env-filter", "fmt", "registry"]
+
+[target.'cfg(not(any(target_os = "android", target_os = "ios")))'.dependencies]
+tauri-plugin-single-instance = "2.2"
+tauri-plugin-window-state = "2.2"
+
+[target.'cfg(not(any(target_os = "android", target_os = "ios")))'.dependencies.tauri-plugin-prevent-default]
+version = "1.0"
+features = ["unstable-native-windows"]
+
+[build-dependencies.tauri-build]
+version = "2.0"
+features = []
+
+[features]
+default = ["tracing"]
+tracing = [
+  "dep:tracing",
+  "dep:tracing-subscriber",
+  "nil-client/tracing",
+  "nil-core/tracing",
+  "nil-server/tracing",
+]

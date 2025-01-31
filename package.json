@@ -1,0 +1,32 @@
+{
+  "name": "monorepo",
+  "version": "0.1.0",
+  "description": "",
+  "type": "module",
+  "packageManager": "pnpm@10.0.0",
+  "private": true,
+  "scripts": {
+    "build": "cargo tauri build",
+    "clippy": "cargo clippy --workspace",
+    "dev": "cargo tauri dev",
+    "eslint": "eslint . --config eslint.config.js",
+    "format": "prettier . --write && cargo fmt --all",
+    "miri": "cargo miri test --tests",
+    "test": "cargo test --tests"
+  },
+  "devDependencies": {
+    "@tb-dev/eslint-config": "^6.2.5",
+    "@types/node": "^22.12.0",
+    "@vitejs/plugin-vue": "^5.2.1",
+    "autoprefixer": "^10.4.20",
+    "eslint": "^9.19.0",
+    "prettier": "^3.4.2",
+    "prettier-plugin-css-order": "^2.1.2",
+    "prettier-plugin-tailwindcss": "^0.6.11",
+    "tailwindcss": "^3.4.17",
+    "tslib": "^2.8.1",
+    "typescript": "~5.7.3",
+    "vite": "^6.0.11",
+    "vue-tsc": "~2.2.0"
+  }
+}

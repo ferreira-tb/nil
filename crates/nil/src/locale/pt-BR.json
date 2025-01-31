@@ -1,0 +1,8 @@
+{
+  "title": "Chamado de Nil",
+  "home": {
+    "join": "Entrar no Jogo",
+    "host": "Hospedar Jogo",
+    "exit": "Sair"
+  }
+}

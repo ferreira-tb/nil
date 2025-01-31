@@ -1,0 +1,13 @@
+chain_width = 45
+edition = "2024"
+fn_call_width = 60
+force_multiline_blocks = true
+imports_indent = "Block"
+imports_granularity = "Module"
+imports_layout = "HorizontalVertical"
+max_width = 100
+newline_style = "Unix"
+single_line_let_else_max_width = 80
+struct_lit_width = 36
+tab_spaces = 2
+use_field_init_shorthand = true

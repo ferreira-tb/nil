@@ -1,0 +1,25 @@
+[package]
+name = "nil-client"
+
+[package.version]
+workspace = true
+
+[package.description]
+workspace = true
+
+[package.edition]
+workspace = true
+
+[package.rust-version]
+workspace = true
+
+[lints]
+workspace = true
+
+[dependencies.tracing]
+version = "0.1"
+optional = true
+features = ["release_max_level_off"]
+
+[features]
+tracing = ["dep:tracing"]
