@@ -20,6 +20,10 @@ pub fn impl_unit(ast: &DeriveInput) -> TokenStream {
           Self::ID
         }
 
+        fn kind(&self) -> UnitKind {
+          Self::KIND
+        }
+
         fn amount(&self) -> u32 {
           self.amount
         }

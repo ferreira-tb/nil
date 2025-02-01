@@ -3,6 +3,7 @@ use std::num::NonZeroU32;
 
 pub trait Unit: Send + Sync {
   fn id(&self) -> UnitId;
+  fn kind(&self) -> UnitKind;
   fn amount(&self) -> u32;
   fn stats(&self) -> UnitStats;
 }
@@ -14,6 +15,12 @@ impl UnitId {
   pub const fn new(value: u32) -> Self {
     Self(NonZeroU32::new(value).unwrap())
   }
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum UnitKind {
+  Infantry,
+  Cavalry,
 }
 
 #[derive(Clone, Copy, Debug)]
