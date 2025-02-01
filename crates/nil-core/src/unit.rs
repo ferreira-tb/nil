@@ -6,6 +6,12 @@ pub trait Unit: Send + Sync {
   fn kind(&self) -> UnitKind;
   fn amount(&self) -> u32;
   fn stats(&self) -> UnitStats;
+
+  fn sum_attack(&self) -> f64 {
+    let attack = self.stats().attack;
+    let amount = self.amount();
+    f64::from(attack) * f64::from(amount)
+  }
 }
 
 #[derive(Clone, Copy, Debug, Deref, Display)]
