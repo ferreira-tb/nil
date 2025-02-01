@@ -12,6 +12,7 @@ impl Axeman {
     attack: Power::new(40),
     general_defense: Power::new(10),
     cavalry_defense: Power::new(5),
+    ranged_defense: Power::new(10),
     speed: Speed::new(18.0),
     haul: Haul::new(10),
   };

@@ -12,6 +12,7 @@ impl Pikeman {
     attack: Power::new(10),
     general_defense: Power::new(15),
     cavalry_defense: Power::new(45),
+    ranged_defense: Power::new(20),
     speed: Speed::new(18.0),
     haul: Haul::new(25),
   };

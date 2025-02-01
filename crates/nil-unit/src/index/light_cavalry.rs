@@ -12,6 +12,7 @@ impl LightCavalry {
     attack: Power::new(130),
     general_defense: Power::new(30),
     cavalry_defense: Power::new(40),
+    ranged_defense: Power::new(30),
     speed: Speed::new(10.0),
     haul: Haul::new(80),
   };

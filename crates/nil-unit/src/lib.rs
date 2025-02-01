@@ -22,3 +22,10 @@ where
 
   Ok(skill)
 }
+
+pub unsafe fn new_unchecked<Id>(id: Id, amount: u32) -> UnitBox
+where
+  Id: Into<UnitId>,
+{
+  unsafe { new(id, amount).unwrap_unchecked() }
+}

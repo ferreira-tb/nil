@@ -23,10 +23,23 @@ impl UnitId {
   }
 }
 
+impl From<u32> for UnitId {
+  fn from(value: u32) -> Self {
+    Self::new(value)
+  }
+}
+
+impl From<i32> for UnitId {
+  fn from(value: i32) -> Self {
+    Self::new(value.unsigned_abs())
+  }
+}
+
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum UnitKind {
   Infantry,
   Cavalry,
+  Ranged,
 }
 
 #[derive(Clone, Copy, Debug)]
@@ -34,6 +47,7 @@ pub struct UnitStats {
   pub attack: Power,
   pub general_defense: Power,
   pub cavalry_defense: Power,
+  pub ranged_defense: Power,
   pub speed: Speed,
   pub haul: Haul,
 }
