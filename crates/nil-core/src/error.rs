@@ -1,4 +1,5 @@
 use crate::unit::UnitId;
+use crate::world::Coord;
 use serde::Serialize;
 use serde::ser::Serializer;
 
@@ -8,6 +9,8 @@ pub type Result<T> = StdResult<T, Error>;
 
 #[derive(Debug, thiserror::Error)]
 pub enum Error {
+  #[error("coord out of bounds: {0:?}")]
+  OutOfBounds(Coord),
   #[error("unit not found: {0}")]
   UnitNotFound(UnitId),
 }

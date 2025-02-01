@@ -1,3 +1,7 @@
+mod squad;
+
+pub use squad::{SquadAttack, SquadDefense};
+
 use derive_more::{Deref, Display};
 use std::num::NonZeroU32;
 
@@ -7,10 +11,11 @@ pub trait Unit: Send + Sync {
   fn amount(&self) -> u32;
   fn stats(&self) -> UnitStats;
 
-  fn sum_attack(&self) -> f64 {
+  fn squad_attack(&self) -> SquadAttack {
     let attack = self.stats().attack;
     let amount = self.amount();
-    f64::from(attack) * f64::from(amount)
+    let total = f64::from(attack) * f64::from(amount);
+    SquadAttack::new(total)
   }
 }
 

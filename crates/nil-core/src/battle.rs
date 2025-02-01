@@ -32,13 +32,13 @@ impl OffensivePower {
     for unit in units {
       match unit.kind() {
         UnitKind::Infantry => {
-          infantry += unit.sum_attack();
+          infantry += *unit.squad_attack();
         }
         UnitKind::Cavalry => {
-          cavalry += unit.sum_attack();
+          cavalry += *unit.squad_attack();
         }
         UnitKind::Ranged => {
-          ranged += unit.sum_attack();
+          ranged += *unit.squad_attack();
         }
       }
     }
