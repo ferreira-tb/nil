@@ -7,7 +7,7 @@ pub fn impl_unit(ast: &DeriveInput) -> TokenStream {
   let stream = quote! {
     mod __impl_unit {
       use super::#name;
-      use nil_core::{Unit, UnitBox, UnitId, UnitStats};
+      use nil_core::{Unit, UnitBox, UnitId, UnitKind, UnitStats};
 
       impl #name {
         pub fn new_boxed(amount: u32) -> UnitBox {
