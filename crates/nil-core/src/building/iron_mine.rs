@@ -9,3 +9,9 @@ pub struct IronMine {
 impl IronMine {
   pub const MAX_LEVEL: BuildingLevel = BuildingLevel::new(30);
 }
+
+impl Default for IronMine {
+  fn default() -> Self {
+    Self { level: BuildingLevel::new(1) }
+  }
+}

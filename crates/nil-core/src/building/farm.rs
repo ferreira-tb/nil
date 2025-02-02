@@ -9,3 +9,9 @@ pub struct Farm {
 impl Farm {
   pub const MAX_LEVEL: BuildingLevel = BuildingLevel::new(30);
 }
+
+impl Default for Farm {
+  fn default() -> Self {
+    Self { level: BuildingLevel::new(1) }
+  }
+}

@@ -1,17 +1,21 @@
+mod player;
+
+use crate::state::ServerState;
 use crate::websocket::handle_socket;
 use axum::Router;
 use axum::extract::connect_info::ConnectInfo;
 use axum::extract::ws::WebSocketUpgrade;
 use axum::http::StatusCode;
 use axum::response::IntoResponse;
-use axum::routing::{any, get};
+use axum::routing::{any, get, post, put};
 use std::net::SocketAddr;
-use tauri::AppHandle;
 
-pub(crate) fn create() -> Router<AppHandle> {
+pub(crate) fn create() -> Router<ServerState> {
   Router::new()
     .route("/", get(ok))
     .route("/version", get(version))
+    .route("/player", post(player::get))
+    .route("/player/spawn", put(player::spawn))
     .route("/ws", any(ws_handler))
 }
 

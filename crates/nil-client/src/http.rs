@@ -1,0 +1,98 @@
+use crate::client::Client;
+use crate::error::{Error, Result};
+use http::Method;
+use reqwest::{Client as HttpClient, Response};
+use serde::Serialize;
+use serde::de::DeserializeOwned;
+use std::sync::LazyLock;
+use tokio::time::Duration;
+
+const USER_AGENT: &str = concat!("nil/", env!("CARGO_PKG_VERSION"));
+
+static HTTP: LazyLock<HttpClient> = LazyLock::new(|| {
+  HttpClient::builder()
+    .use_rustls_tls()
+    .user_agent(USER_AGENT)
+    .timeout(Duration::from_secs(10))
+    .build()
+    .expect("failed to create http client")
+});
+
+impl Client {
+  async fn request(&self, method: Method, endpoint: &str) -> Result<Response> {
+    HTTP
+      .request(method, self.url(endpoint))
+      .send()
+      .await
+      .and_then(Response::error_for_status)
+      .map_err(Error::request_failed)
+  }
+
+  async fn request_with_body<T>(&self, method: Method, endpoint: &str, body: T) -> Result<Response>
+  where
+    T: Serialize,
+  {
+    HTTP
+      .request(method, self.url(endpoint))
+      .json(&body)
+      .send()
+      .await
+      .and_then(Response::error_for_status)
+      .map_err(Error::request_failed)
+  }
+
+  pub(crate) async fn get(&self, endpoint: &str) -> Result<Response> {
+    self.request(Method::GET, endpoint).await
+  }
+
+  pub(crate) async fn get_text(&self, endpoint: &str) -> Result<String> {
+    self
+      .get(endpoint)
+      .await?
+      .text()
+      .await
+      .map_err(Error::failed_to_decode)
+  }
+
+  pub(crate) async fn post(&self, endpoint: &str, body: impl Serialize) -> Result<Response> {
+    self
+      .request_with_body(Method::POST, endpoint, body)
+      .await
+  }
+
+  pub(crate) async fn post_json<R>(&self, endpoint: &str, body: impl Serialize) -> Result<R>
+  where
+    R: DeserializeOwned,
+  {
+    self
+      .post(endpoint, body)
+      .await?
+      .json()
+      .await
+      .map_err(Error::failed_to_decode)
+  }
+
+  pub(crate) async fn put(&self, endpoint: &str, body: impl Serialize) -> Result<Response> {
+    self
+      .request_with_body(Method::PUT, endpoint, body)
+      .await
+  }
+
+  pub(crate) async fn put_json<R>(&self, endpoint: &str, body: impl Serialize) -> Result<R>
+  where
+    R: DeserializeOwned,
+  {
+    self
+      .put(endpoint, body)
+      .await?
+      .json()
+      .await
+      .map_err(Error::failed_to_decode)
+  }
+
+  fn url(&self, endpoint: &str) -> String {
+    let ip = self.server_ip;
+    let port = Self::SERVER_PORT;
+    format!("http://{ip}:{port}/{endpoint}")
+  }
+}

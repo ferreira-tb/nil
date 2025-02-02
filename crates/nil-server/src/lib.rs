@@ -1,32 +1,26 @@
 mod error;
+mod response;
 mod router;
-mod server;
+mod state;
 mod websocket;
 
 pub use error::{Error, Result};
+use nil_core::World;
+use state::ServerState;
 use std::net::SocketAddr;
-use std::thread;
-use tauri::AppHandle;
-use tauri::async_runtime::block_on;
+use tauri::async_runtime::spawn;
 use tokio::net::TcpListener;
+use tokio::task::AbortHandle;
 
-pub fn serve(app: &AppHandle) -> Result<()> {
-  let handle = app.clone();
-  let result = app.run_on_main_thread(move || {
-    thread::Builder::new()
-      .name("nil-server".into())
-      .spawn(spawn(handle))
-      .expect("failed to spawn nil server");
-  });
-
-  result.map_err(Error::failed_to_start)
+pub struct Server {
+  abort_handle: AbortHandle,
 }
 
-fn spawn(app: AppHandle) -> impl FnOnce() {
-  move || {
-    block_on(async move {
+impl Server {
+  pub fn serve(world: World) -> Self {
+    let task = spawn(async move {
       let router = router::create()
-        .with_state(app)
+        .with_state(ServerState::new(world))
         .into_make_service_with_connect_info::<SocketAddr>();
 
       let listener = TcpListener::bind("0.0.0.0:8050")
@@ -35,5 +29,19 @@ fn spawn(app: AppHandle) -> impl FnOnce() {
 
       axum::serve(listener, router).await.unwrap();
     });
+
+    Self {
+      abort_handle: task.inner().abort_handle(),
+    }
+  }
+
+  pub fn close(self) {
+    self.abort_handle.abort();
+  }
+}
+
+impl Drop for Server {
+  fn drop(&mut self) {
+    self.abort_handle.abort();
   }
 }

@@ -9,3 +9,9 @@ pub struct Sawmill {
 impl Sawmill {
   pub const MAX_LEVEL: BuildingLevel = BuildingLevel::new(30);
 }
+
+impl Default for Sawmill {
+  fn default() -> Self {
+    Self { level: BuildingLevel::new(1) }
+  }
+}

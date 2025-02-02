@@ -9,3 +9,9 @@ pub struct Prefecture {
 impl Prefecture {
   pub const MAX_LEVEL: BuildingLevel = BuildingLevel::new(30);
 }
+
+impl Default for Prefecture {
+  fn default() -> Self {
+    Self { level: BuildingLevel::new(1) }
+  }
+}

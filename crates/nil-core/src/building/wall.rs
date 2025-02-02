@@ -9,3 +9,9 @@ pub struct Wall {
 impl Wall {
   pub const MAX_LEVEL: BuildingLevel = BuildingLevel::new(20);
 }
+
+impl Default for Wall {
+  fn default() -> Self {
+    Self { level: BuildingLevel::new(0) }
+  }
+}

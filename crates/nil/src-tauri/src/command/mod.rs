@@ -1,5 +1,14 @@
+pub mod client;
+pub mod player;
+pub mod server;
+
 use crate::error::{CResult, Error};
 use tauri::WebviewWindow;
+
+#[tauri::command]
+pub async fn is_dev() -> bool {
+  tauri::is_dev()
+}
 
 #[tauri::command]
 #[cfg(desktop)]

@@ -1,14 +1,20 @@
 <script setup lang="ts">
+import { go } from '@/router';
 import { onMounted } from 'vue';
-import { showWindow } from '@/commands';
 import { handleError } from '@/lib/error';
 import { useColorMode } from '@vueuse/core';
+import { isDev, showWindow } from '@/commands';
+import { onCtrlKeyDown } from '@/composables/key-down';
 
 useColorMode({
   initialValue: 'dark',
   storageKey: 'nil:color-mode',
   writeDefaults: true,
   onError: handleError,
+});
+
+onCtrlKeyDown('Home', async () => {
+  if (await isDev()) go('home');
 });
 
 onMounted(() => showWindow().handleError());
@@ -19,9 +25,7 @@ onMounted(() => showWindow().handleError());
     <div class="absolute inset-0 overflow-hidden">
       <RouterView #default="{ Component }">
         <template v-if="Component">
-          <KeepAlive>
-            <component :is="Component" />
-          </KeepAlive>
+          <component :is="Component" />
         </template>
       </RouterView>
     </div>

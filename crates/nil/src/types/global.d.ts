@@ -13,15 +13,13 @@ declare global {
   }
 
   interface ErrorConstructor {
-    throw: (message: string) => never;
+    panic: (message: string) => never;
+    todo: (message?: string) => never;
+    unimplemented: (message?: string) => never;
   }
 
   interface Promise<T> {
-    handleError: (onfinally?: () => MaybePromise<unknown>) => void;
-  }
-
-  interface PromiseConstructor {
-    try: <T>(fn: () => MaybePromise<T>) => Promise<Awaited<T>>;
+    handleError: () => void;
   }
 }
 

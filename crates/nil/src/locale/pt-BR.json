@@ -1,8 +1,17 @@
 {
-  "title": "Chamado de Nil",
-  "home": {
-    "join": "Entrar no Jogo",
-    "host": "Hospedar Jogo",
-    "exit": "Sair"
-  }
+  "misc": {
+    "cancel": "Cancelar",
+    "exit": "Sair",
+    "host": "Hospedar",
+    "host-game": "Hospedar Jogo",
+    "join": "Entrar",
+    "join-game": "Entrar no Jogo",
+    "name": "Nome",
+    "back": "Voltar",
+    "server": "Servidor",
+    "settings": "Configurações",
+    "world": "Mundo",
+    "world-size": "Tamanho do Mundo"
+  },
+  "title": "Chamado de Nil"
 }

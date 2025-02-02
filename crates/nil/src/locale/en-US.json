@@ -1,8 +1,17 @@
 {
-  "title": "Call of Nil",
-  "home": {
-    "join": "Join Game",
-    "host": "Host Game",
-    "exit": "Exit"
-  }
+  "misc": {
+    "back": "Return",
+    "cancel": "Cancel",
+    "exit": "Exit",
+    "host": "Host",
+    "host-game": "Host Game",
+    "join": "Join",
+    "join-game": "Join Game",
+    "name": "Name",
+    "server": "Server",
+    "settings": "Settings",
+    "world": "World",
+    "world-size": "World Size"
+  },
+  "title": "Call of Nil"
 }

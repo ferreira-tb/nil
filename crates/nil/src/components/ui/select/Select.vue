@@ -10,6 +10,6 @@ const forwarded = useForwardPropsEmits(props, emits);
 
 <template>
   <SelectRoot v-bind="forwarded">
-    <slot />
+    <slot></slot>
   </SelectRoot>
 </template>

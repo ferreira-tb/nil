@@ -9,3 +9,9 @@ pub struct Warehouse {
 impl Warehouse {
   pub const MAX_LEVEL: BuildingLevel = BuildingLevel::new(30);
 }
+
+impl Default for Warehouse {
+  fn default() -> Self {
+    Self { level: BuildingLevel::new(1) }
+  }
+}

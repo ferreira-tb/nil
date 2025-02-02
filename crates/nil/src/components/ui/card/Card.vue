@@ -9,6 +9,6 @@ const props = defineProps<{
 
 <template>
   <div :class="cn('bg-card text-card-foreground rounded-xl border shadow', props.class)">
-    <slot />
+    <slot></slot>
   </div>
 </template>

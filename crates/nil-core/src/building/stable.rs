@@ -9,3 +9,9 @@ pub struct Stable {
 impl Stable {
   pub const MAX_LEVEL: BuildingLevel = BuildingLevel::new(20);
 }
+
+impl Default for Stable {
+  fn default() -> Self {
+    Self { level: BuildingLevel::new(0) }
+  }
+}

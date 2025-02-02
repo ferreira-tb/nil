@@ -23,6 +23,9 @@ where
   Ok(skill)
 }
 
+/// # Safety
+///
+/// Callers must ensure that the given `id` is valid.
 pub unsafe fn new_unchecked<Id>(id: Id, amount: u32) -> UnitBox
 where
   Id: Into<UnitId>,

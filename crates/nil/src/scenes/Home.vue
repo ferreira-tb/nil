@@ -12,13 +12,16 @@ function onExit() {
 
 <template>
   <div class="flex size-full flex-col items-center justify-center gap-2">
-    <h1 class="-mt-16 mb-8 text-4xl font-extrabold sm:text-5xl md:text-6xl lg:text-8xl">
+    <h1 class="font-nil -mt-16 mb-8 text-4xl font-extrabold sm:text-5xl md:text-6xl lg:text-8xl">
       {{ t('title') }}
     </h1>
     <div class="flex flex-col gap-2">
-      <Button @click="() => $go('join-game')">{{ t('home.join') }}</Button>
-      <Button variant="secondary" @click="() => $go('host-game')">{{ t('home.host') }}</Button>
-      <Button variant="secondary" @click="onExit">{{ t('home.exit') }}</Button>
+      <Button @click="() => $go('join-game')">{{ t('misc.join-game') }}</Button>
+      <Button variant="secondary" @click="() => $go('host-game')">{{ t('misc.host-game') }}</Button>
+      <Button variant="secondary" disabled @click="() => $go('settings')">
+        {{ t('misc.settings') }}
+      </Button>
+      <Button variant="secondary" @click="onExit">{{ t('misc.exit') }}</Button>
     </div>
   </div>
 </template>

@@ -24,6 +24,10 @@ thiserror = "2.0"
 version = "0.8"
 features = ["macros", "ws"]
 
+[dependencies.nil-core]
+version = "*"
+path = "../nil-core"
+
 [dependencies.serde]
 version = "1.0"
 features = ["derive"]

@@ -9,3 +9,9 @@ pub struct Academy {
 impl Academy {
   pub const MAX_LEVEL: BuildingLevel = BuildingLevel::new(25);
 }
+
+impl Default for Academy {
+  fn default() -> Self {
+    Self { level: BuildingLevel::new(0) }
+  }
+}

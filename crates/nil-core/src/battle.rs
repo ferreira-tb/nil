@@ -34,7 +34,7 @@ pub struct OffensivePower {
   pub infantry_ratio: f64,
   pub cavalry_ratio: f64,
   pub ranged_ratio: f64,
-  pub  units_by_kind: UnitsByKind,
+  pub units_by_kind: UnitsByKind,
 }
 
 impl OffensivePower {
@@ -142,7 +142,6 @@ impl WinnerLosses {
       BattleWinner::Attacker => offensive_power.units_by_kind.cavalry,
       BattleWinner::Defender => defesive_power.units_by_kind.cavalry,
     };
-      
 
     let winner_ranged = match winner {
       BattleWinner::Attacker => offensive_power.units_by_kind.ranged,
@@ -178,31 +177,31 @@ pub struct UnitsByKind {
   units_amount: u32,
 }
 
-  fn units_by_kind(units: &[UnitBox]) -> UnitsByKind{
-    let mut infantry = 0;
-    let mut cavalry = 0;
-    let mut ranged = 0;
-    let mut units_amount = 0;
-  
-    for unit in units {
-      match unit.kind() {
-        UnitKind::Infantry => {
-          infantry += unit.amount();
-        }
-        UnitKind::Cavalry => {
-          cavalry += unit.amount();
-        }
-        UnitKind::Ranged => {
-          ranged += unit.amount();
-        }
+fn units_by_kind(units: &[UnitBox]) -> UnitsByKind {
+  let mut infantry = 0;
+  let mut cavalry = 0;
+  let mut ranged = 0;
+  let mut units_amount = 0;
+
+  for unit in units {
+    match unit.kind() {
+      UnitKind::Infantry => {
+        infantry += unit.amount();
       }
-      units_amount += unit.amount();
+      UnitKind::Cavalry => {
+        cavalry += unit.amount();
+      }
+      UnitKind::Ranged => {
+        ranged += unit.amount();
+      }
     }
-  
-    UnitsByKind {
-      infantry,
-      cavalry,
-      ranged,
-      units_amount,
-    }
+    units_amount += unit.amount();
   }
+
+  UnitsByKind {
+    infantry,
+    cavalry,
+    ranged,
+    units_amount,
+  }
+}

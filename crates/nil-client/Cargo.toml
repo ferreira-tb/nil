@@ -16,6 +16,29 @@ workspace = true
 [lints]
 workspace = true
 
+[dependencies]
+futures = "0.3"
+http = "1.2"
+itertools = "0.14"
+serde_json = "1.0"
+thiserror = "2.0"
+
+[dependencies.nil-core]
+version = "*"
+path = "../nil-core"
+
+[dependencies.reqwest]
+version = "0.12"
+features = ["json", "rustls-tls"]
+
+[dependencies.serde]
+version = "1.0"
+features = ["derive"]
+
+[dependencies.tokio]
+version = "1.43"
+features = ["full"]
+
 [dependencies.tracing]
 version = "0.1"
 optional = true

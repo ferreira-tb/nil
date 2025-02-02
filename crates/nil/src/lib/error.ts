@@ -1,13 +1,10 @@
+import * as dialog from '@/lib/dialog';
 import type { MaybePromise } from '@tb-dev/utils';
-import { message } from '@tauri-apps/plugin-dialog';
 
 export function handleError(err: unknown) {
   console.error(err);
   if (err instanceof Error) {
-    void message(err.message, {
-      title: 'Error',
-      kind: 'error',
-    });
+    dialog.error(err.message);
   }
 }
 

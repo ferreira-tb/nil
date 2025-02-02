@@ -3,6 +3,7 @@
 mod command;
 mod error;
 mod manager;
+mod state;
 
 #[cfg(desktop)]
 mod plugin;
@@ -30,7 +31,18 @@ pub fn run() {
     .plugin(tauri_plugin_dialog::init())
     .plugin(tauri_plugin_process::init())
     .setup(|app| setup(app.app_handle()))
-    .invoke_handler(tauri::generate_handler![command::show_window])
+    .invoke_handler(tauri::generate_handler![
+      command::is_dev,
+      command::show_window,
+      command::client::start_client,
+      command::client::stop_client,
+      command::player::get_player,
+      command::player::spawn_player,
+      command::server::get_server_version,
+      command::server::is_server_ok,
+      command::server::start_server,
+      command::server::stop_server,
+    ])
     .run(tauri::generate_context!())
     .expect("failed to start nil");
 }
@@ -38,6 +50,8 @@ pub fn run() {
 fn setup(app: &AppHandle) -> BoxResult<()> {
   #[cfg(feature = "tracing")]
   log::setup()?;
+
+  app.manage(state::Nil::default());
 
   open_window(app)?;
   Ok(())

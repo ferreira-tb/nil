@@ -19,6 +19,11 @@ export const router = createRouter({
       name: 'join-game' satisfies Route,
       component: () => import('@/scenes/JoinGame.vue'),
     },
+    {
+      path: '/settings',
+      name: 'settings' satisfies Route,
+      component: () => import('@/scenes/Settings.vue'),
+    },
   ],
 });
 
