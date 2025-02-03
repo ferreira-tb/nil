@@ -58,6 +58,10 @@ impl OffensivePower {
       }
     }
 
+    if f64::from(units_by_kind.ranged) / f64::from(units_by_kind.units_amount) > 0.3 {
+      ranged -= sum_ranged_debuff(units);
+    }
+
     let total = infantry + cavalry + ranged;
 
     OffensivePower {
@@ -96,7 +100,11 @@ impl DefensivePower {
     cavalry *= offensive_power.cavalry_ratio;
     ranged *= offensive_power.ranged_ratio;
 
-    let total = infantry + cavalry + ranged;
+    let mut total = infantry + cavalry + ranged;
+    
+    if f64::from(units_by_kind.ranged) / f64::from(units_by_kind.units_amount) > 0.5 {
+      total -= sum_ranged_debuff(units);
+    }
 
     DefensivePower {
       total,
@@ -204,4 +212,14 @@ fn units_by_kind(units: &[UnitBox]) -> UnitsByKind {
     ranged,
     units_amount,
   }
+}
+
+fn sum_ranged_debuff(units: &[UnitBox]) -> f64 {
+  let mut ranged_debuff = 0.0;
+  for unit in units {
+    if unit.kind() == UnitKind::Ranged {
+      ranged_debuff += unit.stats().ranged_debuff * f64::from(unit.amount());
+    }
+  }
+  ranged_debuff
 }

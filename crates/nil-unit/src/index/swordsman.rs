@@ -13,6 +13,7 @@ impl Swordsman {
     infantry_defense: Power::new(50),
     cavalry_defense: Power::new(15),
     ranged_defense: Power::new(40),
+    ranged_debuff: 0.0,
     speed: Speed::new(22.0),
     haul: Haul::new(15),
   };

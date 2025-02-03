@@ -71,6 +71,7 @@ pub struct UnitStats {
   pub infantry_defense: Power,
   pub cavalry_defense: Power,
   pub ranged_defense: Power,
+  pub ranged_debuff: f64,
   pub speed: Speed,
   pub haul: Haul,
 }

@@ -13,6 +13,7 @@ impl HeavyCavalry {
     infantry_defense: Power::new(200),
     cavalry_defense: Power::new(80),
     ranged_defense: Power::new(180),
+    ranged_debuff: 0.0,
     speed: Speed::new(11.0),
     haul: Haul::new(50),
   };

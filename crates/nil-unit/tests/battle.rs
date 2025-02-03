@@ -115,3 +115,16 @@ fn overall_test() {
   assert!((winner_losses.total_loss - 6272.674503).abs() <= 0.001);
   assert!((winner_losses.infantry - 4181.783).abs() <= 0.001);
 }
+
+#[test]
+fn ranged_debuff_test() {
+  let battle = unsafe {
+    Battle::builder()
+      .attacker([unit(4, 3000), unit(3, 7000)])
+      .defender([unit(1, 8000), unit(2, 8000)])
+      .build()
+  };
+
+  let attack_power = battle.offensive_power();
+assert_eq!(attack_power.total, 370000.0);
+}
