@@ -7,9 +7,8 @@ import type { PlayerConfig } from '@/types/player';
 import { isPlayerConfig, isWorldConfig } from '@/lib/schema';
 import { Button, Card, InputNumber, InputText, Label } from '@/components';
 
-const world = World.use();
-
 const { t } = useLocale();
+const world = World.use();
 
 const worldConfig = ref<WorldConfig>({
   size: 100,

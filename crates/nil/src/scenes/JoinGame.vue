@@ -6,9 +6,8 @@ import type { PlayerConfig } from '@/types/player';
 import { isIp, isPlayerConfig } from '@/lib/schema';
 import { Button, Card, InputText, Label } from '@/components';
 
-const world = World.use();
-
 const { t } = useLocale();
+const world = World.use();
 
 const server = ref('');
 const player = ref<PlayerConfig>({

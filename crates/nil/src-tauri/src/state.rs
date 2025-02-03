@@ -51,12 +51,7 @@ impl Nil {
   }
 
   pub async fn stop_server(&self) {
-    self
-      .server
-      .write()
-      .await
-      .take()
-      .map(Server::close);
+    self.server.write().await.take();
   }
 }
 

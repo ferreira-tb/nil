@@ -22,6 +22,7 @@ app.config.globalProperties.$c = commands;
 app.config.errorHandler = (err) => handleError(err);
 
 const i18n = createI18n<[LocaleSchema], Locale>({
+  legacy: false,
   locale: 'en-US',
   fallbackLocale: ['en-US', 'pt-BR'],
   messages: locales,

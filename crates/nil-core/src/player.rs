@@ -1,7 +1,7 @@
 use bon::Builder;
 use derive_more::{Deref, Display};
 use serde::{Deserialize, Serialize};
-use std::net::SocketAddr;
+use std::net::{IpAddr, SocketAddr};
 
 #[derive(Builder, Clone, Debug, Deserialize, Serialize)]
 pub struct Player {
@@ -24,15 +24,21 @@ impl Player {
 }
 
 #[derive(Clone, Copy, Debug, Deref, Display, PartialEq, Eq, Hash, Deserialize, Serialize)]
-pub struct PlayerId(SocketAddr);
+pub struct PlayerId(IpAddr);
 
-impl From<SocketAddr> for PlayerId {
-  fn from(addr: SocketAddr) -> Self {
+impl From<IpAddr> for PlayerId {
+  fn from(addr: IpAddr) -> Self {
     Self(addr)
   }
 }
 
-#[derive(Builder, Deserialize, Serialize)]
+impl From<SocketAddr> for PlayerId {
+  fn from(addr: SocketAddr) -> Self {
+    Self(addr.ip())
+  }
+}
+
+#[derive(Builder, Debug, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct PlayerConfig {
   pub name: String,

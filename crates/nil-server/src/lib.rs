@@ -34,10 +34,6 @@ impl Server {
       abort_handle: task.inner().abort_handle(),
     }
   }
-
-  pub fn close(self) {
-    self.abort_handle.abort();
-  }
 }
 
 impl Drop for Server {

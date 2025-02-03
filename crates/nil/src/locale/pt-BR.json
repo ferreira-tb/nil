@@ -1,17 +1,27 @@
 {
   "misc": {
+    "academy": "Academia",
+    "back": "Voltar",
     "cancel": "Cancelar",
     "exit": "Sair",
+    "farm": "Fazenda",
     "host": "Hospedar",
     "host-game": "Hospedar Jogo",
+    "iron-mine": "Mina de Ferro",
     "join": "Entrar",
     "join-game": "Entrar no Jogo",
     "name": "Nome",
-    "back": "Voltar",
+    "prefecture": "Prefeitura",
+    "quarry": "Pedreira",
+    "sawmill": "Serraria",
     "server": "Servidor",
     "settings": "Configurações",
+    "stable": "Estábulo",
+    "wall": "Muralha",
+    "warehouse": "Armazém",
     "world": "Mundo",
-    "world-size": "Tamanho do Mundo"
+    "world-size": "Tamanho do Mundo",
+    "level": "Nível"
   },
   "title": "Chamado de Nil"
 }

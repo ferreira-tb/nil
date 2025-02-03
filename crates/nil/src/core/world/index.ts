@@ -1,11 +1,13 @@
+import { go } from '@/router';
+import { until } from '@vueuse/core';
 import * as commands from '@/commands';
 import { HandleError } from '@/lib/error';
 import { PlayerImpl } from '@/core/player';
 import type { Option } from '@tb-dev/utils';
 import type { PlayerConfig } from '@/types/player';
-import { fallibleInject, provide } from '@/lib/app';
 import type { Coord, WorldConfig } from '@/types/world';
-import { computed, type InjectionKey, shallowRef } from 'vue';
+import { fallibleInject, provide, runWithContext } from '@/lib/app';
+import { computed, type InjectionKey, shallowRef, watch } from 'vue';
 
 const worldSymbol: InjectionKey<World> = Symbol('world');
 
@@ -15,14 +17,20 @@ export class World {
 
   private readonly currentVillage = shallowRef<Option<Coord>>();
 
-  private constructor() {}
+  private constructor() {
+    runWithContext(() => {
+      watch(this.player, this.onPlayerUpdate.bind(this));
+    });
+  }
 
   @HandleError({ async: true })
   public async join(server: string, player: PlayerConfig) {
     await commands.startClient(server);
     const playerId = await commands.spawnPlayer(player);
-    this.player.value = await PlayerImpl.create(playerId);
-    console.log('Player joined:', this.player.value);
+    this.player.value = await PlayerImpl.load(playerId);
+
+    await until(this.currentVillage).toBeTruthy();
+    go('village');
   }
 
   @HandleError({ async: true })
@@ -33,7 +41,15 @@ export class World {
 
   private async updatePlayer() {
     if (this.playerId.value) {
-      this.player.value = await PlayerImpl.create(this.playerId.value);
+      this.player.value = await PlayerImpl.load(this.playerId.value);
+    }
+  }
+
+  private onPlayerUpdate(player: Option<PlayerImpl>) {
+    if (player && (!this.currentVillage.value || !player.has(this.currentVillage.value))) {
+      this.currentVillage.value = player.villages.at(0);
+    } else if (!player) {
+      this.currentVillage.value = null;
     }
   }
 

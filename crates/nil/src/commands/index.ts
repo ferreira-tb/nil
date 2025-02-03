@@ -3,6 +3,7 @@ import { invoke } from '@tauri-apps/api/core';
 export * from './player';
 export * from './client';
 export * from './server';
+export * from './village';
 
 export function isDev() {
   return invoke<boolean>('is_dev');
