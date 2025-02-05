@@ -1,14 +1,14 @@
 <script setup lang="ts">
 import type { VNode } from 'vue';
 import { toPixel } from '@tb-dev/utils';
-import { ScrollArea as UiScrollArea } from '@/components/ui/scroll-area';
+import { ScrollArea as UiScrollArea } from '@/components/base/scroll-area';
 import {
-  Card as UiCard,
-  CardContent as UiCardContent,
-  CardDescription as UiCardDescription,
-  CardHeader as UiCardHeader,
-  CardTitle as UiCardTitle,
-} from '@/components/ui/card';
+  Card as BaseCard,
+  CardContent as BaseCardContent,
+  CardDescription as BaseCardDescription,
+  CardHeader as BaseCardHeader,
+  CardTitle as BaseCardTitle,
+} from '@/components/base/card';
 
 interface Props {
   contentClass?: string;
@@ -31,16 +31,16 @@ defineSlots<{
 </script>
 
 <template>
-  <UiCard>
-    <UiCardHeader v-if="$slots.title" :class="headerClass">
-      <UiCardTitle :class="titleClass">
+  <BaseCard>
+    <BaseCardHeader v-if="$slots.title" :class="headerClass">
+      <BaseCardTitle :class="titleClass">
         <slot name="title"></slot>
-      </UiCardTitle>
-      <UiCardDescription v-if="$slots.description" :class="descriptionClass">
+      </BaseCardTitle>
+      <BaseCardDescription v-if="$slots.description" :class="descriptionClass">
         <slot name="description"></slot>
-      </UiCardDescription>
-    </UiCardHeader>
-    <UiCardContent :class="contentClass">
+      </BaseCardDescription>
+    </BaseCardHeader>
+    <BaseCardContent :class="contentClass">
       <UiScrollArea
         v-if="scrollAreaHeight && scrollAreaHeight !== 'auto'"
         :class="scrollAreaClass"
@@ -49,6 +49,6 @@ defineSlots<{
         <slot></slot>
       </UiScrollArea>
       <slot v-else></slot>
-    </UiCardContent>
-  </UiCard>
+    </BaseCardContent>
+  </BaseCard>
 </template>

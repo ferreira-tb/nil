@@ -1,4 +1,4 @@
-import type { Coord } from '@/types/world';
+import type { Coord } from '@/types/village';
 import { invoke } from '@tauri-apps/api/core';
 import type { Player, PlayerConfig, PlayerId } from '@/types/player';
 

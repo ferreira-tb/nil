@@ -10,8 +10,8 @@ pub use battle::{Battle, OffensivePower};
 pub use building::{Building, BuildingLevel};
 pub use error::{Error, Result};
 pub use player::{Player, PlayerConfig, PlayerId};
-pub use village::Village;
-pub use world::{Cell, Coord, World, WorldConfig};
+pub use village::{Coord, Infrastructure, Village};
+pub use world::{Cell, World, WorldConfig};
 
 pub use unit::{
   Haul,

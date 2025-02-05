@@ -1,8 +1,7 @@
+import { CoordImpl } from './coord';
 import * as commands from '@/commands';
-import type { Coord } from '@/types/world';
 import type { Option } from '@tb-dev/utils';
-import type { Village } from '@/types/village';
-import { CoordImpl } from '@/core/world/coord';
+import type { Coord, Village } from '@/types/village';
 import { InfrastructureImpl } from './infrastructure';
 
 export class VillageImpl implements Village {
@@ -21,5 +20,45 @@ export class VillageImpl implements Village {
   public static async load(coord: Coord) {
     const village = await commands.getVillage(coord);
     return new VillageImpl(village);
+  }
+
+  get academy() {
+    return this.infrastructure.academy;
+  }
+
+  get farm() {
+    return this.infrastructure.farm;
+  }
+
+  get ironMine() {
+    return this.infrastructure.ironMine;
+  }
+
+  get prefecture() {
+    return this.infrastructure.prefecture;
+  }
+
+  get quarry() {
+    return this.infrastructure.quarry;
+  }
+
+  get sawmill() {
+    return this.infrastructure.sawmill;
+  }
+
+  get silo() {
+    return this.infrastructure.silo;
+  }
+
+  get stable() {
+    return this.infrastructure.stable;
+  }
+
+  get wall() {
+    return this.infrastructure.wall;
+  }
+
+  get warehouse() {
+    return this.infrastructure.warehouse;
   }
 }

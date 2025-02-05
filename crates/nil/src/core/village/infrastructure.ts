@@ -8,6 +8,7 @@ export class InfrastructureImpl implements Infrastructure {
   public readonly prefecture: building.Prefecture;
   public readonly quarry: building.Quarry;
   public readonly sawmill: building.Sawmill;
+  public readonly silo: building.Silo;
   public readonly stable: building.Stable;
   public readonly wall: building.Wall;
   public readonly warehouse: building.Warehouse;
@@ -19,6 +20,7 @@ export class InfrastructureImpl implements Infrastructure {
     this.prefecture = infrastructure.prefecture;
     this.quarry = infrastructure.quarry;
     this.sawmill = infrastructure.sawmill;
+    this.silo = infrastructure.silo;
     this.stable = infrastructure.stable;
     this.wall = infrastructure.wall;
     this.warehouse = infrastructure.warehouse;

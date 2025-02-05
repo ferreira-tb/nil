@@ -11,5 +11,5 @@
   "bracketSameLine": false,
   "arrowParens": "always",
   "vueIndentScriptAndStyle": false,
-  "tailwindAttributes": ["class"]
+  "tailwindAttributes": ["class", "button-class"]
 }

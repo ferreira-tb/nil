@@ -1,6 +1,6 @@
 use crate::player::PlayerId;
 use crate::unit::UnitId;
-use crate::world::Coord;
+use crate::village::Coord;
 use serde::Serialize;
 use serde::ser::Serializer;
 use strum::EnumIs;

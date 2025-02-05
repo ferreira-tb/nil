@@ -7,12 +7,7 @@ module.exports = {
   safelist: ['dark'],
   plugins: [animate],
 
-  content: [
-    './pages/**/*.{ts,tsx,vue}',
-    './components/**/*.{ts,tsx,vue}',
-    './app/**/*.{ts,tsx,vue}',
-    './src/**/*.{ts,tsx,vue}',
-  ],
+  content: ['./src/**/*.{ts,vue}'],
 
   theme: {
     container: {

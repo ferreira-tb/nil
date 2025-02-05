@@ -8,27 +8,27 @@ export const router = createRouter({
     {
       path: '/',
       name: 'home' satisfies Route,
-      component: () => import('@/scenes/Home.vue'),
+      component: () => import('@/scenes/home/index.vue'),
     },
     {
       path: '/host-game',
       name: 'host-game' satisfies Route,
-      component: () => import('@/scenes/HostGame.vue'),
+      component: () => import('@/scenes/host-game/index.vue'),
     },
     {
       path: '/join-game',
       name: 'join-game' satisfies Route,
-      component: () => import('@/scenes/JoinGame.vue'),
+      component: () => import('@/scenes/join-game/index.vue'),
     },
     {
       path: '/settings',
       name: 'settings' satisfies Route,
-      component: () => import('@/scenes/Settings.vue'),
+      component: () => import('@/scenes/settings/index.vue'),
     },
 
     {
       path: '/game',
-      component: () => import('@/scenes/Game.vue'),
+      component: () => import('@/scenes/game/index.vue'),
       children: gameRoutes,
     },
   ],

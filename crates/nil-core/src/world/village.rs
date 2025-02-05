@@ -1,6 +1,6 @@
-use super::{Cell, Coord, World};
+use super::{Cell, World};
 use crate::error::{Error, Result};
-use crate::village::Village;
+use crate::village::{Coord, Village};
 
 impl World {
   pub fn village(&self, coord: impl Into<Coord>) -> Result<&Village> {

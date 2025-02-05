@@ -1,4 +1,3 @@
-import type { Coord } from './world';
 import type { Option } from '@tb-dev/utils';
 import type * as building from './building';
 
@@ -20,4 +19,9 @@ export interface Infrastructure {
   readonly stable: building.Stable;
   readonly wall: building.Wall;
   readonly warehouse: building.Warehouse;
+}
+
+export interface Coord {
+  readonly x: number;
+  readonly y: number;
 }

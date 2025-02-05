@@ -1,0 +1,7 @@
+{
+  "evenBetterToml.formatter.allowedBlankLines": 1,
+  "evenBetterToml.formatter.columnWidth": 100,
+  "evenBetterToml.formatter.reorderArrays": true,
+  "evenBetterToml.formatter.trailingNewline": true,
+  "tailwindCSS.classAttributes": ["class", "button-class"]
+}

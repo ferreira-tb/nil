@@ -3,11 +3,11 @@ mod village;
 
 use crate::error::{Error, Result};
 use crate::player::{Player, PlayerId};
-use crate::village::Village;
+use crate::village::{Coord, Village};
 use bon::Builder;
 use derive_more::TryUnwrap;
 use indexmap::IndexMap;
-use serde::{Deserialize, Serialize};
+use serde::Deserialize;
 use std::num::NonZeroU8;
 use strum::EnumIs;
 
@@ -38,8 +38,8 @@ impl World {
   }
 
   pub fn index(&self, coord: Coord) -> usize {
-    let x = usize::from(coord.x);
-    let y = usize::from(coord.y);
+    let x = usize::from(coord.x());
+    let y = usize::from(coord.y());
     let index = (y * self.size) + x;
     debug_assert!(index < self.cells.len());
     index
@@ -106,30 +106,4 @@ pub enum Cell {
   #[try_unwrap(ignore)]
   Empty,
   Village(Village),
-}
-
-#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, Deserialize, Serialize)]
-pub struct Coord {
-  x: u8,
-  y: u8,
-}
-
-impl Coord {
-  pub fn new(x: u8, y: u8) -> Self {
-    Self { x, y }
-  }
-
-  pub fn x(&self) -> u8 {
-    self.x
-  }
-
-  pub fn y(&self) -> u8 {
-    self.y
-  }
-}
-
-impl From<(u8, u8)> for Coord {
-  fn from((x, y): (u8, u8)) -> Self {
-    Self::new(x, y)
-  }
 }

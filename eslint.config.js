@@ -10,7 +10,7 @@ export default defineConfig({
     unicorn: true,
     vue: true,
   },
-  ignores: ['**/src/components/ui/*'],
+  ignores: ['**/components/bbase/*'],
   overrides: {
     perfectionist: {
       '@typescript-eslint/sort-type-constituents': 'off',

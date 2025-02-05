@@ -1,7 +1,7 @@
-use super::{Cell, Coord, World};
+use super::{Cell, World};
 use crate::error::{Error, Result};
 use crate::player::{Player, PlayerId};
-use crate::village::Village;
+use crate::village::{Coord, Village};
 
 impl World {
   pub fn player(&self, id: PlayerId) -> Result<&Player> {
