@@ -37,5 +37,5 @@
   "wood": "Wood",
   "world": "World",
   "world-size": "World Size",
-  "x-per-hour": "{0} per hour"
+  "x-per-turn": "{0} per turn"
 }
