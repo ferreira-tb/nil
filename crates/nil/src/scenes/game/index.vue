@@ -1,6 +1,12 @@
 <script setup lang="ts">
 import Header from './Header.vue';
-import { Sidebar } from '@/components';
+import { Game } from '@/core/game';
+import { useLocale } from '@/locale';
+import { LogOut } from 'lucide-vue-next';
+import { Button, ButtonIcon, Sidebar } from '@/components';
+
+const { t } = useLocale();
+const game = Game.use();
 </script>
 
 <template>
@@ -20,6 +26,11 @@ import { Sidebar } from '@/components';
 
     <template #content> Content </template>
 
-    <template #footer> Footer </template>
+    <template #footer>
+      <div class="flex items-center justify-center gap-4">
+        <Button disabled>{{ t('save') }}</Button>
+        <ButtonIcon :icon="LogOut" button-class="p-4" @click="() => game.leave()" />
+      </div>
+    </template>
   </Sidebar>
 </template>
