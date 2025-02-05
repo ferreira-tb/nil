@@ -113,10 +113,42 @@ fn overall_test() {
   assert!((defense_power.total - 495238.0952380952).abs() <= 0.001);
   assert!((winner_losses.total_loss - 6272.674503).abs() <= 0.001);
   assert!((winner_losses.infantry - 4181.783).abs() <= 0.001);
+
+
+  let battle = unsafe {
+    Battle::builder()
+      .attacker([squad(5, 3000), squad(3, 3000), squad(4, 2000)])
+      .defender([squad(1, 8000), squad(2, 8000)])
+      .build()
+  };
+
+  let attack_power = battle.offensive_power();
+  let defense_power = battle.defensive_power();
+  let winner_losses = battle.winner_losses();
+  assert_eq!(attack_power.total, 570000.0);
+  assert!((attack_power.infantry_ratio - 0.21).abs() <= 0.001);
+  assert!((attack_power.cavalry_ratio - 0.68421).abs() <= 0.001);
+  assert!((attack_power.ranged_ratio - 0.105).abs() <= 0.001);
+  assert!((defense_power.total - 488421.052).abs() <= 0.001);
+  assert!((winner_losses.total_loss - 6345.549).abs() <= 0.001);
+  assert!((winner_losses.infantry - 2379.581).abs() <= 0.001);
 }
 
 #[test]
-fn ranged_debuff_test() {
+fn ranged_attack_debuff_test() {
+  let battle = unsafe {
+    Battle::builder()
+      .attacker([squad(4, 3005), squad(3, 7000)])
+      .defender([squad(1, 8000), squad(2, 8000)])
+      .build()
+  };
+
+  let attack_power = battle.offensive_power();
+  assert_eq!(attack_power.total, 355125.0);
+}
+
+#[test]
+fn ranged_attack_no_debuff_test() {
   let battle = unsafe {
     Battle::builder()
       .attacker([squad(4, 3000), squad(3, 7000)])
