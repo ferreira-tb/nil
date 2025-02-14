@@ -1,4 +1,4 @@
-export type Route = 'home' | 'host-game' | 'join-game' | 'settings' | GameRoute;
+export type Route = 'home' | 'host-game' | 'join-game' | 'lobby' | 'settings' | GameRoute;
 
 export type GameRoute =
   | 'academy'

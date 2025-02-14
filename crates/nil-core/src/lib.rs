@@ -14,7 +14,7 @@ pub use error::{Error, Result};
 pub use event::{Event, Listener};
 pub use player::{Player, PlayerId, PlayerOptions};
 pub use round::{Round, RoundState};
-pub use village::{Coord, Infrastructure, Village};
+pub use village::{Coord, Infrastructure, Village, VillageOwner};
 pub use world::{Cell, World, WorldOptions};
 
 pub use unit::{

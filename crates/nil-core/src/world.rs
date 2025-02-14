@@ -7,7 +7,6 @@ use crate::player::{Player, PlayerId};
 use crate::round::Round;
 use crate::village::{Coord, Village};
 use bon::Builder;
-use derive_more::TryUnwrap;
 use indexmap::IndexMap;
 use serde::Deserialize;
 use std::num::NonZeroU8;
@@ -84,20 +83,18 @@ impl World {
 
   pub fn village(&self, coord: impl Into<Coord>) -> Result<&Village> {
     let coord = coord.into();
-    if let Cell::Village(village) = self.cell(coord)? {
-      Ok(village)
-    } else {
-      Err(Error::NotAVillage(coord))
-    }
+    self
+      .cell(coord)?
+      .as_village()
+      .ok_or(Error::NotAVillage(coord))
   }
 
   pub fn village_mut(&mut self, coord: impl Into<Coord>) -> Result<&mut Village> {
     let coord = coord.into();
-    if let Cell::Village(village) = self.cell_mut(coord)? {
-      Ok(village)
-    } else {
-      Err(Error::NotAVillage(coord))
-    }
+    self
+      .cell_mut(coord)?
+      .as_village_mut()
+      .ok_or(Error::NotAVillage(coord))
   }
 
   pub fn player(&self, id: PlayerId) -> Result<&Player> {
@@ -152,11 +149,27 @@ impl Default for WorldOptions {
   }
 }
 
-#[derive(Debug, Default, EnumIs, TryUnwrap)]
-#[try_unwrap(ref)]
+#[derive(Debug, Default, EnumIs)]
 pub enum Cell {
   #[default]
-  #[try_unwrap(ignore)]
   Empty,
   Village(Village),
+}
+
+impl Cell {
+  fn as_village(&self) -> Option<&Village> {
+    if let Self::Village(village) = self {
+      Some(village)
+    } else {
+      None
+    }
+  }
+
+  fn as_village_mut(&mut self) -> Option<&mut Village> {
+    if let Self::Village(village) = self {
+      Some(village)
+    } else {
+      None
+    }
+  }
 }

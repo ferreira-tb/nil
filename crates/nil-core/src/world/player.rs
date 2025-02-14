@@ -41,8 +41,8 @@ impl World {
     self
       .cells
       .iter()
-      .filter_map(|cell| cell.try_unwrap_village_ref().ok())
-      .filter(|vil| vil.owner().is_some_and(|id| id == *player))
+      .filter_map(Cell::as_village)
+      .filter(|village| village.is_owned_by(player))
       .map(Village::coord)
       .collect()
   }

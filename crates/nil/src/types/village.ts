@@ -1,11 +1,11 @@
-import type { Option } from '@tb-dev/utils';
+import type { PlayerId } from './player';
 import type * as building from './building';
 
 export type Village = {
   readonly coord: Coord;
   readonly infrastructure: Infrastructure;
   readonly name: string;
-  readonly owner: Option<string>;
+  readonly owner: VillageOwner;
 };
 
 export type Infrastructure = {
@@ -24,4 +24,15 @@ export type Infrastructure = {
 export type Coord = {
   readonly x: number;
   readonly y: number;
+};
+
+export type VillageOwner = VillageOwnerNone | VillageOwnerPlayer;
+
+export type VillageOwnerNone = {
+  readonly kind: 'none';
+};
+
+export type VillageOwnerPlayer = {
+  readonly id: PlayerId;
+  readonly kind: 'player';
 };

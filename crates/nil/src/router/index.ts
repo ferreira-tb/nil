@@ -21,6 +21,11 @@ export const router = createRouter({
       path: '/join-game',
     },
     {
+      component: () => import('@/scenes/lobby/index.vue'),
+      name: 'lobby' satisfies Route,
+      path: '/lobby',
+    },
+    {
       component: () => import('@/scenes/settings/index.vue'),
       name: 'settings' satisfies Route,
       path: '/settings',

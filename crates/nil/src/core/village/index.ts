@@ -1,14 +1,13 @@
 import { CoordImpl } from './coord';
 import * as commands from '@/commands';
-import type { Option } from '@tb-dev/utils';
-import type { Coord, Village } from '@/types/village';
 import { InfrastructureImpl } from './infrastructure';
+import type { Coord, Village, VillageOwner } from '@/types/village';
 
 export class VillageImpl implements Village {
   public readonly coord: CoordImpl;
   public readonly infrastructure: InfrastructureImpl;
   public readonly name: string;
-  public readonly owner: Option<string>;
+  public readonly owner: VillageOwner;
 
   private constructor(village: Village) {
     this.coord = CoordImpl.create(village.coord);

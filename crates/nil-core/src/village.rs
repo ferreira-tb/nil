@@ -11,7 +11,7 @@ pub struct Village {
   #[builder(into)]
   name: String,
   #[builder(into)]
-  owner: Option<PlayerId>,
+  owner: VillageOwner,
   #[builder(default)]
   infrastructure: Infrastructure,
 }
@@ -21,8 +21,41 @@ impl Village {
     self.coord
   }
 
-  pub fn owner(&self) -> Option<PlayerId> {
+  pub fn owner(&self) -> VillageOwner {
     self.owner.clone()
+  }
+
+  pub fn is_owned_by(&self, player: &PlayerId) -> bool {
+    self
+      .owner
+      .as_player()
+      .is_some_and(|id| id == player)
+  }
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+#[serde(tag = "kind", rename_all = "kebab-case")]
+pub enum VillageOwner {
+  #[default]
+  None,
+  Player {
+    id: PlayerId,
+  },
+}
+
+impl VillageOwner {
+  pub fn as_player(&self) -> Option<&PlayerId> {
+    if let Self::Player { id } = self {
+      Some(id)
+    } else {
+      None
+    }
+  }
+}
+
+impl From<PlayerId> for VillageOwner {
+  fn from(id: PlayerId) -> Self {
+    Self::Player { id }
   }
 }
 
