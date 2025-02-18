@@ -21,6 +21,15 @@ lto = "fat"
 opt-level = 3
 strip = "symbols"
 
+[profile.preview]
+inherits = "release"
+codegen-units = 16
+lto = "off"
+opt-level = 0
+strip = "symbols"
+debug = false
+debug-assertions = false
+
 [workspace.lints.rust]
 async_fn_in_trait = "allow"
 dangling_pointers_from_temporaries = "deny"

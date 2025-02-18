@@ -38,6 +38,7 @@
   "warehouse": "Armazém",
   "wood": "Madeira",
   "world": "Mundo",
+  "world-name": "Nome do Mundo",
   "world-size": "Tamanho do Mundo",
   "x-per-turn": "{0} por turno"
 }

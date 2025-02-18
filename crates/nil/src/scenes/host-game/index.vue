@@ -11,6 +11,7 @@ const { t } = useLocale();
 const game = Game.use();
 
 const world = ref<WorldOptions>({
+  name: '',
   size: 100,
 });
 
@@ -42,12 +43,16 @@ async function host() {
       <div class="flex flex-col gap-6 px-4 pb-4">
         <div class="flex flex-col gap-4">
           <Label>
-            <span>{{ t('player-name') }}</span>
-            <InputText v-model="player.id" />
+            <span>{{ t('world-name') }}</span>
+            <InputText v-model="world.name" :min="3" :max="30" />
           </Label>
           <Label>
             <span>{{ t('world-size') }}</span>
             <InputNumber v-model="world.size" :min="10" :max="255" />
+          </Label>
+          <Label>
+            <span>{{ t('player-name') }}</span>
+            <InputText v-model="player.id" :min="3" :max="20" />
           </Label>
         </div>
 

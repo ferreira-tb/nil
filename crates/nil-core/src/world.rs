@@ -10,9 +10,11 @@ use crate::village::{Coord, Village};
 use bon::Builder;
 use serde::Deserialize;
 use std::num::NonZeroU8;
+use std::sync::Arc;
 
 #[derive(Debug)]
 pub struct World {
+  name: Arc<str>,
   continent: Continent,
   player_manager: PlayerManager,
   round: Round,
@@ -27,11 +29,16 @@ impl World {
     let round = Round::new(emitter.clone());
 
     Self {
+      name: config.name.into(),
       continent,
       player_manager,
       round,
       emitter,
     }
+  }
+
+  pub fn name(&self) -> &str {
+    &self.name
   }
 
   pub fn cell(&self, coord: impl Into<Coord>) -> Result<&Cell> {
@@ -67,15 +74,11 @@ impl World {
   }
 }
 
-impl Default for World {
-  fn default() -> Self {
-    Self::new(WorldOptions::default())
-  }
-}
-
-#[derive(Builder, Clone, Copy, Deserialize)]
+#[derive(Builder, Clone, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct WorldOptions {
+  #[builder(start_fn)]
+  pub name: String,
   #[builder(default = Continent::DEFAULT_SIZE)]
   pub size: NonZeroU8,
 }
@@ -83,11 +86,5 @@ pub struct WorldOptions {
 impl WorldOptions {
   pub fn into_world(self) -> World {
     World::new(self)
-  }
-}
-
-impl Default for WorldOptions {
-  fn default() -> Self {
-    Self::builder().build()
   }
 }

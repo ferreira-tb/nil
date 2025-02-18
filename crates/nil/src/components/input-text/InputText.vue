@@ -7,9 +7,12 @@ import { Input as BaseInput } from '@/components/base/input';
 type Props = {
   class?: string;
   disabled?: boolean;
+  max?: number;
+  min?: number;
   modelValue: Option<string>;
   onBlur?: () => void;
   placeholder?: string;
+  size?: number;
 };
 
 const props = defineProps<Props>();
@@ -31,6 +34,10 @@ const value = computed<string | undefined>({
     type="text"
     :placeholder
     :disabled
+    :maxlength="max"
+    :minlength="min"
+    :size
+    spellcheck="false"
     :class="cn('focus-visible:ring-0 disabled:cursor-default', props.class)"
     @blur="onBlur"
   />

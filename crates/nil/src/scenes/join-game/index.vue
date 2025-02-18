@@ -42,7 +42,7 @@ async function join() {
         <div class="flex flex-col gap-4">
           <Label>
             <span>{{ t('player-name') }}</span>
-            <InputText v-model="player.id" />
+            <InputText v-model="player.id" :min="3" :max="20" />
           </Label>
           <Label>
             <span>{{ t('server') }}</span>

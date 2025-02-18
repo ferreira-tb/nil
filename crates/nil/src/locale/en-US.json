@@ -38,6 +38,7 @@
   "warehouse": "Warehouse",
   "wood": "Wood",
   "world": "World",
+  "world-name": "World Name",
   "world-size": "World Size",
   "x-per-turn": "{0} per turn"
 }
