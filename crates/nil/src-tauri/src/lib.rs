@@ -17,10 +17,15 @@ use tauri::{AppHandle, Manager, WebviewUrl, WebviewWindowBuilder};
 pub fn run() {
   #[cfg(desktop)]
   let builder = {
-    tauri::Builder::default()
-      .plugin(plugin::single_instance())
+    let mut builder = tauri::Builder::default()
       .plugin(plugin::prevent_default())
-      .plugin(plugin::window_state())
+      .plugin(plugin::window_state());
+
+    if !cfg!(debug_assertions) {
+      builder = builder.plugin(plugin::single_instance());
+    }
+
+    builder
   };
 
   #[cfg(mobile)]

@@ -4,19 +4,17 @@ use tauri::Wry;
 use tauri::plugin::TauriPlugin;
 
 pub fn prevent_default() -> TauriPlugin<Wry> {
+  #[cfg(windows)]
+  use tauri_plugin_prevent_default::WindowsOptions;
   use tauri_plugin_prevent_default::{Builder, Flags};
 
-  #[cfg_attr(not(windows), allow(unused_mut))]
-  let mut builder = Builder::new().with_flags(Flags::debug());
+  let builder = Builder::new().with_flags(Flags::debug());
 
   #[cfg(windows)]
-  {
-    use tauri_plugin_prevent_default::WindowsOptions;
-    builder = builder.platform(WindowsOptions {
-      general_autofill: false,
-      password_autosave: false,
-    });
-  };
+  let builder = builder.platform(WindowsOptions {
+    general_autofill: false,
+    password_autosave: false,
+  });
 
   builder.build()
 }
