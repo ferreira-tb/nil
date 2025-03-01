@@ -2,7 +2,7 @@ import type * as $ from './payload';
 import type { Fn, Option } from '@tb-dev/utils';
 import { getCurrentWebviewWindow, type WebviewWindow } from '@tauri-apps/api/webviewWindow';
 
-type ListenerFn<T> = (payload: T) => void;
+export type ListenerFn<T> = (payload: T) => void;
 
 class Listener<T> {
   private static webview: Option<WebviewWindow>;
@@ -26,7 +26,7 @@ class Listener<T> {
   }
 }
 
-type EventObject = ReturnType<typeof Listener.create>;
+export type EventObject = ReturnType<typeof Listener.create>;
 
 export const events = new Proxy(
   Listener.create() as unknown as {

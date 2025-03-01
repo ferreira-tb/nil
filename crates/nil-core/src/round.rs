@@ -8,15 +8,15 @@ use std::num::NonZeroU32;
 #[derive(Debug)]
 pub struct Round {
   id: RoundId,
-  pending: HashSet<PlayerId>,
+  phase: Phase,
   emitter: Emitter,
 }
 
 impl Round {
   pub(crate) fn new(emitter: Emitter) -> Self {
     Self {
-      id: Default::default(),
-      pending: Default::default(),
+      id: RoundId::default(),
+      phase: Phase::Idle,
       emitter,
     }
   }
@@ -27,7 +27,7 @@ impl Round {
 }
 
 #[derive(Clone, Copy, Debug, Deref, Deserialize, Serialize)]
-struct RoundId(NonZeroU32);
+pub struct RoundId(NonZeroU32);
 
 impl RoundId {
   const fn next(&mut self) {
@@ -42,12 +42,26 @@ impl Default for RoundId {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
+#[serde(tag = "kind", rename_all = "kebab-case")]
+pub enum Phase {
+  #[default]
+  Idle,
+  Player {
+    pending: HashSet<PlayerId>,
+  },
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct RoundState {
   id: RoundId,
+  phase: Phase,
 }
 
 impl From<&Round> for RoundState {
   fn from(round: &Round) -> Self {
-    RoundState { id: round.id }
+    RoundState {
+      id: round.id,
+      phase: round.phase.clone(),
+    }
   }
 }

@@ -22,7 +22,7 @@ macro_rules! res {
 }
 
 #[allow(clippy::needless_pass_by_value)]
-pub fn from_err(err: Error) -> Response {
+pub(crate) fn from_err(err: Error) -> Response {
   let text = err.to_string();
   match err {
     Error::NoPlayer => res!(BAD_REQUEST, text),

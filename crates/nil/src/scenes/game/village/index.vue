@@ -1,10 +1,9 @@
 <script setup lang="ts">
 import Units from './Units.vue';
-import { Game } from '@/core/game';
 import Buildings from './Buildings.vue';
 import Production from './Production.vue';
 
-const { village } = Game.use();
+const { village } = NIL.village.refs();
 </script>
 
 <template>

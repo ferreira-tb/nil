@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { cn } from '@/lib/utils';
-import { Game } from '@/core/game';
 import { ButtonLink, SidebarTrigger } from '@/components';
 
 type Props = {
@@ -9,7 +8,7 @@ type Props = {
 
 const props = defineProps<Props>();
 
-const { village } = Game.use();
+const { village } = NIL.village.refs();
 </script>
 
 <template>

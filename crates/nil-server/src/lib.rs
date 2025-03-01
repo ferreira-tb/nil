@@ -6,82 +6,58 @@ mod router;
 mod state;
 mod websocket;
 
-pub use error::{Error, Result};
-use nil_core::World;
+pub use error::{AnyResult, Error, Result};
+use nil_core::WorldOptions;
 use nil_util::spawn;
-use serde::Serialize;
 use state::App;
-use std::fmt;
-use std::net::SocketAddr;
+use std::net::{SocketAddr, SocketAddrV4};
 use tokio::net::TcpListener;
 use tokio::sync::oneshot;
 use tokio::task::AbortHandle;
 
-pub struct Server {
-  addr: SocketAddr,
-  abort_handle: AbortHandle,
-}
+pub struct Server(AbortHandle);
 
 impl Server {
-  pub async fn serve(world: World) -> Result<Self> {
+  pub async fn serve(options: WorldOptions) -> Result<(Self, SocketAddrV4)> {
+    let world = options.into_world();
     let (tx, rx) = oneshot::channel();
+
     let task = spawn(async move {
       let router = router::create()
         .with_state(App::new(world))
         .into_make_service_with_connect_info::<SocketAddr>();
 
-      let result: Result<(TcpListener, SocketAddr)> = try {
-        let listener = TcpListener::bind("0.0.0.0:0")
+      if let Some((listener, addr)) = bind().await {
+        let _ = tx.send(Ok(addr));
+        axum::serve(listener, router)
           .await
-          .map_err(Error::FailedToBindListener)?;
-
-        let addr = listener
-          .local_addr()
-          .map_err(Error::FailedToGetServerAddr)?;
-
-        (listener, addr)
-      };
-
-      match result {
-        Ok((listener, addr)) => {
-          let _ = tx.send(Ok(addr));
-          axum::serve(listener, router)
-            .await
-            .expect("failed to start nil server");
-        }
-        Err(err) => {
-          tx.send(Err(err)).ok();
-        }
+          .expect("failed to start nil server");
+      } else {
+        let _ = tx.send(Err(Error::FailedToStart));
       }
     });
 
     let addr = rx.await.unwrap()?;
-    let abort_handle = task.abort_handle();
-
-    Ok(Self { addr, abort_handle })
+    let server = Server(task.abort_handle());
+    Ok((server, addr))
   }
+}
 
-  pub fn info(&self) -> ServerInfo {
-    ServerInfo { port: self.addr.port() }
-  }
+async fn bind() -> Option<(TcpListener, SocketAddrV4)> {
+  let result: AnyResult<(TcpListener, SocketAddrV4)> = try {
+    let listener = TcpListener::bind("0.0.0.0:0").await?;
+    let SocketAddr::V4(addr) = listener.local_addr()? else {
+      unreachable!();
+    };
+
+    (listener, addr)
+  };
+
+  result.ok()
 }
 
 impl Drop for Server {
   fn drop(&mut self) {
-    self.abort_handle.abort();
+    self.0.abort();
   }
-}
-
-impl fmt::Debug for Server {
-  fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-    f.debug_struct("Server")
-      .field("addr", &self.addr)
-      .finish_non_exhaustive()
-  }
-}
-
-#[derive(Serialize)]
-#[serde(rename_all = "camelCase")]
-pub struct ServerInfo {
-  pub port: u16,
 }

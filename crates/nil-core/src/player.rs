@@ -9,21 +9,25 @@ use std::sync::Arc;
 pub struct PlayerManager(IndexMap<PlayerId, Player>);
 
 impl PlayerManager {
-  pub(crate) fn player(&self, id: PlayerId) -> Result<&Player> {
+  pub fn player(&self, id: PlayerId) -> Result<&Player> {
     self
       .0
       .get(&id)
       .ok_or(Error::PlayerNotFound(id))
   }
 
-  pub(crate) fn player_mut(&mut self, id: PlayerId) -> Result<&mut Player> {
+  pub fn player_mut(&mut self, id: PlayerId) -> Result<&mut Player> {
     self
       .0
       .get_mut(&id)
       .ok_or(Error::PlayerNotFound(id))
   }
 
-  pub(crate) fn has(&self, id: &PlayerId) -> bool {
+  pub fn players(&self) -> impl Iterator<Item = &Player> {
+    self.0.values()
+  }
+
+  pub fn has(&self, id: &PlayerId) -> bool {
     self.0.contains_key(id)
   }
 

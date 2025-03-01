@@ -1,14 +1,10 @@
 mod player;
-mod round;
 
-use crate::continent::{Cell, Continent};
-use crate::error::Result;
+use crate::continent::Continent;
 use crate::event::{Emitter, Event, Listener};
-use crate::player::{Player, PlayerId, PlayerManager};
+use crate::player::PlayerManager;
 use crate::round::Round;
-use crate::village::{Coord, Village};
-use bon::Builder;
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 use std::num::NonZeroU8;
 use std::sync::Arc;
 
@@ -37,32 +33,28 @@ impl World {
     }
   }
 
-  pub fn name(&self) -> &str {
-    &self.name
+  pub fn state(&self) -> WorldState {
+    WorldState::from(self)
   }
 
-  pub fn cell(&self, coord: impl Into<Coord>) -> Result<&Cell> {
-    self.continent.cell(coord)
+  pub fn continent(&self) -> &Continent {
+    &self.continent
   }
 
-  pub fn cell_mut(&mut self, coord: impl Into<Coord>) -> Result<&mut Cell> {
-    self.continent.cell_mut(coord)
+  pub fn continent_mut(&mut self) -> &mut Continent {
+    &mut self.continent
   }
 
-  pub fn village(&self, coord: impl Into<Coord>) -> Result<&Village> {
-    self.continent.village(coord)
+  pub fn player_manager(&self) -> &PlayerManager {
+    &self.player_manager
   }
 
-  pub fn village_mut(&mut self, coord: impl Into<Coord>) -> Result<&mut Village> {
-    self.continent.village_mut(coord)
+  pub fn player_manager_mut(&mut self) -> &mut PlayerManager {
+    &mut self.player_manager
   }
 
-  pub fn player(&self, id: PlayerId) -> Result<&Player> {
-    self.player_manager.player(id)
-  }
-
-  pub fn player_mut(&mut self, id: PlayerId) -> Result<&mut Player> {
-    self.player_manager.player_mut(id)
+  pub fn round(&self) -> &Round {
+    &self.round
   }
 
   fn emit(&self, event: Event) {
@@ -74,17 +66,26 @@ impl World {
   }
 }
 
-#[derive(Builder, Clone, Deserialize)]
+#[derive(Clone, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct WorldOptions {
-  #[builder(start_fn)]
   pub name: String,
-  #[builder(default = Continent::DEFAULT_SIZE)]
   pub size: NonZeroU8,
 }
 
 impl WorldOptions {
   pub fn into_world(self) -> World {
     World::new(self)
+  }
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct WorldState {
+  name: Arc<str>,
+}
+
+impl From<&World> for WorldState {
+  fn from(world: &World) -> Self {
+    Self { name: Arc::clone(&world.name) }
   }
 }

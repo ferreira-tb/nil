@@ -13,7 +13,7 @@ members = [
 version = "0.1.0"
 description = ""
 edition = "2024"
-rust-version = "1.86"
+rust-version = "1.87"
 
 [profile.release]
 codegen-units = 1

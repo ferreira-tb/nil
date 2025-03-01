@@ -1,10 +1,8 @@
 <script setup lang="ts">
 import Header from './Header.vue';
-import { Game } from '@/core/game';
+import { leaveGame } from '@/core/game';
 import { LogOut } from 'lucide-vue-next';
 import { ButtonIcon, Sidebar } from '@/components';
-
-const game = Game.use();
 </script>
 
 <template>
@@ -26,7 +24,7 @@ const game = Game.use();
 
     <template #footer>
       <div class="flex items-center justify-center gap-4">
-        <ButtonIcon :icon="LogOut" button-class="p-4" @click="() => game.leave()" />
+        <ButtonIcon :icon="LogOut" button-class="p-4" @click="leaveGame" />
       </div>
     </template>
   </Sidebar>

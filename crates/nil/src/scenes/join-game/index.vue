@@ -1,14 +1,13 @@
 <script setup lang="ts">
-import { Game } from '@/core/game';
 import { computed, ref } from 'vue';
 import { useLocale } from '@/locale';
+import { joinGame } from '@/core/game';
 import { isPlayerOptions } from '@/lib/schema';
 import { SocketAddrV4 } from '@/lib/net/addr-v4';
 import type { PlayerOptions } from '@/types/player';
 import { Button, ButtonLink, Card, InputText, Label } from '@/components';
 
 const { t } = useLocale();
-const game = Game.use();
 
 const player = ref<PlayerOptions>({
   id: '',
@@ -23,9 +22,9 @@ const canJoin = computed(() => {
 
 async function join() {
   if (canJoin.value && serverAddr.value) {
-    await game.join({
+    await joinGame({
       player: player.value,
-      server: serverAddr.value,
+      serverAddr: serverAddr.value,
     });
   }
 }
@@ -42,7 +41,7 @@ async function join() {
         <div class="flex flex-col gap-4">
           <Label>
             <span>{{ t('player-name') }}</span>
-            <InputText v-model="player.id" :min="3" :max="20" />
+            <InputText v-model="player.id" :max="20" />
           </Label>
           <Label>
             <span>{{ t('server') }}</span>
@@ -51,7 +50,7 @@ async function join() {
         </div>
 
         <div class="flex items-center justify-center gap-2">
-          <Button :disabled="!canJoin" @click="() => join()">{{ t('join') }}</Button>
+          <Button :disabled="!canJoin" @click="join">{{ t('join') }}</Button>
           <ButtonLink to="home" variant="secondary">{{ t('cancel') }}</ButtonLink>
         </div>
       </div>

@@ -1,10 +1,9 @@
 <script setup lang="ts">
-import { Game } from '@/core/game';
 import { useLocale } from '@/locale';
+import { exitGame } from '@/core/game';
 import { Button, ButtonLink } from '@/components';
 
 const { t } = useLocale();
-const game = Game.use();
 </script>
 
 <template>
@@ -22,7 +21,7 @@ const game = Game.use();
       <ButtonLink to="settings" variant="secondary">
         <span>{{ t('settings') }}</span>
       </ButtonLink>
-      <Button variant="secondary" @click="() => game.exit()">
+      <Button variant="secondary" @click="() => exitGame()">
         <span>{{ t('exit') }}</span>
       </Button>
     </div>

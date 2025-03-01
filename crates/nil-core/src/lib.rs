@@ -14,10 +14,10 @@ pub use building::{Building, BuildingLevel};
 pub use continent::{Cell, Continent};
 pub use error::{Error, Result};
 pub use event::{Event, Listener};
-pub use player::{Player, PlayerId, PlayerOptions};
+pub use player::{Player, PlayerId, PlayerManager, PlayerOptions};
 pub use round::{Round, RoundState};
 pub use village::{Coord, Infrastructure, Village, VillageOwner};
-pub use world::{World, WorldOptions};
+pub use world::{World, WorldOptions, WorldState};
 
 pub use unit::{
   Haul,

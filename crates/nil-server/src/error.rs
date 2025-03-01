@@ -4,14 +4,13 @@ use serde::ser::Serializer;
 pub use std::result::Result as StdResult;
 
 pub type Result<T> = StdResult<T, Error>;
+pub type AnyResult<T> = anyhow::Result<T>;
 
 #[non_exhaustive]
 #[derive(Debug, thiserror::Error)]
 pub enum Error {
-  #[error("failed to bind listener: {0}")]
-  FailedToBindListener(#[source] std::io::Error),
-  #[error("failed to get server addr: {0}")]
-  FailedToGetServerAddr(#[source] std::io::Error),
+  #[error("failed to start nil server")]
+  FailedToStart,
 }
 
 impl Serialize for Error {

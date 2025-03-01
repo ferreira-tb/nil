@@ -3,11 +3,11 @@ use crate::state::App;
 use axum::extract::{Json, State};
 use axum::response::Response;
 use futures::FutureExt;
-use nil_core::round::Round;
+use nil_core::world::World;
 
 pub async fn get(State(app): State<App>) -> Response {
   app
-    .round(Round::state)
-    .map(|round| res!(OK, Json(round)))
+    .world(World::state)
+    .map(|world| res!(OK, Json(world)))
     .await
 }

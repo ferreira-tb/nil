@@ -1,11 +1,16 @@
 import { invoke } from '@tauri-apps/api/core';
-import type { ServerInfo } from '@/types/server';
+import { SocketAddrV4 } from '@/lib/net/addr-v4';
 import type { WorldOptions } from '@/types/world';
-import type { SocketAddrV4 } from '@/lib/net/addr-v4';
 
 export * from './round';
+export * from './world';
 export * from './player';
 export * from './village';
+
+export async function getServerAddr() {
+  const addr = await invoke<string>('get_server_addr');
+  return SocketAddrV4.parse(addr);
+}
 
 export function getServerVersion() {
   return invoke<string>('get_server_version');
@@ -28,8 +33,9 @@ export function startClient(addr: SocketAddrV4) {
   return invoke<null>('start_client', { serverAddr });
 }
 
-export function startServer(worldOptions: WorldOptions) {
-  return invoke<ServerInfo>('start_server', { worldOptions });
+export async function startServer(worldOptions: WorldOptions) {
+  const addr = await invoke<string>('start_server', { worldOptions });
+  return SocketAddrV4.parse(addr);
 }
 
 export function stopClient() {

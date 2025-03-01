@@ -26,7 +26,7 @@ impl Continent {
     Self { cells, size }
   }
 
-  pub(crate) fn cell(&self, coord: impl Into<Coord>) -> Result<&Cell> {
+  pub fn cell(&self, coord: impl Into<Coord>) -> Result<&Cell> {
     let coord = coord.into();
     let index = self.index(coord);
     self
@@ -35,7 +35,7 @@ impl Continent {
       .ok_or(Error::CoordOutOfBounds(coord))
   }
 
-  pub(crate) fn cell_mut(&mut self, coord: impl Into<Coord>) -> Result<&mut Cell> {
+  pub fn cell_mut(&mut self, coord: impl Into<Coord>) -> Result<&mut Cell> {
     let coord = coord.into();
     let index = self.index(coord);
     self
@@ -44,7 +44,7 @@ impl Continent {
       .ok_or(Error::CoordOutOfBounds(coord))
   }
 
-  pub(crate) fn village(&self, coord: impl Into<Coord>) -> Result<&Village> {
+  pub fn village(&self, coord: impl Into<Coord>) -> Result<&Village> {
     let coord = coord.into();
     self
       .cell(coord)?
@@ -52,7 +52,7 @@ impl Continent {
       .ok_or(Error::NotAVillage(coord))
   }
 
-  pub(crate) fn village_mut(&mut self, coord: impl Into<Coord>) -> Result<&mut Village> {
+  pub fn village_mut(&mut self, coord: impl Into<Coord>) -> Result<&mut Village> {
     let coord = coord.into();
     self
       .cell_mut(coord)?
@@ -60,7 +60,7 @@ impl Continent {
       .ok_or(Error::NotAVillage(coord))
   }
 
-  pub(crate) fn villages_of(&self, player: &PlayerId) -> Vec<Coord> {
+  pub fn villages_of(&self, player: &PlayerId) -> Vec<Coord> {
     self
       .cells
       .iter()

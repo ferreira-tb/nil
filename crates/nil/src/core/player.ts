@@ -1,13 +1,13 @@
 import * as commands from '@/commands';
+import { CoordImpl } from '@/core/coord';
 import type { Coord } from '@/types/village';
-import { CoordImpl } from '@/core/village/coord';
 import type { Player, PlayerId } from '@/types/player';
 
 export class PlayerImpl implements Player {
   public readonly id: string;
-  public readonly villages: CoordImpl[];
+  public readonly villages: readonly CoordImpl[];
 
-  private constructor(player: Player, villages: Coord[]) {
+  private constructor(player: Player, villages: readonly Coord[]) {
     this.id = player.id;
     this.villages = villages.map((it) => CoordImpl.create(it));
   }

@@ -1,7 +1,7 @@
 use crate::error::{Error, Result};
 use nil_client::Client;
-use nil_core::{Event, World};
-use nil_server::{Server, ServerInfo};
+use nil_core::{Event, WorldOptions};
+use nil_server::Server;
 use std::net::SocketAddrV4;
 use std::sync::Arc;
 use tauri::{AppHandle, Emitter};
@@ -47,15 +47,14 @@ impl Nil {
     Ok(())
   }
 
-  pub async fn start_server(&self, world: World) -> Result<ServerInfo> {
+  pub async fn start_server(&self, options: WorldOptions) -> Result<SocketAddrV4> {
     let mut lock = self.server.write().await;
     lock.take();
 
-    let server = Server::serve(world).await?;
-    let server_info = server.info();
+    let (server, addr) = Server::serve(options).await?;
     *lock = Some(server);
 
-    Ok(server_info)
+    Ok(addr)
   }
 
   pub async fn stop_client(&self) {

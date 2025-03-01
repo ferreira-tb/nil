@@ -1,43 +1,58 @@
-use axum::extract::FromRef;
-use nil_core::World;
+use nil_core::{Continent, PlayerManager, Round, World};
 use std::sync::Arc;
 use tokio::sync::RwLock;
 
-#[derive(Clone, FromRef)]
 pub(crate) struct App {
-  pub world: WorldState,
+  world: Arc<RwLock<World>>,
 }
 
 impl App {
   pub fn new(world: World) -> Self {
-    Self { world: WorldState::new(world) }
-  }
-}
-
-pub(crate) struct WorldState(Arc<RwLock<World>>);
-
-impl WorldState {
-  pub fn new(world: World) -> Self {
-    Self(Arc::new(RwLock::new(world)))
+    Self { world: Arc::new(RwLock::new(world)) }
   }
 
   pub async fn world<F, T>(&self, f: F) -> T
   where
     F: FnOnce(&World) -> T,
   {
-    f(&*self.0.read().await)
+    f(&*self.world.read().await)
   }
 
   pub async fn world_mut<F, T>(&self, f: F) -> T
   where
     F: FnOnce(&mut World) -> T,
   {
-    f(&mut *self.0.write().await)
+    f(&mut *self.world.write().await)
+  }
+
+  pub async fn continent<F, T>(&self, f: F) -> T
+  where
+    F: FnOnce(&Continent) -> T,
+  {
+    self
+      .world(|world| f(world.continent()))
+      .await
+  }
+
+  pub async fn player_manager<F, T>(&self, f: F) -> T
+  where
+    F: FnOnce(&PlayerManager) -> T,
+  {
+    self
+      .world(|world| f(world.player_manager()))
+      .await
+  }
+
+  pub async fn round<F, T>(&self, f: F) -> T
+  where
+    F: FnOnce(&Round) -> T,
+  {
+    self.world(|world| f(world.round())).await
   }
 }
 
-impl Clone for WorldState {
+impl Clone for App {
   fn clone(&self) -> Self {
-    Self(Arc::clone(&self.0))
+    Self { world: Arc::clone(&self.world) }
   }
 }

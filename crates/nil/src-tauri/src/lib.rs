@@ -36,6 +36,7 @@ pub fn run() {
     .plugin(tauri_plugin_process::init())
     .setup(|app| setup(app.app_handle()))
     .invoke_handler(tauri::generate_handler![
+      command::get_server_addr,
       command::get_server_version,
       command::is_dev,
       command::is_server_ready,
@@ -46,9 +47,11 @@ pub fn run() {
       command::stop_server,
       command::player::get_player,
       command::player::get_player_villages,
+      command::player::get_players,
       command::player::spawn_player,
       command::round::get_round_state,
-      command::village::get_village
+      command::village::get_village,
+      command::world::get_world_state,
     ])
     .run(tauri::generate_context!())
     .expect("failed to start nil");
@@ -64,17 +67,18 @@ fn open_window(app: &AppHandle) -> Result<()> {
   let url = WebviewUrl::App("index.html".into());
 
   #[cfg(desktop)]
-  WebviewWindowBuilder::new(app, "main", url)
+  let builder = WebviewWindowBuilder::new(app, "main", url)
     .title("Nil")
     .inner_size(800.0, 600.0)
     .resizable(true)
     .maximizable(true)
     .minimizable(true)
-    .visible(false)
-    .build()?;
+    .visible(false);
 
   #[cfg(mobile)]
-  WebviewWindowBuilder::new(app, "main", url).build()?;
+  let builder = WebviewWindowBuilder::new(app, "main", url);
+
+  builder.build()?;
 
   Ok(())
 }

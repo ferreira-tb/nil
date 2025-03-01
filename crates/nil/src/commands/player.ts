@@ -7,7 +7,11 @@ export function getPlayer(id: PlayerId) {
 }
 
 export async function getPlayerVillages(id: PlayerId) {
-  return invoke<Coord[]>('get_player_villages', { id });
+  return invoke<readonly Coord[]>('get_player_villages', { id });
+}
+
+export function getPlayers() {
+  return invoke<readonly Player[]>('get_players');
 }
 
 export function spawnPlayer(options: PlayerOptions) {

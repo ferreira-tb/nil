@@ -1,8 +1,9 @@
 mod player;
 mod round;
 mod village;
+mod world;
 
-use crate::state::{App, WorldState};
+use crate::state::App;
 use crate::websocket::handle_socket;
 use axum::Router;
 use axum::extract::State;
@@ -15,12 +16,14 @@ use nil_core::World;
 pub(crate) fn create() -> Router<App> {
   Router::new()
     .route("/", get(ok))
+    .route("/player", get(player::get_all))
     .route("/player", post(player::get))
     .route("/player/spawn", put(player::spawn))
-    .route("/player/village", post(player::get_villages))
+    .route("/player/village", post(player::villages))
     .route("/round", get(round::get))
     .route("/version", get(version))
     .route("/village", post(village::get))
+    .route("/world", get(world::get))
     .route("/ws", any(websocket))
 }
 
@@ -32,7 +35,7 @@ async fn version() -> &'static str {
   env!("CARGO_PKG_VERSION")
 }
 
-async fn websocket(ws: WebSocketUpgrade, State(state): State<WorldState>) -> Response {
-  let listener = state.world(World::subscribe).await;
+async fn websocket(ws: WebSocketUpgrade, State(app): State<App>) -> Response {
+  let listener = app.world(World::subscribe).await;
   ws.on_upgrade(move |socket| handle_socket(socket, listener))
 }

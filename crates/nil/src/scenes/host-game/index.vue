@@ -1,14 +1,13 @@
 <script setup lang="ts">
-import { Game } from '@/core/game';
 import { computed, ref } from 'vue';
 import { useLocale } from '@/locale';
+import { hostGame } from '@/core/game';
 import type { WorldOptions } from '@/types/world';
 import type { PlayerOptions } from '@/types/player';
 import { isPlayerOptions, isWorldOptions } from '@/lib/schema';
 import { Button, ButtonLink, Card, InputNumber, InputText, Label } from '@/components';
 
 const { t } = useLocale();
-const game = Game.use();
 
 const world = ref<WorldOptions>({
   name: '',
@@ -25,7 +24,7 @@ const canHost = computed(() => {
 
 async function host() {
   if (canHost.value) {
-    await game.host({
+    await hostGame({
       player: player.value,
       world: world.value,
     });
@@ -44,7 +43,7 @@ async function host() {
         <div class="flex flex-col gap-4">
           <Label>
             <span>{{ t('world-name') }}</span>
-            <InputText v-model="world.name" :min="3" :max="30" />
+            <InputText v-model="world.name" :max="30" />
           </Label>
           <Label>
             <span>{{ t('world-size') }}</span>
@@ -52,12 +51,12 @@ async function host() {
           </Label>
           <Label>
             <span>{{ t('player-name') }}</span>
-            <InputText v-model="player.id" :min="3" :max="20" />
+            <InputText v-model="player.id" :max="20" />
           </Label>
         </div>
 
         <div class="flex items-center justify-center gap-2">
-          <Button :disabled="!canHost" @click="() => host()">{{ t('host') }}</Button>
+          <Button :disabled="!canHost" @click="host">{{ t('host') }}</Button>
           <ButtonLink to="home" variant="secondary">{{ t('cancel') }}</ButtonLink>
         </div>
       </div>

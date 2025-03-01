@@ -6,7 +6,7 @@ use tauri::AppHandle;
 #[tauri::command]
 pub async fn get_player(app: AppHandle, id: PlayerId) -> CResult<Player> {
   app
-    .client(async |it| it.get_player(id).await)
+    .client(async |it| it.player(id).await)
     .await?
     .map_err(Into::into)
 }
@@ -14,7 +14,15 @@ pub async fn get_player(app: AppHandle, id: PlayerId) -> CResult<Player> {
 #[tauri::command]
 pub async fn get_player_villages(app: AppHandle, id: PlayerId) -> CResult<Vec<Coord>> {
   app
-    .client(async |it| it.get_player_villages(id).await)
+    .client(async |it| it.villages_of(id).await)
+    .await?
+    .map_err(Into::into)
+}
+
+#[tauri::command]
+pub async fn get_players(app: AppHandle) -> CResult<Vec<Player>> {
+  app
+    .client(async |it| it.players().await)
     .await?
     .map_err(Into::into)
 }

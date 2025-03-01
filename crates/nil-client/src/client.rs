@@ -6,6 +6,7 @@ use nil_core::event::Event;
 use nil_core::player::{Player, PlayerId, PlayerOptions};
 use nil_core::round::RoundState;
 use nil_core::village::{Coord, Village};
+use nil_core::world::WorldState;
 use std::fmt;
 use std::net::SocketAddrV4;
 use websocket::WebSocketClient;
@@ -13,7 +14,7 @@ use websocket::WebSocketClient;
 const USER_AGENT: &str = concat!("nil/", env!("CARGO_PKG_VERSION"));
 
 pub struct Client {
-  pub(crate) server_addr: SocketAddrV4,
+  server_addr: SocketAddrV4,
   websocket: WebSocketClient,
 }
 
@@ -28,6 +29,10 @@ impl Client {
     })
   }
 
+  pub fn server_addr(&self) -> SocketAddrV4 {
+    self.server_addr
+  }
+
   /// GET `/`
   pub async fn ready(&self) -> bool {
     self
@@ -37,8 +42,13 @@ impl Client {
       .unwrap_or(false)
   }
 
+  /// GET `/player`
+  pub async fn players(&self) -> Result<Vec<Player>> {
+    self.get_json("player").await
+  }
+
   /// POST `/player`
-  pub async fn get_player(&self, id: PlayerId) -> Result<Player> {
+  pub async fn player(&self, id: PlayerId) -> Result<Player> {
     self.post_json("player", id).await
   }
 
@@ -48,12 +58,12 @@ impl Client {
   }
 
   /// POST `/player/village`
-  pub async fn get_player_villages(&self, id: PlayerId) -> Result<Vec<Coord>> {
+  pub async fn villages_of(&self, id: PlayerId) -> Result<Vec<Coord>> {
     self.post_json("player/village", id).await
   }
 
   /// GET `/round`
-  pub async fn get_round_state(&self) -> Result<RoundState> {
+  pub async fn round_state(&self) -> Result<RoundState> {
     self.get_json("round").await
   }
 
@@ -63,8 +73,13 @@ impl Client {
   }
 
   /// POST `/village`
-  pub async fn get_village(&self, coord: Coord) -> Result<Village> {
+  pub async fn village(&self, coord: Coord) -> Result<Village> {
     self.post_json("village", coord).await
+  }
+
+  /// GET `/world`
+  pub async fn world(&self) -> Result<WorldState> {
+    self.get_json("world").await
   }
 }
 

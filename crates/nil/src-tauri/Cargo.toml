@@ -57,7 +57,7 @@ version = "1.43"
 features = ["full"]
 
 [target.'cfg(not(any(target_os = "android", target_os = "ios")))'.dependencies]
-tauri-plugin-prevent-default = { version = "1.1", features = ["unstable-windows"] }
+tauri-plugin-prevent-default = { version = "1.2", features = ["unstable-windows"] }
 tauri-plugin-single-instance = "2.2"
 tauri-plugin-window-state = "2.2"
 

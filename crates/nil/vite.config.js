@@ -11,7 +11,7 @@ export default defineConfig({
   clearScreen: false,
   resolve: {
     alias: {
-      '@': fileURLToPath(new URL('src', import.meta.url)),
+      '@': url('src'),
     },
   },
   css: {
@@ -35,3 +35,7 @@ export default defineConfig({
     },
   },
 });
+
+function url(path) {
+  return fileURLToPath(new URL(path, import.meta.url));
+}
