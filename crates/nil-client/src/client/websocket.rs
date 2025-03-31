@@ -2,14 +2,14 @@ use super::USER_AGENT;
 use crate::error::{Error, Result};
 use anyhow::Result as AnyResult;
 use bytes::Bytes;
+use futures::future::BoxFuture;
 use futures::stream::{SplitSink, SplitStream};
 use futures::{Sink, SinkExt, StreamExt};
 use http::header::USER_AGENT as USER_AGENT_HEADER;
-use nil_core::Event;
+use nil_core::event::Event;
 use nil_util::spawn;
-use std::fmt;
 use std::net::SocketAddrV4;
-use std::ops::{ControlFlow, Not};
+use std::ops::ControlFlow;
 use tokio::net::TcpStream;
 use tokio::sync::mpsc::channel;
 use tokio::task::AbortHandle;
@@ -28,7 +28,7 @@ pub(super) struct WebSocketClient {
 impl WebSocketClient {
   pub async fn connect<F>(addr: &SocketAddrV4, on_event: F) -> Result<Self>
   where
-    F: Fn(Event) + Send + Sync + 'static,
+    F: Fn(Event) -> BoxFuture<'static, ()> + Send + Sync + 'static,
   {
     let ws_stream: AnyResult<WebSocketStream<_>> = try {
       let url = format!("ws://{addr}/ws");
@@ -55,14 +55,10 @@ impl WebSocketClient {
       receiver: Receiver::new(rx, on_event),
     })
   }
-}
 
-impl fmt::Debug for WebSocketClient {
-  fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-    f.debug_struct("WebSocketClient")
-      .field("sender", &self.sender)
-      .field("receiver", &self.receiver)
-      .finish_non_exhaustive()
+  pub(super) fn stop(self) {
+    self.sender.stop();
+    self.receiver.stop();
   }
 }
 
@@ -100,27 +96,10 @@ impl Sender {
       keep_alive_handle: keep_alive_task.abort_handle(),
     }
   }
-}
 
-impl Drop for Sender {
-  fn drop(&mut self) {
-    self.keep_alive_handle.abort();
+  fn stop(self) {
     self.ws_sender_handle.abort();
-  }
-}
-
-impl fmt::Debug for Sender {
-  fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-    f.debug_struct("Sender")
-      .field(
-        "ws_sender_handle",
-        &self.ws_sender_handle.is_finished().not(),
-      )
-      .field(
-        "keep_alive_handle",
-        &self.keep_alive_handle.is_finished().not(),
-      )
-      .finish()
+    self.keep_alive_handle.abort();
   }
 }
 
@@ -152,12 +131,12 @@ struct Receiver {
 impl Receiver {
   fn new<F>(mut ws_receiver: ReceiverStream, on_event: F) -> Self
   where
-    F: Fn(Event) + Send + Sync + 'static,
+    F: Fn(Event) -> BoxFuture<'static, ()> + Send + Sync + 'static,
   {
     let ws_receiver_task = spawn(async move {
       while let Some(Ok(message)) = ws_receiver.next().await {
         if let Message::Binary(bytes) = message {
-          on_event(Event::from(bytes));
+          on_event(Event::from(bytes)).await;
         } else if let Message::Close(_) = message {
           break;
         }
@@ -168,21 +147,8 @@ impl Receiver {
       ws_receiver_handle: ws_receiver_task.abort_handle(),
     }
   }
-}
 
-impl Drop for Receiver {
-  fn drop(&mut self) {
+  fn stop(self) {
     self.ws_receiver_handle.abort();
-  }
-}
-
-impl fmt::Debug for Receiver {
-  fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-    f.debug_struct("Receiver")
-      .field(
-        "ws_receiver_handle",
-        &self.ws_receiver_handle.is_finished().not(),
-      )
-      .finish()
   }
 }

@@ -1,10 +1,11 @@
-use nil_core::{Battle, Squad};
+use super::Battle;
+use crate::unit::prelude::*;
 
 #[test]
 fn offensive_power() {
   let battle = unsafe {
     Battle::builder()
-      .attacker([squad(1, 100), squad(2, 50)])
+      .attacker([squad(Pikeman, 100), squad(Swordsman, 50)])
       .defender([])
       .build()
   };
@@ -18,7 +19,7 @@ fn offensive_power() {
 fn offensive_power_cavalry() {
   let battle = unsafe {
     Battle::builder()
-      .attacker([squad(6, 100)])
+      .attacker([squad(HeavyCavalry, 100)])
       .defender([])
       .build()
   };
@@ -32,7 +33,7 @@ fn offensive_power_cavalry() {
 fn offensive_power_mixed() {
   let battle = unsafe {
     Battle::builder()
-      .attacker([squad(6, 100), squad(1, 500)])
+      .attacker([squad(HeavyCavalry, 100), squad(1, 500)])
       .defender([])
       .build()
   };
@@ -48,8 +49,8 @@ fn offensive_power_mixed() {
 fn defensive_power() {
   let battle = unsafe {
     Battle::builder()
-      .attacker([squad(3, 100), squad(2, 50)])
-      .defender([squad(1, 100), squad(2, 50)])
+      .attacker([squad(Axeman, 100), squad(Swordsman, 50)])
+      .defender([squad(Pikeman, 100), squad(Swordsman, 50)])
       .build()
   };
 
@@ -61,8 +62,8 @@ fn defensive_power() {
 fn defensive_power_mixed() {
   let battle = unsafe {
     Battle::builder()
-      .attacker([squad(6, 100), squad(1, 500)])
-      .defender([squad(1, 100)])
+      .attacker([squad(HeavyCavalry, 100), squad(Pikeman, 500)])
+      .defender([squad(Pikeman, 100)])
       .build()
   };
 
@@ -74,8 +75,8 @@ fn defensive_power_mixed() {
 fn winner_losses() {
   let battle = unsafe {
     Battle::builder()
-      .attacker([squad(3, 100), squad(2, 50)])
-      .defender([squad(1, 100)])
+      .attacker([squad(Axeman, 100), squad(Swordsman, 50)])
+      .defender([squad(Pikeman, 100)])
       .build()
   };
 
@@ -88,8 +89,8 @@ fn winner_losses() {
 fn winner_losses_mixed() {
   let battle = unsafe {
     Battle::builder()
-      .attacker([squad(6, 100), squad(1, 500)])
-      .defender([squad(1, 100)])
+      .attacker([squad(HeavyCavalry, 100), squad(Pikeman, 500)])
+      .defender([squad(Pikeman, 100)])
       .build()
   };
 
@@ -101,14 +102,15 @@ fn winner_losses_mixed() {
 fn overall_test() {
   let battle = unsafe {
     Battle::builder()
-      .attacker([squad(5, 3000), squad(3, 6000)])
-      .defender([squad(1, 8000), squad(2, 8000)])
+      .attacker([squad(LightCavalry, 3000), squad(Axeman, 6000)])
+      .defender([squad(Pikeman, 8000), squad(Swordsman, 8000)])
       .build()
   };
 
   let attack_power = battle.offensive_power();
   let defense_power = battle.defensive_power();
   let winner_losses = battle.winner_losses();
+
   assert_eq!(attack_power.total, 630000.0);
   assert!((defense_power.total - 495238.0952380952).abs() <= 0.001);
   assert!((winner_losses.total_loss - 6272.674503).abs() <= 0.001);
@@ -116,14 +118,19 @@ fn overall_test() {
 
   let battle = unsafe {
     Battle::builder()
-      .attacker([squad(5, 3000), squad(3, 3000), squad(4, 2000)])
-      .defender([squad(1, 8000), squad(2, 8000)])
+      .attacker([
+        squad(LightCavalry, 3000),
+        squad(Axeman, 3000),
+        squad(Archer, 2000),
+      ])
+      .defender([squad(Pikeman, 8000), squad(Swordsman, 8000)])
       .build()
   };
 
   let attack_power = battle.offensive_power();
   let defense_power = battle.defensive_power();
   let winner_losses = battle.winner_losses();
+
   assert_eq!(attack_power.total, 570000.0);
   assert!((attack_power.infantry_ratio - 0.21).abs() <= 0.001);
   assert!((attack_power.cavalry_ratio - 0.68421).abs() <= 0.001);
@@ -137,8 +144,8 @@ fn overall_test() {
 fn ranged_attack_debuff_test() {
   let battle = unsafe {
     Battle::builder()
-      .attacker([squad(4, 3005), squad(3, 7000)])
-      .defender([squad(1, 8000), squad(2, 8000)])
+      .attacker([squad(Archer, 3005), squad(Axeman, 7000)])
+      .defender([squad(Pikeman, 8000), squad(Swordsman, 8000)])
       .build()
   };
 
@@ -150,8 +157,8 @@ fn ranged_attack_debuff_test() {
 fn ranged_attack_no_debuff_test() {
   let battle = unsafe {
     Battle::builder()
-      .attacker([squad(4, 3000), squad(3, 7000)])
-      .defender([squad(1, 8000), squad(2, 8000)])
+      .attacker([squad(Archer, 3000), squad(Axeman, 7000)])
+      .defender([squad(Pikeman, 8000), squad(Swordsman, 8000)])
       .build()
   };
 
@@ -162,6 +169,9 @@ fn ranged_attack_no_debuff_test() {
 /// # Safety
 ///
 /// My brother in Christ, please use a valid id when calling this function.
-unsafe fn squad(id: u32, amount: u32) -> Squad {
+unsafe fn squad<Id>(id: Id, amount: u32) -> Squad
+where
+  Id: Into<UnitId>,
+{
   unsafe { Squad::new_unchecked(id, amount) }
 }

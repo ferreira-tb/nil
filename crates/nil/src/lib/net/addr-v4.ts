@@ -17,7 +17,7 @@ export class IpAddrV4 {
       return new this(value as [number, number, number, number]);
     }
 
-    throw new Error(`invalid ipv4 address: ${ip}`);
+    throw new Error(`Invalid ipv4 address: ${ip}`);
   }
 
   public static tryParse(ip: string) {
@@ -68,5 +68,5 @@ function parsePort(port: Option<string>) {
     }
   }
 
-  throw new Error(`invalid port: ${port}`);
+  throw new Error(`Invalid port: ${port}`);
 }

@@ -3,10 +3,12 @@ import { CoordImpl } from '@/core/coord';
 
 export class PlayerImpl implements Player {
   public readonly id: string;
+  public readonly status: PlayerStatus;
   public readonly villages: readonly CoordImpl[];
 
   private constructor(player: Player, villages: readonly Coord[]) {
     this.id = player.id;
+    this.status = player.status;
     this.villages = villages.map((it) => CoordImpl.create(it));
   }
 

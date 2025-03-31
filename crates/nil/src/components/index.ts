@@ -1,5 +1,4 @@
 export * from './card';
-export * from './link';
 export * from './label';
 export * from './table';
 export * from './button';

@@ -1,9 +1,10 @@
-mod archer;
-mod axeman;
-mod heavy_cavalry;
-mod light_cavalry;
-mod pikeman;
-mod swordsman;
+pub mod archer;
+pub mod axeman;
+pub mod heavy_cavalry;
+pub mod light_cavalry;
+pub mod pikeman;
+pub mod prelude;
+pub mod swordsman;
 
 use crate::error::{Error, Result};
 use derive_more::{Deref, Display};

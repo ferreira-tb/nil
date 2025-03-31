@@ -1,5 +1,5 @@
 use axum::response::Response;
-use nil_core::Error;
+use nil_core::error::Error;
 
 #[macro_export]
 macro_rules! res {
@@ -21,14 +21,14 @@ macro_rules! res {
   }};
 }
 
-#[allow(clippy::needless_pass_by_value)]
+#[expect(clippy::needless_pass_by_value)]
 pub(crate) fn from_err(err: Error) -> Response {
   let text = err.to_string();
   match err {
     Error::NoPlayer => res!(BAD_REQUEST, text),
-    Error::NotAVillage(_) => res!(BAD_REQUEST, text),
     Error::PlayerNotFound(_) => res!(NOT_FOUND, text),
     Error::UnitNotFound(_) => res!(NOT_FOUND, text),
+    Error::VillageNotFound(_) => res!(NOT_FOUND, text),
     _ => res!(INTERNAL_SERVER_ERROR, text),
   }
 }

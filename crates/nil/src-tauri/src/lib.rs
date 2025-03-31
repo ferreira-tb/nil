@@ -33,6 +33,7 @@ pub fn run() {
 
   builder
     .plugin(plugin::on_exit())
+    .plugin(tauri_plugin_clipboard_manager::init())
     .plugin(tauri_plugin_dialog::init())
     .plugin(tauri_plugin_process::init())
     .setup(|app| setup(app.app_handle()))
@@ -53,8 +54,9 @@ pub fn run() {
       command::player::get_players,
       command::player::remove_player,
       command::player::spawn_player,
-      command::round::get_round_state,
+      command::round::get_round,
       command::round::is_round_idle,
+      command::round::start_round,
       command::village::get_village,
       command::world::get_world_state,
     ])

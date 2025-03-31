@@ -1,4 +1,5 @@
 mod player;
+mod round;
 
 use crate::continent::Continent;
 use crate::event::{Emitter, Event, Listener};
@@ -19,17 +20,12 @@ pub struct World {
 
 impl World {
   pub fn new(config: WorldOptions) -> Self {
-    let continent = Continent::new(config.size.get());
-    let player_manager = PlayerManager::default();
-    let emitter = Emitter::default();
-    let round = Round::new(emitter.clone());
-
     Self {
       name: config.name.into(),
-      continent,
-      player_manager,
-      round,
-      emitter,
+      continent: Continent::new(config.size.get()),
+      player_manager: PlayerManager::default(),
+      round: Round::default(),
+      emitter: Emitter::default(),
     }
   }
 
@@ -66,6 +62,17 @@ impl World {
   }
 }
 
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct WorldState {
+  name: Arc<str>,
+}
+
+impl From<&World> for WorldState {
+  fn from(world: &World) -> Self {
+    Self { name: Arc::clone(&world.name) }
+  }
+}
+
 #[derive(Clone, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct WorldOptions {
@@ -76,16 +83,5 @@ pub struct WorldOptions {
 impl WorldOptions {
   pub fn into_world(self) -> World {
     World::new(self)
-  }
-}
-
-#[derive(Clone, Debug, Default, Deserialize, Serialize)]
-pub struct WorldState {
-  name: Arc<str>,
-}
-
-impl From<&World> for WorldState {
-  fn from(world: &World) -> Self {
-    Self { name: Arc::clone(&world.name) }
   }
 }

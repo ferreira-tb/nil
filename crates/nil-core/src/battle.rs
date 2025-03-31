@@ -1,3 +1,6 @@
+#[cfg(test)]
+mod tests;
+
 use crate::unit::{Squad, UnitKind};
 use bon::Builder;
 
@@ -30,16 +33,16 @@ enum BattleWinner {
 
 #[derive(Copy, Clone, Debug)]
 pub struct OffensivePower {
-  pub total: f64,
-  pub infantry_ratio: f64,
-  pub cavalry_ratio: f64,
-  pub ranged_ratio: f64,
-  pub units_by_kind: UnitsByKind,
+  total: f64,
+  infantry_ratio: f64,
+  cavalry_ratio: f64,
+  ranged_ratio: f64,
+  units_by_kind: UnitsByKind,
 }
 
 impl OffensivePower {
-  pub fn new(squads: &[Squad]) -> Self {
-    let units_by_kind = units_by_kind(squads);
+  fn new(squads: &[Squad]) -> Self {
+    let units_by_kind = UnitsByKind::new(squads);
     let mut infantry = 0.0;
     let mut cavalry = 0.0;
     let mut ranged = 0.0;
@@ -76,16 +79,16 @@ impl OffensivePower {
 
 #[derive(Copy, Clone, Debug)]
 pub struct DefensivePower {
-  pub total: f64,
-  pub infantry_ratio: f64,
-  pub cavalry_ratio: f64,
-  pub ranged_ratio: f64,
-  pub units_by_kind: UnitsByKind,
+  total: f64,
+  infantry_ratio: f64,
+  cavalry_ratio: f64,
+  ranged_ratio: f64,
+  units_by_kind: UnitsByKind,
 }
 
 impl DefensivePower {
   pub fn new(squads: &[Squad], offensive_power: OffensivePower) -> Self {
-    let units_by_kind = units_by_kind(squads);
+    let units_by_kind = UnitsByKind::new(squads);
     let mut infantry = 0.0;
     let mut cavalry = 0.0;
     let mut ranged = 0.0;
@@ -118,14 +121,14 @@ impl DefensivePower {
 
 #[derive(Copy, Clone, Debug)]
 pub struct WinnerLosses {
-  pub total_loss: f64,
-  pub infantry: f64,
-  pub cavalry_losses: f64,
-  pub ranged_losses: f64,
+  total_loss: f64,
+  infantry: f64,
+  cavalry_losses: f64,
+  ranged_losses: f64,
 }
 
 impl WinnerLosses {
-  pub fn new(offensive_power: OffensivePower, defesive_power: DefensivePower) -> Self {
+  fn new(offensive_power: OffensivePower, defesive_power: DefensivePower) -> Self {
     let winner = determine_winner(offensive_power, defesive_power);
     let winner_power = match winner {
       BattleWinner::Attacker => offensive_power.total,
@@ -185,34 +188,36 @@ pub struct UnitsByKind {
   units_amount: u32,
 }
 
-fn units_by_kind(squads: &[Squad]) -> UnitsByKind {
-  let mut infantry = 0;
-  let mut cavalry = 0;
-  let mut ranged = 0;
-  let mut units_amount = 0;
+impl UnitsByKind {
+  fn new(squads: &[Squad]) -> Self {
+    let mut infantry = 0;
+    let mut cavalry = 0;
+    let mut ranged = 0;
+    let mut units_amount = 0;
 
-  for squad in squads {
-    let amount = squad.amount();
-    match squad.kind() {
-      UnitKind::Infantry => {
-        infantry += amount;
+    for squad in squads {
+      let amount = squad.amount();
+      match squad.kind() {
+        UnitKind::Infantry => {
+          infantry += amount;
+        }
+        UnitKind::Cavalry => {
+          cavalry += amount;
+        }
+        UnitKind::Ranged => {
+          ranged += amount;
+        }
       }
-      UnitKind::Cavalry => {
-        cavalry += amount;
-      }
-      UnitKind::Ranged => {
-        ranged += amount;
-      }
+
+      units_amount += amount;
     }
 
-    units_amount += amount;
-  }
-
-  UnitsByKind {
-    infantry,
-    cavalry,
-    ranged,
-    units_amount,
+    Self {
+      infantry,
+      cavalry,
+      ranged,
+      units_amount,
+    }
   }
 }
 

@@ -2,6 +2,7 @@ use crate::building::prelude::*;
 use crate::player::PlayerId;
 use bon::Builder;
 use serde::{Deserialize, Serialize};
+use std::fmt;
 
 #[derive(Builder, Clone, Debug, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
@@ -97,5 +98,11 @@ impl Coord {
 impl From<(u8, u8)> for Coord {
   fn from((x, y): (u8, u8)) -> Self {
     Self::new(x, y)
+  }
+}
+
+impl fmt::Display for Coord {
+  fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+    write!(f, "{:02}|{:02}", self.x, self.y)
   }
 }

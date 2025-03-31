@@ -1,16 +1,15 @@
+/* eslint-disable perfectionist/sort-objects */
 import { defineConfig } from '@tb-dev/eslint-config';
 
 export default defineConfig({
-  ignores: ['**/components/base/*'],
   project: ['crates/nil/tsconfig.json'],
-
+  ignores: ['**/components/base/*'],
   features: {
     perfectionist: true,
     tailwind: true,
     unicorn: true,
     vue: true,
   },
-
   overrides: {
     perfectionist: {
       'perfectionist/sort-objects': [
@@ -21,7 +20,6 @@ export default defineConfig({
           type: 'natural',
         },
       ],
-
       '@typescript-eslint/sort-type-constituents': 'off',
       'perfectionist/sort-union-types': [
         'error',
@@ -34,9 +32,7 @@ export default defineConfig({
     },
     typescript: {
       '@typescript-eslint/consistent-type-definitions': ['error', 'type'],
-    },
-    vue: {
-      'vue/v-on-handler-style': 'off',
+      '@typescript-eslint/no-non-null-assertion': 'off',
     },
   },
 });

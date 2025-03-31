@@ -27,6 +27,10 @@ impl PlayerManager {
     self.0.values()
   }
 
+  pub fn players_mut(&mut self) -> impl Iterator<Item = &mut Player> {
+    self.0.values_mut()
+  }
+
   pub fn has(&self, id: &PlayerId) -> bool {
     self.0.contains_key(id)
   }
@@ -43,17 +47,33 @@ impl PlayerManager {
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Player {
   id: PlayerId,
+  status: PlayerStatus,
 }
 
 impl Player {
   pub fn id(&self) -> PlayerId {
     self.id.clone()
   }
+
+  pub fn status(&self) -> PlayerStatus {
+    self.status
+  }
+
+  pub(crate) fn set_status(&mut self, status: PlayerStatus) {
+    self.status = status;
+  }
+
+  pub fn is_inactive(&self) -> bool {
+    matches!(self.status, PlayerStatus::Inactive)
+  }
 }
 
 impl From<PlayerOptions> for Player {
   fn from(options: PlayerOptions) -> Self {
-    Player { id: options.id }
+    Player {
+      id: options.id,
+      status: PlayerStatus::Guest,
+    }
   }
 }
 
@@ -72,6 +92,15 @@ impl Deref for PlayerId {
   fn deref(&self) -> &Self::Target {
     &self.0
   }
+}
+
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Deserialize, Serialize)]
+#[serde(rename_all = "kebab-case")]
+pub enum PlayerStatus {
+  #[default]
+  Guest,
+  Active,
+  Inactive,
 }
 
 #[derive(Debug, Deserialize, Serialize)]

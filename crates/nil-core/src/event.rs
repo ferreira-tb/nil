@@ -1,5 +1,5 @@
 use crate::player::Player;
-use crate::round::RoundState;
+use crate::round::Round;
 use bytes::Bytes;
 use nil_util::to_bytes;
 use serde::{Deserialize, Serialize};
@@ -47,7 +47,7 @@ impl fmt::Debug for Emitter {
 pub enum Event {
   PlayerJoined { player: Player },
   PlayerLeft { player: Player },
-  RoundUpdated { round: Box<RoundState> },
+  RoundUpdated { round: Box<Round> },
 }
 
 impl From<Event> for Bytes {

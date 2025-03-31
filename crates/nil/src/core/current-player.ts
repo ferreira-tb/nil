@@ -1,9 +1,8 @@
 import { ref } from 'vue';
 import { Entity } from '@/core/entity';
 import { PlayerImpl } from '@/core/player';
-import { maybe } from '@/composables/maybe';
 import type { Option } from '@tb-dev/utils';
-import { asyncRef } from '@/composables/async-ref';
+import { asyncRef, maybe } from '@tb-dev/vue';
 
 export class CurrentPlayer extends Entity {
   private readonly id = ref<Option<PlayerId>>();
@@ -13,7 +12,6 @@ export class CurrentPlayer extends Entity {
 
   constructor() {
     super();
-
     this.watch(this.id, () => this.update());
   }
 

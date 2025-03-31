@@ -3,13 +3,13 @@ use serde::ser::Serializer;
 
 pub use std::result::Result as StdResult;
 
-pub type Result<T> = StdResult<T, Error>;
+pub type Result<T, E = Error> = StdResult<T, E>;
 pub type AnyResult<T> = anyhow::Result<T>;
 
 #[non_exhaustive]
 #[derive(Debug, thiserror::Error)]
 pub enum Error {
-  #[error("failed to start nil server")]
+  #[error("Failed to start server")]
   FailedToStart,
 }
 
@@ -19,11 +19,5 @@ impl Serialize for Error {
     S: Serializer,
   {
     serializer.serialize_str(self.to_string().as_str())
-  }
-}
-
-impl From<Error> for String {
-  fn from(value: Error) -> Self {
-    value.to_string()
   }
 }

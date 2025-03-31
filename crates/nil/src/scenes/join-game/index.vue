@@ -1,20 +1,20 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { computed } from 'vue';
 import { useLocale } from '@/locale';
 import { joinGame } from '@/core/game';
+import { localRef } from '@tb-dev/vue';
 import { isPlayerOptions } from '@/lib/schema';
 import { SocketAddrV4 } from '@/lib/net/addr-v4';
-import { localRef } from '@/composables/local-ref';
-import type { Option, PartialNull, Writeable } from '@tb-dev/utils';
+import type { Option, WritablePartial } from '@tb-dev/utils';
 import { Button, ButtonLink, Card, InputText, Label } from '@/components';
 
 const { t } = useLocale();
 
-const player = ref<Writeable<PartialNull<PlayerOptions>>>({
+const player = localRef<WritablePartial<PlayerOptions>>('join-game:player', {
   id: null,
 });
 
-const server = localRef<Option<string>>('join-game:server-addr', null);
+const server = localRef<Option<string>>('join-game:server', null);
 const serverAddr = computed(() => SocketAddrV4.tryParse(server.value));
 
 const canJoin = computed(() => {
@@ -22,10 +22,10 @@ const canJoin = computed(() => {
 });
 
 async function join() {
-  if (isPlayerOptions(player.value) && serverAddr.value) {
+  if (canJoin.value) {
     await joinGame({
-      player: player.value,
-      serverAddr: serverAddr.value,
+      player: player.value as PlayerOptions,
+      serverAddr: serverAddr.value!,
     });
   }
 }

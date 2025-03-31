@@ -5,8 +5,8 @@
 import type { App } from 'vue';
 import type { go } from '@/router';
 import type { commands } from '@/lib/api';
-import type { Round } from '@/core/round';
-import type { MaybePromise } from '@tb-dev/utils';
+import type { RoundImpl } from '@/core/round';
+import type { MaybePromise, Option } from '@tb-dev/utils';
 import type { CurrentPlayer } from '@/core/current-player';
 import type { CurrentVillage } from '@/core/current-village';
 
@@ -21,11 +21,12 @@ declare global {
       readonly use: (typeof CurrentPlayer)['use'];
     };
     readonly round: {
-      readonly refs: (typeof Round)['refs'];
-      readonly update: (typeof Round)['update'];
-      readonly use: (typeof Round)['use'];
+      readonly refs: (typeof RoundImpl)['refs'];
+      readonly update: (typeof RoundImpl)['update'];
+      readonly use: (typeof RoundImpl)['use'];
     };
     readonly village: {
+      readonly go: (typeof CurrentVillage)['go'];
       readonly refs: (typeof CurrentVillage)['refs'];
       readonly use: (typeof CurrentVillage)['use'];
     };
@@ -33,12 +34,11 @@ declare global {
 
   interface ErrorConstructor {
     panic: (message: string) => never;
-    todo: (message?: string) => never;
-    unimplemented: (message?: string) => never;
+    todo: (message?: Option<string>) => never;
   }
 
   interface Promise<T> {
-    handleError: () => void;
+    err: (message?: Option<string>) => void;
   }
 }
 

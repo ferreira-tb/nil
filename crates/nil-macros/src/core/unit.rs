@@ -28,6 +28,12 @@ pub fn impl_unit(ast: &DeriveInput) -> TokenStream {
           Self::STATS
         }
       }
+
+      impl From<#name> for UnitId {
+        fn from(_: #name) -> UnitId {
+          #name::ID
+        }
+      }
     }
   };
 

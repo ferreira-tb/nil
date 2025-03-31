@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { Link } from '../link';
 import type { VNode } from 'vue';
 import { cn } from '@/lib/utils';
+import { Link } from '@tb-dev/vue';
 import { TableCell } from '../base/table';
 import type { Route } from '@/router/types';
 

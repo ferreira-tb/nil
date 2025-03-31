@@ -3,7 +3,7 @@ use serde::ser::Serializer;
 
 pub use std::result::Result as StdResult;
 
-pub type Result<T> = StdResult<T, Error>;
+pub type Result<T, E = Error> = StdResult<T, E>;
 
 #[non_exhaustive]
 #[derive(Debug, thiserror::Error)]
@@ -18,11 +18,5 @@ impl Serialize for Error {
     S: Serializer,
   {
     serializer.serialize_str(self.to_string().as_str())
-  }
-}
-
-impl From<Error> for String {
-  fn from(value: Error) -> Self {
-    value.to_string()
   }
 }

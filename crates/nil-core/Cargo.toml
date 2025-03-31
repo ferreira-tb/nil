@@ -1,11 +1,7 @@
 [package]
 name = "nil-core"
-
-[package.version]
-workspace = true
-
-[package.description]
-workspace = true
+version = "0.1.0"
+publish = false
 
 [package.edition]
 workspace = true
@@ -17,7 +13,7 @@ workspace = true
 workspace = true
 
 [dependencies]
-bon = "3.3"
+bon = "3.5"
 bytes = "1.10"
 itertools = "0.14"
 rand = "0.9"
@@ -30,7 +26,7 @@ version = "2.0"
 features = ["deref", "deref_mut", "display", "try_unwrap"]
 
 [dependencies.indexmap]
-version = "2.7"
+version = "2.8"
 features = ["serde"]
 
 [dependencies.nil-macros]
@@ -46,9 +42,9 @@ version = "1.0"
 features = ["derive"]
 
 [dependencies.strum]
-version = "0.26"
+version = "0.27"
 features = ["derive"]
 
 [dependencies.tokio]
-version = "1.43"
+version = "1.44"
 default-features = false

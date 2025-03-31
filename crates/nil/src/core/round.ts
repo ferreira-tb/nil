@@ -3,21 +3,26 @@ import * as commands from '@/commands';
 import { Entity } from '@/core/entity';
 import type { Option } from '@tb-dev/utils';
 
-export class Round extends Entity {
-  private readonly state = shallowRef<Option<RoundState>>();
+export class RoundImpl extends Entity {
+  private readonly round = shallowRef<Option<Round>>();
+
+  constructor() {
+    super();
+    this.event.onRoundUpdated(() => this.update());
+  }
 
   public async update() {
-    this.state.value = await commands.getRoundState();
+    this.round.value = await commands.getRound();
   }
 
   public static use() {
-    return super.get(Round) as Round;
+    return super.get(RoundImpl) as RoundImpl;
   }
 
   public static refs() {
     const instance = this.use();
     return {
-      state: instance.state as Readonly<typeof instance.state>,
+      round: instance.round as Readonly<typeof instance.round>,
     };
   }
 
@@ -28,9 +33,9 @@ export class Round extends Entity {
   public static init() {
     if (!Object.hasOwn(window.NIL, 'round')) {
       const round: (typeof window.NIL)['round'] = {
-        refs: Round.refs.bind(Round),
-        update: Round.update.bind(Round),
-        use: Round.use.bind(Round),
+        refs: RoundImpl.refs.bind(RoundImpl),
+        update: RoundImpl.update.bind(RoundImpl),
+        use: RoundImpl.use.bind(RoundImpl),
       };
 
       Object.defineProperty(window.NIL, 'round', {

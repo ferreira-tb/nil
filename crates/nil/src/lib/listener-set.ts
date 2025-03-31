@@ -36,12 +36,12 @@ export class ListenerSet {
   }
 
   public on(fn: MaybePromise<MaybeArray<Fn>>) {
-    this.add(fn).handleError();
+    this.add(fn).err();
     return this;
   }
 
   public off() {
-    this.set.forEach((fn) => fn());
+    this.set.forEach((unlisten) => unlisten());
     this.set.clear();
   }
 
@@ -70,9 +70,5 @@ export class ListenerSet {
 
   public watchEffect(effect: WatchEffect, options?: WatchEffectOptions) {
     return this.on(watchEffect(effect, options));
-  }
-
-  public static create(detached?: boolean) {
-    return new this(detached);
   }
 }

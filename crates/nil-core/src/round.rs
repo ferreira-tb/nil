@@ -1,29 +1,36 @@
-use crate::PlayerId;
-use crate::event::Emitter;
+use crate::error::{Error, Result};
+use crate::player::PlayerId;
 use derive_more::Deref;
 use serde::{Deserialize, Serialize};
 use std::collections::HashSet;
 use std::num::NonZeroU32;
 use strum::EnumIs;
 
-#[derive(Debug)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct Round {
   id: RoundId,
   phase: Phase,
-  emitter: Emitter,
 }
 
 impl Round {
-  pub(crate) fn new(emitter: Emitter) -> Self {
-    Self {
-      id: RoundId::default(),
-      phase: Phase::Idle,
-      emitter,
+  pub(crate) fn start<I>(&mut self, players: I) -> Result<()>
+  where
+    I: IntoIterator<Item = PlayerId>,
+  {
+    if !self.is_idle() {
+      return Err(Error::RoundAlreadyStarted);
     }
+
+    self.id.next();
+    self.phase = Phase::Player {
+      pending: players.into_iter().collect(),
+    };
+
+    Ok(())
   }
 
-  pub fn state(&self) -> RoundState {
-    RoundState::from(self)
+  pub const fn is_idle(&self) -> bool {
+    self.phase.is_idle()
   }
 }
 
@@ -50,25 +57,4 @@ pub enum Phase {
   Player {
     pending: HashSet<PlayerId>,
   },
-}
-
-#[derive(Clone, Debug, Default, Deserialize, Serialize)]
-pub struct RoundState {
-  id: RoundId,
-  phase: Phase,
-}
-
-impl RoundState {
-  pub const fn is_idle(&self) -> bool {
-    self.phase.is_idle()
-  }
-}
-
-impl From<&Round> for RoundState {
-  fn from(round: &Round) -> Self {
-    RoundState {
-      id: round.id,
-      phase: round.phase.clone(),
-    }
-  }
 }

@@ -14,7 +14,7 @@ impl World {
     Ok(())
   }
 
-  fn spawn_player_village(&mut self, player: PlayerId) -> Result<()> {
+  pub(super) fn spawn_player_village(&mut self, player: PlayerId) -> Result<()> {
     let coord = self.continent.find_empty()?;
     *self.continent.cell_mut(coord)? = Village::builder(coord)
       .name(&*player)

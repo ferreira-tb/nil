@@ -1,6 +1,5 @@
 import { go } from '@/router';
 import { nextTick } from 'vue';
-import { until } from '@vueuse/core';
 import { Entity } from '@/core/entity';
 import * as commands from '@/commands';
 import { exit } from '@tauri-apps/plugin-process';
@@ -15,9 +14,7 @@ export async function joinGame(options: JoinOptions) {
   if (await commands.isRoundIdle()) {
     go('lobby');
   } else {
-    const { coord } = NIL.village.refs();
-    await until(coord).toBeTruthy();
-    go('village');
+    await NIL.village.go();
   }
 }
 
@@ -35,7 +32,7 @@ export async function leaveGame() {
   await commands.stopClient();
   await commands.stopServer();
 
-  Entity.clear();
+  Entity.dispose();
   go('home');
 }
 

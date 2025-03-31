@@ -1,6 +1,9 @@
 use crate::error::{Error, Result};
+use futures::future::BoxFuture;
 use nil_client::Client;
-use nil_core::{Event, PlayerId, WorldOptions};
+use nil_core::event::Event;
+use nil_core::player::PlayerId;
+use nil_core::world::WorldOptions;
 use nil_server::Server;
 use std::net::SocketAddrV4;
 use std::sync::Arc;
@@ -32,7 +35,7 @@ impl Nil {
     let client = &self.client;
     match client.read().await.as_ref() {
       Some(client) => Ok(f(client).await),
-      None => Err(Error::ClientClosed),
+      None => Err(Error::ClientDisconnected),
     }
   }
 
@@ -66,13 +69,19 @@ impl Nil {
     if let Some(client) = lock.take() {
       let player = client.player_id();
       client.remove_player(player).await?;
+      client.stop();
     }
 
     Ok(())
   }
 
   pub async fn stop_server(&self) {
-    self.server.write().await.take();
+    self
+      .server
+      .write()
+      .await
+      .take()
+      .map(Server::stop);
   }
 }
 
@@ -86,9 +95,12 @@ impl Clone for Nil {
   }
 }
 
-fn on_event(app: AppHandle) -> impl Fn(Event) {
+fn on_event(app: AppHandle) -> impl Fn(Event) -> BoxFuture<'static, ()> {
   move |event: Event| {
-    let name = event.to_string();
-    let _ = app.emit_to("main", &name, event);
+    let app = app.clone();
+    Box::pin(async move {
+      let name = event.to_string();
+      let _ = app.emit_to("main", &name, event);
+    })
   }
 }

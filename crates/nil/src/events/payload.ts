@@ -10,5 +10,5 @@ export type PlayerLeftPayload = {
 
 export type RoundUpdatedPayload = {
   kind: 'round-updated';
-  turn: RoundState;
+  round: Round;
 };

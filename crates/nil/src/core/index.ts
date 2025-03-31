@@ -1,4 +1,4 @@
-import { Round } from './round';
+import { RoundImpl } from './round';
 import { CurrentPlayer } from './current-player';
 import { CurrentVillage } from './current-village';
 
@@ -14,5 +14,5 @@ export function initCore() {
 
   CurrentPlayer.init();
   CurrentVillage.init();
-  Round.init();
+  RoundImpl.init();
 }

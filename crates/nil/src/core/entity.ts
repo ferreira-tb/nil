@@ -21,7 +21,7 @@ export abstract class Entity {
     return this.table.get(ctor) ?? this.create(ctor);
   }
 
-  public static clear() {
+  public static dispose() {
     this.table.forEach((it) => it.dispose());
     this.table.clear();
   }
@@ -30,6 +30,10 @@ export abstract class Entity {
   private readonly dispose = this.listeners.dispose.bind(this.listeners);
   protected readonly watch = this.listeners.watch.bind(this.listeners);
   protected readonly watchEffect = this.listeners.watchEffect.bind(this.listeners);
+
+  protected get event() {
+    return this.listeners.event;
+  }
 }
 
 function createScope() {

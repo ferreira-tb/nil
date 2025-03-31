@@ -3,8 +3,8 @@ import { go } from '@/router';
 import { onMounted } from 'vue';
 import { handleError } from '@/lib/error';
 import { useColorMode } from '@vueuse/core';
+import { onCtrlKeyDown } from '@tb-dev/vue';
 import { isDev, showWindow } from '@/commands';
-import { onCtrlKeyDown } from '@/composables/key-down';
 
 useColorMode({
   initialValue: 'dark',
@@ -17,7 +17,7 @@ onCtrlKeyDown('Home', async () => {
   if (await isDev()) go('home');
 });
 
-onMounted(() => showWindow().handleError());
+onMounted(() => showWindow().err());
 </script>
 
 <template>

@@ -1,11 +1,12 @@
+import { go } from '@/router';
 import { shallowRef } from 'vue';
+import { until } from '@vueuse/core';
 import { Entity } from '@/core/entity';
 import { CoordImpl } from '@/core/coord';
-import { maybe } from '@/composables/maybe';
 import type { Option } from '@tb-dev/utils';
 import { VillageImpl } from '@/core/village';
 import type { PlayerImpl } from '@/core/player';
-import { asyncComputed } from '@/composables/async-computed';
+import { asyncComputed, maybe } from '@tb-dev/vue';
 
 export class CurrentVillage extends Entity {
   private readonly coord = shallowRef<Option<CoordImpl>>();
@@ -40,9 +41,16 @@ export class CurrentVillage extends Entity {
     };
   }
 
+  public static async go() {
+    const { coord } = NIL.village.refs();
+    await until(coord).toBeTruthy();
+    go('village');
+  }
+
   public static init() {
     if (!Object.hasOwn(window.NIL, 'village')) {
       const village: (typeof window.NIL)['village'] = {
+        go: CurrentVillage.go.bind(CurrentVillage),
         refs: CurrentVillage.refs.bind(CurrentVillage),
         use: CurrentVillage.use.bind(CurrentVillage),
       };

@@ -1,18 +1,15 @@
 /* eslint-disable no-extend-native */
-import { handleError as onError } from '@/lib/error';
+import { handleError } from '@/lib/error';
+import type { Option } from '@tb-dev/utils';
 
 Error.panic = function (message: string): never {
   throw new this(message);
 };
 
-Error.todo = function (message = 'not yet implemented'): never {
-  throw new this(`TODO: ${message}`);
+Error.todo = function (message?: Option<string>): never {
+  throw new this(`TODO: ${message ?? 'not yet implemented'}`);
 };
 
-Error.unimplemented = function (message = 'not implemented'): never {
-  throw new this(message);
-};
-
-Promise.prototype.handleError = function () {
-  this.catch(onError);
+Promise.prototype.err = function (message?: Option<string>) {
+  this.catch((err: unknown) => handleError(err, message));
 };

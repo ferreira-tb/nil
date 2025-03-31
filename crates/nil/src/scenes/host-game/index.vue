@@ -1,19 +1,20 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { computed } from 'vue';
 import { useLocale } from '@/locale';
 import { hostGame } from '@/core/game';
-import type { PartialNull, Writeable } from '@tb-dev/utils';
+import { localRef } from '@tb-dev/vue';
+import type { WritablePartial } from '@tb-dev/utils';
 import { isPlayerOptions, isWorldOptions } from '@/lib/schema';
 import { Button, ButtonLink, Card, InputNumber, InputText, Label } from '@/components';
 
 const { t } = useLocale();
 
-const world = ref<Writeable<PartialNull<WorldOptions>>>({
+const world = localRef<WritablePartial<WorldOptions>>('host-game:world', {
   name: null,
   size: 100,
 });
 
-const player = ref<Writeable<PartialNull<PlayerOptions>>>({
+const player = localRef<WritablePartial<PlayerOptions>>('host-game:player', {
   id: null,
 });
 
@@ -22,10 +23,10 @@ const canHost = computed(() => {
 });
 
 async function host() {
-  if (isWorldOptions(world.value) && isPlayerOptions(player.value)) {
+  if (canHost.value) {
     await hostGame({
-      player: player.value,
-      world: world.value,
+      player: player.value as PlayerOptions,
+      world: world.value as WorldOptions,
     });
   }
 }

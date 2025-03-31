@@ -2,13 +2,13 @@ mod http;
 mod websocket;
 
 use crate::error::Result;
+use futures::future::BoxFuture;
 use local_ip_address::local_ip;
 use nil_core::event::Event;
 use nil_core::player::{Player, PlayerId, PlayerOptions};
-use nil_core::round::RoundState;
+use nil_core::round::Round;
 use nil_core::village::{Coord, Village};
 use nil_core::world::WorldState;
-use std::fmt;
 use std::net::{IpAddr, SocketAddrV4};
 use websocket::WebSocketClient;
 
@@ -23,13 +23,17 @@ pub struct Client {
 impl Client {
   pub async fn start<F>(player_id: PlayerId, server_addr: SocketAddrV4, on_event: F) -> Result<Self>
   where
-    F: Fn(Event) + Send + Sync + 'static,
+    F: Fn(Event) -> BoxFuture<'static, ()> + Send + Sync + 'static,
   {
     Ok(Client {
       player_id,
       server_addr,
       websocket: WebSocketClient::connect(&server_addr, on_event).await?,
     })
+  }
+
+  pub fn stop(self) {
+    self.websocket.stop();
   }
 
   pub fn player_id(&self) -> PlayerId {
@@ -82,8 +86,13 @@ impl Client {
   }
 
   /// GET `/round`
-  pub async fn round_state(&self) -> Result<RoundState> {
+  pub async fn round(&self) -> Result<Round> {
     self.get_json("round").await
+  }
+
+  /// GET `/round/start`
+  pub async fn start_round(&self) -> Result<()> {
+    self.get("round/start").await
   }
 
   /// GET `/version`
@@ -99,15 +108,5 @@ impl Client {
   /// GET `/world`
   pub async fn world(&self) -> Result<WorldState> {
     self.get_json("world").await
-  }
-}
-
-impl fmt::Debug for Client {
-  fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-    f.debug_struct("Client")
-      .field("player_id", &self.player_id)
-      .field("server_addr", &self.server_addr)
-      .field("websocket", &self.websocket)
-      .finish()
   }
 }

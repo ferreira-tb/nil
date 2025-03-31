@@ -1,4 +1,7 @@
-use nil_core::{Continent, PlayerManager, Round, World};
+use nil_core::continent::Continent;
+use nil_core::player::PlayerManager;
+use nil_core::round::Round;
+use nil_core::world::World;
 use std::sync::Arc;
 use tokio::sync::RwLock;
 

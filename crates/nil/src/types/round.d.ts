@@ -1,4 +1,4 @@
-type RoundState = {
+type Round = {
   readonly id: RoundId;
   readonly phase: RoundPhase;
 };

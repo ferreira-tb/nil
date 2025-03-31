@@ -7,7 +7,7 @@ mod state;
 mod websocket;
 
 pub use error::{AnyResult, Error, Result};
-use nil_core::WorldOptions;
+use nil_core::world::WorldOptions;
 use nil_util::spawn;
 use state::App;
 use std::net::{SocketAddr, SocketAddrV4};
@@ -41,6 +41,10 @@ impl Server {
     let server = Server(task.abort_handle());
     Ok((server, addr))
   }
+
+  pub fn stop(self) {
+    self.0.abort();
+  }
 }
 
 async fn bind() -> Option<(TcpListener, SocketAddrV4)> {
@@ -54,10 +58,4 @@ async fn bind() -> Option<(TcpListener, SocketAddrV4)> {
   };
 
   result.ok()
-}
-
-impl Drop for Server {
-  fn drop(&mut self) {
-    self.0.abort();
-  }
 }

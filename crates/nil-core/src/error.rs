@@ -7,25 +7,27 @@ use strum::EnumIs;
 
 pub use std::result::Result as StdResult;
 
-pub type Result<T> = StdResult<T, Error>;
+pub type Result<T, E = Error> = StdResult<T, E>;
 
 #[non_exhaustive]
 #[derive(Debug, EnumIs, thiserror::Error)]
 #[remain::sorted]
 pub enum Error {
-  #[error("coord out of bounds: {0:?}")]
+  #[error("Coord out of bounds: {0:?}")]
   CoordOutOfBounds(Coord),
-  #[error("index out of bounds: {0}")]
+  #[error("Index out of bounds: {0}")]
   IndexOutOfBounds(usize),
-  #[error("no player found")]
+  #[error("No player found")]
   NoPlayer,
-  #[error("not a village: {0:?}")]
-  NotAVillage(Coord),
-  #[error("player not found: {0}")]
+  #[error("Player not found: {0}")]
   PlayerNotFound(PlayerId),
-  #[error("unit not found: {0}")]
+  #[error("Round already started")]
+  RoundAlreadyStarted,
+  #[error("Unit not found: {0}")]
   UnitNotFound(UnitId),
-  #[error("world is full")]
+  #[error("Village not found: {0}")]
+  VillageNotFound(Coord),
+  #[error("World is full")]
   WorldIsFull,
 }
 
@@ -35,11 +37,5 @@ impl Serialize for Error {
     S: Serializer,
   {
     serializer.serialize_str(self.to_string().as_str())
-  }
-}
-
-impl From<Error> for String {
-  fn from(value: Error) -> Self {
-    value.to_string()
   }
 }

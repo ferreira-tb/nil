@@ -1,3 +1,6 @@
+#[cfg(test)]
+mod tests;
+
 use crate::error::{Error, Result};
 use crate::player::PlayerId;
 use crate::village::{Coord, Village};
@@ -49,7 +52,7 @@ impl Continent {
     self
       .cell(coord)?
       .village()
-      .ok_or(Error::NotAVillage(coord))
+      .ok_or(Error::VillageNotFound(coord))
   }
 
   pub fn village_mut(&mut self, coord: impl Into<Coord>) -> Result<&mut Village> {
@@ -57,7 +60,7 @@ impl Continent {
     self
       .cell_mut(coord)?
       .village_mut()
-      .ok_or(Error::NotAVillage(coord))
+      .ok_or(Error::VillageNotFound(coord))
   }
 
   pub fn villages_of(&self, player: &PlayerId) -> Vec<Coord> {
@@ -132,43 +135,5 @@ impl Cell {
 impl From<Village> for Cell {
   fn from(village: Village) -> Self {
     Self::Village(village)
-  }
-}
-
-#[cfg(test)]
-mod tests {
-  use super::Continent;
-  use crate::village::Coord;
-
-  #[test]
-  fn cell() {
-    each_coord(|continent, coord| {
-      assert!(continent.cell(coord).is_ok());
-    });
-  }
-
-  #[test]
-  fn index_to_coord() {
-    each_coord(|continent, coord| {
-      let index = continent.index(coord);
-      assert_eq!(coord, continent.coord(index).unwrap());
-    });
-  }
-
-  #[test]
-  fn default_continent_is_empty() {
-    each_coord(|continent, coord| {
-      let cell = continent.cell(coord).unwrap();
-      assert!(cell.is_empty());
-    });
-  }
-
-  fn each_coord(f: impl Fn(&mut Continent, Coord)) {
-    let mut continent = Continent::default();
-    (0..100).into_iter().for_each(|x| {
-      (0..100).into_iter().for_each(|y| {
-        f(&mut continent, Coord::new(x, y));
-      });
-    })
   }
 }

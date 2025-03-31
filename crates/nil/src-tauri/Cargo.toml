@@ -1,11 +1,7 @@
 [package]
 name = "nil"
-
-[package.version]
-workspace = true
-
-[package.description]
-workspace = true
+version = "0.1.0"
+publish = false
 
 [package.edition]
 workspace = true
@@ -25,6 +21,7 @@ anyhow = "1.0"
 futures = "0.3"
 itertools = "0.14"
 remain = "0.2"
+tauri-plugin-clipboard-manager = "2.2"
 tauri-plugin-dialog = "2.2"
 tauri-plugin-process = "2.2"
 thiserror = "2.0"
@@ -50,18 +47,21 @@ version = "*"
 path = "../../nil-util"
 
 [dependencies.tauri]
-version = "2.3"
+version = "2.4"
 features = ["protocol-asset", "rustls-tls"]
 
 [dependencies.tokio]
-version = "1.43"
+version = "1.44"
 features = ["full"]
 
 [target.'cfg(not(any(target_os = "android", target_os = "ios")))'.dependencies]
-tauri-plugin-prevent-default = { version = "1.2", features = ["unstable-windows"] }
 tauri-plugin-single-instance = "2.2"
 tauri-plugin-window-state = "2.2"
 
+[target.'cfg(not(any(target_os = "android", target_os = "ios")))'.dependencies.tauri-plugin-prevent-default]
+version = "1.2"
+features = ["unstable-windows"]
+
 [build-dependencies.tauri-build]
-version = "2.0"
+version = "2.1"
 features = []
