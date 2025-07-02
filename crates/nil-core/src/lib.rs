@@ -1,4 +1,4 @@
-// Copyright (C) Tsukilabs contributors
+// Copyright (C) Call of Nil contributors
 // SPDX-License-Identifier: AGPL-3.0-only
 
 #![feature(mixed_integer_ops_unsigned_sub, try_blocks, vec_deque_pop_if)]

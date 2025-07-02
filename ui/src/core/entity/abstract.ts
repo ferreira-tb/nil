@@ -1,4 +1,4 @@
-// Copyright (C) Tsukilabs contributors
+// Copyright (C) Call of Nil contributors
 // SPDX-License-Identifier: AGPL-3.0-only
 
 /* eslint-disable @typescript-eslint/class-methods-use-this */

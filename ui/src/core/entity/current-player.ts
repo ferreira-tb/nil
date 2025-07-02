@@ -1,4 +1,4 @@
-// Copyright (C) Tsukilabs contributors
+// Copyright (C) Call of Nil contributors
 // SPDX-License-Identifier: AGPL-3.0-only
 
 import { Entity } from './abstract';
@@ -40,12 +40,6 @@ export class CurrentPlayerEntity extends Entity {
     if (village.owner.kind === 'player' && village.owner.id === this.id.value) {
       await this.update();
     }
-  }
-
-  protected override onDispose() {
-    this.id.value = null;
-    this.player.value = null;
-    this.resources.value = null;
   }
 
   public static use() {

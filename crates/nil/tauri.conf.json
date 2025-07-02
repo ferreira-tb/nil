@@ -1,5 +1,5 @@
 {
-  "productName": "nil",
+  "productName": "Call of Nil",
   "version": "0.1.0",
   "identifier": "tsukilabs.nil",
   "build": {
@@ -29,6 +29,7 @@
     "shortDescription": "Call of Nil",
     "license": "AGPL-3.0-only",
     "licenseFile": "../../LICENSE",
+    "homepage": "https://nil.dev.br/",
     "active": true,
     "targets": ["nsis"],
     "icon": [
