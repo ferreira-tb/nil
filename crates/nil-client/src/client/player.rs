@@ -1,0 +1,53 @@
+// Copyright (C) Tsukilabs contributors
+// SPDX-License-Identifier: AGPL-3.0-only
+
+use super::Client;
+use crate::error::Result;
+use nil_core::player::{Player, PlayerId, PlayerOptions, PlayerStatus};
+use nil_core::village::Coord;
+
+impl Client {
+  /// GET `/player`
+  pub async fn get_players(&self) -> Result<Vec<Player>> {
+    self.http.get_json("player").await
+  }
+
+  /// POST `/player`
+  pub async fn get_player(&self, id: PlayerId) -> Result<Player> {
+    self.http.post_json("player", id).await
+  }
+
+  /// POST `/player/coord`
+  pub async fn get_player_coords(&self, id: PlayerId) -> Result<Vec<Coord>> {
+    self.http.post_json("player/coord", id).await
+  }
+
+  /// POST `/player/exists`
+  pub async fn player_exists(&self, id: PlayerId) -> Result<bool> {
+    self
+      .http
+      .post_json("player/exists", id)
+      .await
+  }
+
+  /// POST `/player/set-status`
+  pub async fn set_player_status(&self, id: PlayerId, status: PlayerStatus) -> Result<()> {
+    self
+      .http
+      .post("player/set-status", (id, status))
+      .await
+  }
+
+  /// POST `/player/spawn`
+  pub async fn spawn_player(&self, options: PlayerOptions) -> Result<()> {
+    self.http.post("player/spawn", options).await
+  }
+
+  /// POST `/player/spawn-village`
+  pub async fn spawn_player_village(&self, id: PlayerId) -> Result<()> {
+    self
+      .http
+      .post("player/spawn-village", id)
+      .await
+  }
+}

@@ -1,0 +1,25 @@
+<!-- Copyright (C) Tsukilabs contributors -->
+<!-- SPDX-License-Identifier: AGPL-3.0-only -->
+
+<script setup lang="ts">
+import Round from './Round.vue';
+import { ButtonLink, SidebarTrigger } from '@tb-dev/vue-components';
+
+const { village } = NIL.village.refs();
+</script>
+
+<template>
+  <header class="flex items-center justify-between">
+    <div class="flex items-center gap-2">
+      <SidebarTrigger />
+      <ButtonLink to="village" variant="ghost" button-class="py-2 text-base lg:text-lg">
+        <span>{{ village?.name }}</span>
+        <span>({{ village?.coord.format() }})</span>
+      </ButtonLink>
+    </div>
+
+    <div class="flex items-center">
+      <Round />
+    </div>
+  </header>
+</template>

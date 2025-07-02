@@ -1,0 +1,203 @@
+// Copyright (C) Tsukilabs contributors
+// SPDX-License-Identifier: AGPL-3.0-only
+
+mod chat;
+mod event;
+mod player;
+mod round;
+mod savedata;
+
+use crate::chat::Chat;
+use crate::continent::Continent;
+use crate::error::Result;
+use crate::event::Emitter;
+use crate::infrastructure::{Infrastructure, InfrastructureStats};
+use crate::player::{Player, PlayerId, PlayerManager};
+use crate::round::Round;
+use crate::script::Scripting;
+use crate::village::{Coord, Village};
+use savedata::Savedata;
+use serde::{Deserialize, Serialize};
+use std::num::NonZeroU8;
+use std::path::{Path, PathBuf};
+use std::sync::Arc;
+
+#[derive(Debug)]
+pub struct World {
+  continent: Continent,
+  player_manager: PlayerManager,
+  round: Round,
+  config: WorldConfig,
+  stats: WorldStats,
+  chat: Chat,
+  scripting: Scripting,
+
+  emitter: Emitter,
+  pending_save: Option<PathBuf>,
+}
+
+impl World {
+  pub fn new(options: WorldOptions) -> Self {
+    let config = WorldConfig { name: options.name.into() };
+    Self {
+      continent: Continent::new(options.size.get()),
+      player_manager: PlayerManager::default(),
+      round: Round::default(),
+      config,
+      stats: WorldStats::new(),
+      chat: Chat::default(),
+      scripting: Scripting::new(),
+
+      emitter: Emitter::default(),
+      pending_save: None,
+    }
+  }
+
+  pub fn with_savedata(savedata: Savedata) -> Self {
+    Self {
+      continent: savedata.continent,
+      player_manager: savedata.player_manager,
+      round: savedata.round,
+      config: savedata.config,
+      stats: savedata.stats,
+      chat: savedata.chat,
+      scripting: savedata.scripting,
+
+      emitter: Emitter::default(),
+      pending_save: None,
+    }
+  }
+
+  pub fn load(path: impl AsRef<Path>) -> Result<Self> {
+    let savedata = Savedata::load(path.as_ref())?;
+    Ok(Self::with_savedata(savedata))
+  }
+
+  #[inline]
+  pub fn save(&mut self, path: PathBuf) {
+    self.pending_save = Some(path);
+  }
+
+  #[inline]
+  pub(crate) fn emitter(&self) -> Emitter {
+    self.emitter.clone()
+  }
+
+  #[inline]
+  pub fn config(&self) -> WorldConfig {
+    self.config.clone()
+  }
+
+  #[inline]
+  pub fn stats(&self) -> WorldStats {
+    self.stats.clone()
+  }
+
+  #[inline]
+  pub fn continent(&self) -> &Continent {
+    &self.continent
+  }
+
+  #[inline]
+  pub fn continent_mut(&mut self) -> &mut Continent {
+    &mut self.continent
+  }
+
+  #[inline]
+  pub fn village(&self, coord: Coord) -> Result<&Village> {
+    self.continent.village(coord)
+  }
+
+  #[inline]
+  pub fn village_mut(&mut self, coord: Coord) -> Result<&mut Village> {
+    self.continent.village_mut(coord)
+  }
+
+  #[inline]
+  pub fn infrastructure(&self, coord: Coord) -> Result<&Infrastructure> {
+    self
+      .village(coord)
+      .map(Village::infrastructure)
+  }
+
+  #[inline]
+  pub fn infrastructure_mut(&mut self, coord: Coord) -> Result<&mut Infrastructure> {
+    self
+      .village_mut(coord)
+      .map(Village::infrastructure_mut)
+  }
+
+  #[inline]
+  pub fn player_manager(&self) -> &PlayerManager {
+    &self.player_manager
+  }
+
+  #[inline]
+  pub fn player_manager_mut(&mut self) -> &mut PlayerManager {
+    &mut self.player_manager
+  }
+
+  #[inline]
+  pub fn player(&self, id: &PlayerId) -> Result<&Player> {
+    self.player_manager.player(id)
+  }
+
+  #[inline]
+  pub fn player_mut(&mut self, id: &PlayerId) -> Result<&mut Player> {
+    self.player_manager.player_mut(id)
+  }
+
+  #[inline]
+  pub fn round(&self) -> &Round {
+    &self.round
+  }
+
+  #[inline]
+  pub fn chat(&self) -> &Chat {
+    &self.chat
+  }
+
+  #[inline]
+  pub fn scripting(&self) -> &Scripting {
+    &self.scripting
+  }
+
+  #[inline]
+  pub fn scripting_mut(&mut self) -> &mut Scripting {
+    &mut self.scripting
+  }
+}
+
+impl From<WorldOptions> for World {
+  fn from(options: WorldOptions) -> Self {
+    Self::new(options)
+  }
+}
+
+#[derive(Clone, Deserialize, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct WorldOptions {
+  pub name: String,
+  pub size: NonZeroU8,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct WorldConfig {
+  name: Arc<str>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct WorldStats {
+  infrastructure: Arc<InfrastructureStats>,
+}
+
+#[expect(clippy::new_without_default)]
+impl WorldStats {
+  pub fn new() -> Self {
+    Self {
+      infrastructure: Arc::new(InfrastructureStats::new()),
+    }
+  }
+}

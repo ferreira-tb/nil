@@ -1,0 +1,72 @@
+// Copyright (C) Tsukilabs contributors
+// SPDX-License-Identifier: AGPL-3.0-only
+
+/* eslint-disable no-inner-declarations */
+/* eslint-disable @typescript-eslint/consistent-type-definitions */
+import type { App } from 'vue';
+import type { go } from '@/router';
+import type { commands } from '@/lib/api';
+import type { ChatEntity } from '@/core/entity/chat';
+import type { RoundEntity } from '@/core/entity/round';
+import type { WorldEntity } from '@/core/entity/world';
+import type { MaybePromise, Option } from '@tb-dev/utils';
+import type { CurrentPlayerEntity } from '@/core/entity/current-player';
+import type { CurrentVillageEntity } from '@/core/entity/current-village';
+
+declare global {
+  var __APP__: App;
+
+  var NIL: {
+    readonly chat: {
+      readonly refs: (typeof ChatEntity)['refs'];
+      readonly update: (typeof ChatEntity)['update'];
+      readonly use: (typeof ChatEntity)['use'];
+    };
+
+    /** Jogador atual. */
+    readonly player: {
+      readonly refs: (typeof CurrentPlayerEntity)['refs'];
+      readonly setId: (typeof CurrentPlayerEntity)['setId'];
+      readonly update: (typeof CurrentPlayerEntity)['update'];
+      readonly use: (typeof CurrentPlayerEntity)['use'];
+    };
+
+    readonly round: {
+      readonly refs: (typeof RoundEntity)['refs'];
+      readonly update: (typeof RoundEntity)['update'];
+      readonly use: (typeof RoundEntity)['use'];
+    };
+
+    /** Aldeia atual. */
+    readonly village: {
+      readonly go: (typeof CurrentVillageEntity)['go'];
+      readonly refs: (typeof CurrentVillageEntity)['refs'];
+      readonly use: (typeof CurrentVillageEntity)['use'];
+    };
+
+    readonly world: {
+      readonly refs: (typeof WorldEntity)['refs'];
+      readonly use: (typeof WorldEntity)['use'];
+    };
+
+    /** Atualiza todas as entidades. */
+    readonly update: () => Promise<void>;
+  };
+
+  interface ErrorConstructor {
+    panic: (message: string) => never;
+    throw: (message: string) => never;
+    todo: (message?: Option<string>) => never;
+  }
+
+  interface Promise<T> {
+    err: (message?: Option<string>) => void;
+  }
+}
+
+declare module 'vue' {
+  interface ComponentCustomProperties {
+    $c: typeof commands;
+    $go: typeof go;
+  }
+}

@@ -1,0 +1,174 @@
+// Copyright (C) Tsukilabs contributors
+// SPDX-License-Identifier: AGPL-3.0-only
+
+pub mod building;
+pub mod mine;
+pub mod storage;
+
+use crate::error::{Error, Result};
+use crate::resource::{Maintenance, Resources};
+use building::prelude::*;
+use building::{Building, BuildingId, BuildingStatsTable};
+use mine::{Mine, MineId, MineStatsTable};
+use serde::{Deserialize, Serialize};
+use std::collections::HashMap;
+use storage::{Storage, StorageId, StorageStatsTable};
+use strum::IntoEnumIterator;
+
+/// Infraestrutura de uma aldeia.
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct Infrastructure {
+  prefecture: Prefecture,
+  academy: Academy,
+  stable: Stable,
+  sawmill: Sawmill,
+  quarry: Quarry,
+  iron_mine: IronMine,
+  farm: Farm,
+  warehouse: Warehouse,
+  silo: Silo,
+  wall: Wall,
+}
+
+impl Infrastructure {
+  pub const fn building(&self, id: BuildingId) -> &dyn Building {
+    match id {
+      BuildingId::Academy => &self.academy,
+      BuildingId::Farm => &self.farm,
+      BuildingId::IronMine => &self.iron_mine,
+      BuildingId::Prefecture => &self.prefecture,
+      BuildingId::Quarry => &self.quarry,
+      BuildingId::Sawmill => &self.sawmill,
+      BuildingId::Silo => &self.silo,
+      BuildingId::Stable => &self.stable,
+      BuildingId::Wall => &self.wall,
+      BuildingId::Warehouse => &self.warehouse,
+    }
+  }
+
+  pub const fn storage(&self, id: StorageId) -> &dyn Storage {
+    match id {
+      StorageId::Silo => &self.silo,
+      StorageId::Warehouse => &self.warehouse,
+    }
+  }
+
+  pub const fn mine(&self, id: MineId) -> &dyn Mine {
+    match id {
+      MineId::Farm => &self.farm,
+      MineId::IronMine => &self.iron_mine,
+      MineId::Quarry => &self.quarry,
+      MineId::Sawmill => &self.sawmill,
+    }
+  }
+
+  /// Determina a quantidade de recursos gerados pelas minas em seu nível atual,
+  /// antes de qualquer modificador (como a estabilidade da aldeia) ser aplicado.
+  pub fn round_base_production(&self, stats: &InfrastructureStats) -> Result<Resources> {
+    let mut resources = Resources::default();
+
+    macro_rules! set {
+      ($id:ident, $mine:ident, $resource:ident) => {
+        let mine = &self.$mine;
+        if mine.level() > 0u8 && mine.is_enabled() {
+          let mine_stats = stats.mine(MineId::$id)?;
+          resources.$resource = mine.current_production(mine_stats)?.into();
+        }
+      };
+    }
+
+    set!(Farm, farm, food);
+    set!(IronMine, iron_mine, iron);
+    set!(Quarry, quarry, stone);
+    set!(Sawmill, sawmill, wood);
+
+    Ok(resources)
+  }
+
+  /// Determina a taxa de manutenção exigida por todos os edifícios em seus respectivos níveis.
+  pub fn round_base_maintenance(&self, stats: &InfrastructureStats) -> Result<Maintenance> {
+    let mut maintenance = Maintenance::default();
+
+    macro_rules! add {
+      ($id:ident, $building:ident) => {
+        let building = &self.$building;
+        if building.level() > 0u8 && building.is_enabled() {
+          let building_stats = stats.building(BuildingId::$id)?;
+          maintenance += building.maintenance(&building_stats)?;
+        }
+      };
+    }
+
+    add!(Academy, academy);
+    add!(Farm, farm);
+    add!(IronMine, iron_mine);
+    add!(Prefecture, prefecture);
+    add!(Quarry, quarry);
+    add!(Sawmill, sawmill);
+    add!(Silo, silo);
+    add!(Stable, stable);
+    add!(Wall, wall);
+    add!(Warehouse, warehouse);
+
+    Ok(maintenance)
+  }
+
+  /// Processa a fila de construção ou de recrutamento dos edifícios que as possuem.
+  pub(crate) fn process_queue(&mut self) {
+    self.prefecture.process_queue();
+  }
+
+  pub(crate) fn add_build_order(&mut self) -> Result<()> {
+    todo!()
+  }
+}
+
+#[derive(Debug, Deserialize, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct InfrastructureStats {
+  building: HashMap<BuildingId, BuildingStatsTable>,
+  mine: HashMap<MineId, MineStatsTable>,
+  storage: HashMap<StorageId, StorageStatsTable>,
+}
+
+#[expect(clippy::new_without_default)]
+impl InfrastructureStats {
+  pub fn new() -> Self {
+    let infrastructure = Infrastructure::default();
+    let building = BuildingId::iter()
+      .map(|id| (id, BuildingStatsTable::new(infrastructure.building(id))))
+      .collect();
+
+    let mine = MineId::iter()
+      .map(|id| (id, MineStatsTable::new(infrastructure.mine(id))))
+      .collect();
+
+    let storage = StorageId::iter()
+      .map(|id| (id, StorageStatsTable::new(infrastructure.storage(id))))
+      .collect();
+
+    Self { building, mine, storage }
+  }
+
+  pub fn building(&self, id: BuildingId) -> Result<&BuildingStatsTable> {
+    self
+      .building
+      .get(&id)
+      .ok_or(Error::BuildingStatsNotFound(id))
+  }
+
+  pub fn mine(&self, id: MineId) -> Result<&MineStatsTable> {
+    self
+      .mine
+      .get(&id)
+      .ok_or_else(|| Error::BuildingStatsNotFound(id.into()))
+  }
+
+  pub fn storage(&self, id: StorageId) -> Result<&StorageStatsTable> {
+    self
+      .storage
+      .get(&id)
+      .ok_or_else(|| Error::BuildingStatsNotFound(id.into()))
+  }
+}

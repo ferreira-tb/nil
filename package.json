@@ -1,0 +1,34 @@
+{
+  "name": "nil",
+  "version": "0.1.0",
+  "type": "module",
+  "packageManager": "pnpm@10.12.4",
+  "license": "AGPL-3.0-only",
+  "private": true,
+  "scripts": {
+    "build": "cargo tauri build",
+    "clippy": "cargo clippy --workspace",
+    "dev": "cargo tauri dev",
+    "eslint": "eslint . --config eslint.config.js",
+    "format": "prettier . --write && cargo fmt --all",
+    "miri": "cargo miri test --tests",
+    "preview": "cargo tauri build --no-bundle -- --profile preview",
+    "test": "cargo test --tests",
+    "type-check": "pnpm run -r --bail type-check"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.1.11",
+    "@tb-dev/eslint-config": "^7.1.9",
+    "@types/node": "^24.0.10",
+    "@vitejs/plugin-vue": "^6.0.0",
+    "eslint": "^9.30.1",
+    "prettier": "^3.6.2",
+    "prettier-plugin-css-order": "^2.1.2",
+    "prettier-plugin-tailwindcss": "^0.6.13",
+    "tailwindcss": "^4.1.11",
+    "tslib": "^2.8.1",
+    "typescript": "~5.8.3",
+    "vite": "^7.0.0",
+    "vue-tsc": "~3.0.0"
+  }
+}

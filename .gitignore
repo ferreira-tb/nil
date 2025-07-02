@@ -1,0 +1,25 @@
+# Editor directories and files
+.idea/*
+.vscode/*
+!.vscode/extensions.json
+!.vscode/launch.json
+!.vscode/settings.json
+!.vscode/tasks.json
+
+# Rust
+debug/
+target/
+**/*.rs.bk
+*.pdb
+rustc-ice-*.txt
+
+# Node
+node_modules
+dist
+
+# Tauri
+gen
+
+# Others
+.temp
+.eslintcache
