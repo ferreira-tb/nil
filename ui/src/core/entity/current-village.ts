@@ -63,14 +63,11 @@ export class CurrentVillageEntity extends Entity {
   }
 
   private async onPrefectureBuildQueueUpdated(payload: PrefectureBuildQueueUpdatedPayload) {
-    if (this.village.value?.coord.is(payload.coord)) {
-      const hasOrder = this.prefecture?.hasBuildOrder(payload.id);
-      if (
-        (payload.orderKind === 'construction' && !hasOrder) ||
-        (payload.orderKind === 'demolition' && hasOrder)
-      ) {
-        await this.update();
-      }
+    if (
+      this.village.value?.coord.is(payload.coord) &&
+      !this.prefecture?.hasBuildOrder(payload.id)
+    ) {
+      await this.update();
     }
   }
 
