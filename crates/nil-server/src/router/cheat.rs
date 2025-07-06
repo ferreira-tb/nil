@@ -8,8 +8,20 @@ use crate::state::App;
 use axum::extract::{Extension, Json, State};
 use axum::response::Response;
 use futures::TryFutureExt;
+use nil_core::infrastructure::building::{BuildingId, BuildingLevel};
 use nil_core::resource::{Food, Iron, Resources, Stone, Wood};
 use nil_core::village::{Coord, Stability};
+
+pub async fn set_building_level(
+  State(app): State<App>,
+  Json((coord, id, level)): Json<(Coord, BuildingId, BuildingLevel)>,
+) -> Response {
+  app
+    .world_mut(|world| world.cheat_set_building_level(coord, id, level))
+    .map_ok(|()| res!(OK))
+    .unwrap_or_else(from_core_err)
+    .await
+}
 
 pub async fn set_food(
   State(app): State<App>,
@@ -32,6 +44,14 @@ pub async fn set_iron(
   let player = current_player.0;
   app
     .world_mut(|world| world.cheat_set_iron(player, iron))
+    .map_ok(|()| res!(OK))
+    .unwrap_or_else(from_core_err)
+    .await
+}
+
+pub async fn set_max_infrastructure(State(app): State<App>, Json(coord): Json<Coord>) -> Response {
+  app
+    .world_mut(|world| world.cheat_set_max_infrastructure(coord))
     .map_ok(|()| res!(OK))
     .unwrap_or_else(from_core_err)
     .await

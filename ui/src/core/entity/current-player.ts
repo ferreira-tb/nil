@@ -34,7 +34,7 @@ export class CurrentPlayerEntity extends Entity {
   protected override initListeners() {
     this.watch(this.id, this.update.bind(this));
     this.event
-      .onPlayerResourcesUpdated(this.update.bind(this))
+      .onPlayerUpdated(this.update.bind(this))
       .onVillageSpawned(this.onVillageSpawned.bind(this));
   }
 

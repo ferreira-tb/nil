@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 
 import { BuildingImpl } from '../abstract';
-import { PrefectureBuildQueueImpl } from './queue';
+import { PrefectureBuildQueueImpl } from './build-queue';
 
 export class PrefectureImpl extends BuildingImpl implements Prefecture {
   public readonly id: BuildingId = 'prefecture';

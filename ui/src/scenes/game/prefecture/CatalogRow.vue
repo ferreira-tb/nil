@@ -10,7 +10,7 @@ import { Button, TableCell, TableRow } from '@tb-dev/vue-components';
 import type { PrefectureImpl } from '@/core/model/buildings/prefecture';
 
 const props = defineProps<{
-  entry: PrefectureCatalogEntry;
+  entry: PrefectureBuildCatalogEntry;
   building: BuildingImpl;
   prefecture: PrefectureImpl;
   scene: GameScene;

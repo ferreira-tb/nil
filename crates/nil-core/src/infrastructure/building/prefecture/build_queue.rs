@@ -28,7 +28,7 @@ impl PrefectureBuildQueue {
     options: &PrefectureBuildOrderOptions,
   ) -> Result<&PrefectureBuildOrder> {
     let id = table.id();
-    let mut level = self
+    let mut target_level = self
       .iter()
       .filter(|order| order.building() == id)
       .fold(current_level, |acc, order| {
@@ -39,18 +39,18 @@ impl PrefectureBuildQueue {
       });
 
     let kind = options.kind;
-    if kind.is_demolition() && level <= table.min_level() {
+    if kind.is_demolition() && target_level <= table.min_level() {
       return Err(Error::CannotDecreaseBuildingLevel(id));
-    } else if kind.is_construction() && level >= table.max_level() {
+    } else if kind.is_construction() && target_level >= table.max_level() {
       return Err(Error::CannotIncreaseBuildingLevel(id));
     }
 
-    level += match kind {
+    target_level += match kind {
       PrefectureBuildOrderKind::Construction => 1i8,
       PrefectureBuildOrderKind::Demolition => -1i8,
     };
 
-    let resources = table.get(level)?.resources.clone();
+    let resources = table.get(target_level)?.resources.clone();
     if let PrefectureBuildOrderKind::Construction = kind
       && let Some(current_resources) = current_resources
       && current_resources
@@ -60,7 +60,7 @@ impl PrefectureBuildQueue {
       return Err(Error::InsufficientResources);
     }
 
-    let mut workforce = table.get(level)?.workforce;
+    let mut workforce = table.get(target_level)?.workforce;
     kind.apply_modifier(&mut workforce);
 
     self.current_id = self.current_id.next();
@@ -68,7 +68,7 @@ impl PrefectureBuildQueue {
       id: self.current_id,
       kind,
       building: id,
-      level,
+      level: target_level,
       resources,
       workforce,
       status: PrefectureBuildOrderStatus::new(workforce),

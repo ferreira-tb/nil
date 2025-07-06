@@ -9,8 +9,8 @@ use crate::state::App;
 use axum::extract::{Extension, Json, State};
 use axum::response::Response;
 use nil_core::infrastructure::building::prefecture::{
+  PrefectureBuildCatalog,
   PrefectureBuildOrderOptions,
-  PrefectureCatalog,
 };
 use nil_core::village::Coord;
 
@@ -66,18 +66,18 @@ pub async fn cancel_build_order(
     .unwrap_or_else(from_core_err)
 }
 
-pub async fn get_catalog(
+pub async fn get_build_catalog(
   State(app): State<App>,
   Extension(current_player): Extension<CurrentPlayer>,
   Json(coord): Json<Coord>,
 ) -> Response {
-  let result: CoreResult<PrefectureCatalog> = try {
+  let result: CoreResult<PrefectureBuildCatalog> = try {
     let world = app.world.read().await;
     let village = world.village(coord)?;
     if village.is_owned_by_player_and(|id| *current_player == *id) {
       let infra = village.infrastructure();
       let stats = world.stats().infrastructure();
-      PrefectureCatalog::new(infra, &stats)?
+      PrefectureBuildCatalog::new(infra, &stats)?
     } else {
       return res!(FORBIDDEN);
     }

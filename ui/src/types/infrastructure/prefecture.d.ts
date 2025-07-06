@@ -42,33 +42,33 @@ interface PrefectureBuildOrderOptions {
   readonly kind: PrefectureBuildOrderKind;
 }
 
-interface PrefectureCatalogRecipe {
+type PrefectureBuildCatalog = {
+  readonly [B in keyof Infrastructure]: PrefectureBuildCatalogEntry;
+};
+
+type PrefectureBuildCatalogEntry =
+  | PrefectureBuildCatalogEntryAvailable
+  | PrefectureBuildCatalogEntryMaxed
+  | PrefectureBuildCatalogEntryUnmet;
+
+interface PrefectureBuildCatalogEntryAvailable {
+  readonly kind: 'available';
+  readonly recipe: PrefectureBuildCatalogRecipe;
+}
+
+interface PrefectureBuildCatalogEntryMaxed {
+  readonly kind: 'maxed';
+}
+
+interface PrefectureBuildCatalogEntryUnmet {
+  readonly kind: 'unmet';
+  readonly requirements: InfrastructureRequirements;
+}
+
+interface PrefectureBuildCatalogRecipe {
   readonly level: BuildingLevel;
   readonly resources: Resources;
   readonly maintenance: number;
   readonly workforce: number;
-  readonly requirements: InfrastructureRequirements;
-}
-
-type PrefectureCatalog = {
-  readonly [B in keyof Infrastructure]: PrefectureCatalogEntry;
-};
-
-type PrefectureCatalogEntry =
-  | PrefectureCatalogEntryAvailable
-  | PrefectureCatalogEntryMaxed
-  | PrefectureCatalogEntryUnmet;
-
-interface PrefectureCatalogEntryAvailable {
-  readonly kind: 'available';
-  readonly recipe: PrefectureCatalogRecipe;
-}
-
-interface PrefectureCatalogEntryMaxed {
-  readonly kind: 'maxed';
-}
-
-interface PrefectureCatalogEntryUnmet {
-  readonly kind: 'unmet';
   readonly requirements: InfrastructureRequirements;
 }

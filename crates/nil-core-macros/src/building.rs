@@ -55,24 +55,24 @@ pub fn impl_building(ast: &DeriveInput) -> TokenStream {
           Self::MAX_LEVEL
         }
 
-        fn increase_level(&mut self) -> Result<()> {
-          if self.level >= Self::MAX_LEVEL {
-            return Err(Error::CannotIncreaseBuildingLevel(Self::ID));
-          }
-
-          self.level += 1u8;
-
-          Ok(())
+        fn set_level(&mut self, level: BuildingLevel) {
+          self.level = level.clamp(Self::MIN_LEVEL, Self::MAX_LEVEL);
         }
 
-        fn decrease_level(&mut self) -> Result<()> {
-          if self.level <= Self::MIN_LEVEL {
-            return Err(Error::CannotDecreaseBuildingLevel(Self::ID));
-          }
+        fn increase_level(&mut self) {
+          self.increase_level_by(1u8)
+        }
 
-          self.level -= 1u8;
+        fn increase_level_by(&mut self, amount: u8) {
+          self.set_level(self.level + amount)
+        }
 
-          Ok(())
+        fn decrease_level(&mut self) {
+          self.decrease_level_by(1u8)
+        }
+
+        fn decrease_level_by(&mut self, amount: u8) {
+          self.set_level(self.level - amount)
         }
 
         fn base_cost(&self) -> BaseCost {

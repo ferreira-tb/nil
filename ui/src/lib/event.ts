@@ -32,13 +32,12 @@ class Listener<T extends EventPayload> {
     onChatMessage: new this<ChatMessagePayload>('chat-message'),
     onGuestLeft: new this<GuestLeftPayload>('guest-left'),
     onLobbyUpdated: new this<LobbyUpdatedPayload>('lobby-updated'),
-    onPlayerResourcesUpdated: new this<PlayerResourcesUpdatedPayload>('player-resources-updated'),
     onPlayerSpawned: new this<PlayerSpawnedPayload>('player-spawned'),
     onPlayerStatusUpdated: new this<PlayerStatusUpdatedPayload>('player-status-updated'),
-    onPrefectureBuildQueueUpdated: new this<PrefectureBuildQueueUpdatedPayload>('prefecture-build-queue-updated'),
+    onPlayerUpdated: new this<PlayerUpdatedPayload>('player-updated'),
     onRoundUpdated: new this<RoundUpdatedPayload>('round-updated'),
     onVillageSpawned: new this<VillageSpawnedPayload>('village-spawned'),
-    onVillageStabilityUpdated: new this<VillageStabilityUpdatedPayload>('village-stability-updated')
+    onVillageUpdated: new this<VillageUpdatedPayload>('village-updated')
   } as const;
 }
 

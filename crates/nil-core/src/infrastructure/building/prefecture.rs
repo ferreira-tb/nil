@@ -1,8 +1,8 @@
 // Copyright (C) Call of Nil contributors
 // SPDX-License-Identifier: AGPL-3.0-only
 
+mod build_catalog;
 mod build_queue;
-mod catalog;
 
 use super::{BuildingId, BuildingLevel};
 use crate::check_total_resource_ratio;
@@ -19,6 +19,11 @@ use nil_core_macros::Building;
 use serde::{Deserialize, Serialize};
 use std::ops::Not;
 
+pub use build_catalog::{
+  PrefectureBuildCatalog,
+  PrefectureBuildCatalogEntry,
+  PrefectureBuildCatalogRecipe,
+};
 pub use build_queue::{
   PrefectureBuildOrder,
   PrefectureBuildOrderId,
@@ -27,7 +32,6 @@ pub use build_queue::{
   PrefectureBuildOrderStatus,
   PrefectureBuildQueue,
 };
-pub use catalog::{PrefectureCatalog, PrefectureCatalogEntry, PrefectureCatalogRecipe};
 
 /// Centro logístico da aldeia, responsável pela construção de edifícios.
 #[derive(Building, Clone, Debug, Deserialize, Serialize)]

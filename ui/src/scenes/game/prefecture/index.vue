@@ -3,15 +3,15 @@
 
 <script setup lang="ts">
 import Catalog from './Catalog.vue';
-import { asyncRef } from '@tb-dev/vue';
 import BuildQueue from './BuildQueue.vue';
 import { handleError } from '@/lib/error';
 import { computed, ref, watch } from 'vue';
+import { asyncRef, maybe } from '@tb-dev/vue';
 import { Card } from '@tb-dev/vue-components';
 import {
   addPrefectureBuildOrder,
   cancelPrefectureBuildOrder,
-  getPrefectureCatalog,
+  getPrefectureBuildCatalog,
 } from '@/commands';
 
 const { coord, village } = NIL.village.refs();
@@ -24,7 +24,7 @@ const {
   execute: loadCatalog,
   isLoading: isLoadingCatalog,
 } = asyncRef(null, async () => {
-  return coord.value ? getPrefectureCatalog(coord.value) : null;
+  return maybe(coord, getPrefectureBuildCatalog);
 });
 
 const isWaitingAddCmd = ref(false);
@@ -33,7 +33,7 @@ const loading = computed(() => {
   return isLoadingCatalog.value || isWaitingAddCmd.value || isWaitingCancelCmd.value;
 });
 
-watch(coord, loadCatalog);
+watch(village, loadCatalog);
 
 async function addBuildOrder(building: BuildingId, kind: PrefectureBuildOrderKind) {
   if (coord.value && !loading.value) {

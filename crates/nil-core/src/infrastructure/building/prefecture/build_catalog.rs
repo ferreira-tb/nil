@@ -12,25 +12,25 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
-pub struct PrefectureCatalog {
-  academy: PrefectureCatalogEntry,
-  farm: PrefectureCatalogEntry,
-  iron_mine: PrefectureCatalogEntry,
-  prefecture: PrefectureCatalogEntry,
-  quarry: PrefectureCatalogEntry,
-  sawmill: PrefectureCatalogEntry,
-  silo: PrefectureCatalogEntry,
-  stable: PrefectureCatalogEntry,
-  wall: PrefectureCatalogEntry,
-  warehouse: PrefectureCatalogEntry,
+pub struct PrefectureBuildCatalog {
+  academy: PrefectureBuildCatalogEntry,
+  farm: PrefectureBuildCatalogEntry,
+  iron_mine: PrefectureBuildCatalogEntry,
+  prefecture: PrefectureBuildCatalogEntry,
+  quarry: PrefectureBuildCatalogEntry,
+  sawmill: PrefectureBuildCatalogEntry,
+  silo: PrefectureBuildCatalogEntry,
+  stable: PrefectureBuildCatalogEntry,
+  wall: PrefectureBuildCatalogEntry,
+  warehouse: PrefectureBuildCatalogEntry,
 }
 
-impl PrefectureCatalog {
+impl PrefectureBuildCatalog {
   pub fn new(infra: &Infrastructure, stats: &InfrastructureStats) -> Result<Self> {
     macro_rules! make_entry {
       ($id:ident) => {{
         let table = stats.building(BuildingId::$id)?;
-        PrefectureCatalogEntry::new(infra, table)
+        PrefectureBuildCatalogEntry::new(infra, table)
       }};
     }
 
@@ -51,10 +51,10 @@ impl PrefectureCatalog {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(tag = "kind", rename_all = "kebab-case")]
-pub enum PrefectureCatalogEntry {
+pub enum PrefectureBuildCatalogEntry {
   /// O edifício pode ser construído.
   Available {
-    recipe: Box<PrefectureCatalogRecipe>,
+    recipe: Box<PrefectureBuildCatalogRecipe>,
   },
   /// Edifício já está no nível máximo.
   Maxed,
@@ -64,7 +64,7 @@ pub enum PrefectureCatalogEntry {
   },
 }
 
-impl PrefectureCatalogEntry {
+impl PrefectureBuildCatalogEntry {
   fn new(infra: &Infrastructure, table: &BuildingStatsTable) -> Result<Self> {
     let id = table.id();
     let building = infra.building(id);
@@ -90,7 +90,7 @@ impl PrefectureCatalogEntry {
       Ok(Self::Maxed)
     } else {
       let stats = table.get(target_level)?;
-      let recipe = Box::new(PrefectureCatalogRecipe {
+      let recipe = Box::new(PrefectureBuildCatalogRecipe {
         level: target_level,
         resources: stats.resources.clone(),
         maintenance: stats.maintenance,
@@ -105,7 +105,7 @@ impl PrefectureCatalogEntry {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
-pub struct PrefectureCatalogRecipe {
+pub struct PrefectureBuildCatalogRecipe {
   level: BuildingLevel,
   resources: Resources,
   maintenance: Maintenance,

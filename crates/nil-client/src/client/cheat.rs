@@ -3,10 +3,32 @@
 
 use super::Client;
 use crate::error::Result;
+use nil_core::infrastructure::building::{BuildingId, BuildingLevel};
 use nil_core::resource::{Food, Iron, Resources, Stone, Wood};
 use nil_core::village::{Coord, Stability};
 
 impl Client {
+  /// POST `/cheat/infrastructure`
+  pub async fn cheat_set_max_infrastructure(&self, coord: Coord) -> Result<()> {
+    self
+      .http
+      .post("cheat/infrastructure", coord)
+      .await
+  }
+
+  /// POST `/cheat/infrastructure/building`
+  pub async fn cheat_set_building_level(
+    &self,
+    coord: Coord,
+    id: BuildingId,
+    level: BuildingLevel,
+  ) -> Result<()> {
+    self
+      .http
+      .post("cheat/infrastructure/building", (coord, id, level))
+      .await
+  }
+
   /// GET `/cheat/resources`
   pub async fn cheat_set_max_resources(&self) -> Result<()> {
     self.http.get("cheat/resources").await

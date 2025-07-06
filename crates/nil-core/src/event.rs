@@ -77,7 +77,6 @@ pub enum Event {
   LobbyUpdated {
     lobby: LobbyState,
   },
-  PlayerResourcesUpdated,
   PlayerSpawned {
     player: Player,
   },
@@ -85,8 +84,8 @@ pub enum Event {
     player: PlayerId,
     status: PlayerStatus,
   },
-  PrefectureBuildQueueUpdated {
-    coord: Coord,
+  PlayerUpdated {
+    player: PlayerId,
   },
   RoundUpdated {
     round: Round,
@@ -94,7 +93,7 @@ pub enum Event {
   VillageSpawned {
     village: VillagePublicState,
   },
-  VillageStabilityUpdated {
+  VillageUpdated {
     coord: Coord,
   },
 }

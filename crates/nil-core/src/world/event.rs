@@ -37,10 +37,6 @@ impl World {
     self.broadcast(Event::GuestLeft { guest });
   }
 
-  pub(super) fn emit_player_resources_updated(&self, target: PlayerId) {
-    self.emit_to(target, Event::PlayerResourcesUpdated);
-  }
-
   pub(super) fn emit_player_spawned(&self, player: Player) {
     self.broadcast(Event::PlayerSpawned { player });
   }
@@ -49,8 +45,8 @@ impl World {
     self.broadcast(Event::PlayerStatusUpdated { player: id, status });
   }
 
-  pub(super) fn emit_prefecture_build_queue_updated(&self, coord: Coord) {
-    self.emit_to_owner(coord, Event::PrefectureBuildQueueUpdated { coord });
+  pub(super) fn emit_player_updated(&self, player: PlayerId) {
+    self.emit_to(player.clone(), Event::PlayerUpdated { player });
   }
 
   pub(super) fn emit_round_update(&self) {
@@ -62,7 +58,7 @@ impl World {
     self.broadcast(Event::VillageSpawned { village });
   }
 
-  pub(super) fn emit_village_stability_updated(&self, coord: Coord) {
-    self.emit_to_owner(coord, Event::VillageStabilityUpdated { coord });
+  pub(super) fn emit_village_updated(&self, coord: Coord) {
+    self.emit_to_owner(coord, Event::VillageUpdated { coord });
   }
 }

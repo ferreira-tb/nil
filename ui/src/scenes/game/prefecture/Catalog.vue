@@ -2,17 +2,22 @@
 <!-- SPDX-License-Identifier: AGPL-3.0-only -->
 
 <script setup lang="ts">
+import { computed } from 'vue';
 import CatalogRow from './CatalogRow.vue';
 import type { MaybePromise } from '@tb-dev/utils';
 import { Table, TableHead, TableRow } from '@tb-dev/vue-components';
 import type { InfrastructureImpl } from '@/core/model/infrastructure';
 
-defineProps<{
-  catalog: PrefectureCatalog;
+const props = defineProps<{
+  catalog: PrefectureBuildCatalog;
   infrastructure: InfrastructureImpl;
   loading: boolean;
   onBuildOrder: (id: BuildingId, kind: PrefectureBuildOrderKind) => MaybePromise<void>;
 }>();
+
+const hasSomeAvailable = computed(() => {
+  return Object.values(props.catalog).some((it) => it.kind === 'available');
+});
 </script>
 
 <template>
@@ -22,16 +27,16 @@ defineProps<{
         <TableHead>
           <span>{{ $t('building') }}</span>
         </TableHead>
-        <TableHead>
+        <TableHead v-if="hasSomeAvailable">
           <span>{{ $t('cost') }}</span>
         </TableHead>
-        <TableHead>
+        <TableHead v-if="hasSomeAvailable">
           <span>{{ $t('maintenance') }}</span>
         </TableHead>
-        <TableHead>
+        <TableHead v-if="hasSomeAvailable">
           <span>{{ $t('workforce') }}</span>
         </TableHead>
-        <TableHead>
+        <TableHead :colspan="hasSomeAvailable ? 1 : 4">
           <span></span>
         </TableHead>
       </TableRow>

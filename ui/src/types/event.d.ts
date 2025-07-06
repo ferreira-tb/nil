@@ -3,13 +3,11 @@
 
 type EventPayload =
   | ChatMessagePayload
-  | FailedToSaveWorldPayload
   | GuestLeftPayload
   | LobbyUpdatedPayload
-  | PlayerResourcesUpdatedPayload
   | PlayerSpawnedPayload
   | PlayerStatusUpdatedPayload
-  | PrefectureBuildQueueUpdatedPayload
+  | PlayerUpdatedPayload
   | RoundUpdatedPayload
   | VillageSpawnedPayload
   | VillageStabilityUpdatedPayload;
@@ -17,11 +15,6 @@ type EventPayload =
 interface ChatMessagePayload {
   readonly kind: 'chat-message';
   readonly message: ChatMessage;
-}
-
-interface FailedToSaveWorldPayload {
-  readonly kind: 'failed-to-save-world';
-  readonly error: string;
 }
 
 interface GuestLeftPayload {
@@ -32,10 +25,6 @@ interface GuestLeftPayload {
 interface LobbyUpdatedPayload {
   readonly kind: 'lobby-updated';
   readonly lobby: Lobby;
-}
-
-interface PlayerResourcesUpdatedPayload {
-  readonly kind: 'player-resources-updated';
 }
 
 interface PlayerSpawnedPayload {
@@ -49,9 +38,9 @@ interface PlayerStatusUpdatedPayload {
   readonly status: PlayerStatus;
 }
 
-interface PrefectureBuildQueueUpdatedPayload {
-  readonly kind: 'prefecture-build-queue-updated';
-  readonly coord: Coord;
+interface PlayerUpdatedPayload {
+  readonly kind: 'player-updated';
+  readonly player: PlayerId;
 }
 
 interface RoundUpdatedPayload {
@@ -64,7 +53,7 @@ interface VillageSpawnedPayload {
   readonly village: VillagePublicState;
 }
 
-interface VillageStabilityUpdatedPayload {
-  readonly kind: 'village-stability-updated';
+interface VillageUpdatedPayload {
+  readonly kind: 'village-updated';
   readonly coord: Coord;
 }

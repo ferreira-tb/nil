@@ -44,12 +44,10 @@ export class CurrentVillageEntity extends Entity {
 
     // prettier-ignore
     this
-      .watch(this.coord, this.updateVillage)
+      .watch(this.coord, this.update.bind(this))
       .watch(player, this.onPlayerUpdate.bind(this));
 
-    this.event
-      .onPrefectureBuildQueueUpdated(this.onPrefectureBuildQueueUpdated.bind(this))
-      .onVillageStabilityUpdated(this.onVillageStabilityUpdated.bind(this));
+    this.event.onVillageUpdated(this.onVillageUpdated.bind(this));
   }
 
   public override async update() {
@@ -68,11 +66,7 @@ export class CurrentVillageEntity extends Entity {
     }
   }
 
-  private async onPrefectureBuildQueueUpdated(payload: PrefectureBuildQueueUpdatedPayload) {
-    if (this.isCoord(payload.coord)) await this.update();
-  }
-
-  private async onVillageStabilityUpdated(payload: VillageStabilityUpdatedPayload) {
+  private async onVillageUpdated(payload: VillageUpdatedPayload) {
     if (this.isCoord(payload.coord)) await this.update();
   }
 

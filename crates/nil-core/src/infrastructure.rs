@@ -53,7 +53,7 @@ impl Infrastructure {
     }
   }
 
-  const fn building_mut(&mut self, id: BuildingId) -> &mut dyn Building {
+  pub(crate) const fn building_mut(&mut self, id: BuildingId) -> &mut dyn Building {
     match id {
       BuildingId::Academy => &mut self.academy,
       BuildingId::Farm => &mut self.farm,
@@ -136,18 +136,16 @@ impl Infrastructure {
   }
 
   /// Processa a fila de construção da prefeitura.
-  pub(crate) fn process_prefecture_build_queue(&mut self) -> Result<()> {
+  pub(crate) fn process_prefecture_build_queue(&mut self) {
     if let Some(orders) = self.prefecture.process_queue() {
       for order in orders {
         let building = self.building_mut(order.building());
         match order.kind() {
-          PrefectureBuildOrderKind::Construction => building.increase_level()?,
-          PrefectureBuildOrderKind::Demolition => building.decrease_level()?,
+          PrefectureBuildOrderKind::Construction => building.increase_level(),
+          PrefectureBuildOrderKind::Demolition => building.decrease_level(),
         }
       }
     }
-
-    Ok(())
   }
 
   pub(crate) fn add_prefecture_build_order(

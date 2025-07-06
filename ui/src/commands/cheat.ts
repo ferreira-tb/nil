@@ -4,6 +4,11 @@
 import { clamp } from 'es-toolkit';
 import { invoke } from '@tauri-apps/api/core';
 
+export function cheatSetBuildingLevel(coord: Coord, id: BuildingId, level: BuildingLevel) {
+  level = Math.trunc(clamp(level, 0, 255));
+  return invoke<null>('cheat_set_building_level', { coord, id, level });
+}
+
 export function cheatSetFood(food: number) {
   food = Math.trunc(Math.max(0, food));
   return invoke<null>('cheat_set_food', { food });
@@ -12,6 +17,10 @@ export function cheatSetFood(food: number) {
 export function cheatSetIron(iron: number) {
   iron = Math.trunc(Math.max(0, iron));
   return invoke<null>('cheat_set_iron', { iron });
+}
+
+export function cheatSetMaxInfrastructure(coord: Coord) {
+  return invoke<null>('cheat_set_max_infrastructure', { coord });
 }
 
 export function cheatSetMaxResources() {

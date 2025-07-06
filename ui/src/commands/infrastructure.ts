@@ -11,6 +11,6 @@ export function cancelPrefectureBuildOrder(coord: Coord) {
   return invoke<null>('cancel_prefecture_build_order', { coord });
 }
 
-export function getPrefectureCatalog(coord: Coord) {
-  return invoke<PrefectureCatalog>('get_prefecture_catalog', { coord });
+export function getPrefectureBuildCatalog(coord: Coord) {
+  return invoke<PrefectureBuildCatalog>('get_prefecture_build_catalog', { coord });
 }

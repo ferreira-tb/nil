@@ -50,7 +50,7 @@ impl World {
 
   fn prepare_next_round(&mut self) -> Result<()> {
     self.update_player_resources()?;
-    self.process_village_queues()?;
+    self.process_village_queues();
     Ok(())
   }
 
@@ -77,12 +77,10 @@ impl World {
   }
 
   /// Processa as filas de construção e de recrutamento de todas as aldeias.
-  fn process_village_queues(&mut self) -> Result<()> {
+  fn process_village_queues(&mut self) {
     for village in self.continent.villages_mut() {
       let infra = village.infrastructure_mut();
-      infra.process_prefecture_build_queue()?;
+      infra.process_prefecture_build_queue();
     }
-
-    Ok(())
   }
 }
