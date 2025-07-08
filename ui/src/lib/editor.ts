@@ -20,8 +20,8 @@ export async function createEditor(element: HTMLElement) {
   if (!ready) {
     const highlighter = await createHighlighterCore({
       engine: createOnigurumaEngine(import('shiki/wasm')),
-      themes: [import('shiki/themes/vesper.mjs')],
       langs: [import('shiki/langs/lua.mjs')],
+      themes: [import('shiki/themes/vesper.mjs')],
     });
 
     monaco.languages.register({ id: 'lua' });
