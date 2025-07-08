@@ -20,6 +20,7 @@
         "default-src": "'self'",
         "connect-src": "ipc: http://ipc.localhost",
         "img-src": "* blob:",
+        "script-src": "'self' 'unsafe-eval'",
         "style-src": "'self' 'unsafe-inline'"
       }
     }
