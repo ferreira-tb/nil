@@ -13,30 +13,29 @@ export const router = createRouter({
       path: '/',
     },
     {
-      component: () => import('@/scenes/host-game/index.vue'),
-      name: 'host-game' satisfies Scene,
-      path: '/host-game',
-    },
-    {
-      component: () => import('@/scenes/join-game/index.vue'),
-      name: 'join-game' satisfies Scene,
-      path: '/join-game',
-    },
-    {
-      component: () => import('@/scenes/lobby/index.vue'),
-      name: 'lobby' satisfies Scene,
-      path: '/lobby',
-    },
-    {
-      component: () => import('@/scenes/settings/index.vue'),
-      name: 'settings' satisfies Scene,
-      path: '/settings',
-    },
-
-    {
       component: () => import('@/scenes/game/index.vue'),
       path: '/game',
       children: gameRoutes,
+    },
+    {
+      component: () => import('@/scenes/host-game/index.vue'),
+      path: '/host-game',
+      name: 'host-game' satisfies Scene,
+    },
+    {
+      component: () => import('@/scenes/join-game/index.vue'),
+      path: '/join-game',
+      name: 'join-game' satisfies Scene,
+    },
+    {
+      component: () => import('@/scenes/lobby/index.vue'),
+      path: '/lobby',
+      name: 'lobby' satisfies Scene,
+    },
+    {
+      component: () => import('@/scenes/settings/index.vue'),
+      path: '/settings',
+      name: 'settings' satisfies Scene,
     },
   ],
 });

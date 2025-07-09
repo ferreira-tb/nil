@@ -4,8 +4,8 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
-import CatalogRow from './CatalogRow.vue';
 import type { MaybePromise } from '@tb-dev/utils';
+import BuildCatalogRow from './BuildCatalogRow.vue';
 import { Table, TableHead, TableRow } from '@tb-dev/vue-components';
 import type { InfrastructureImpl } from '@/core/model/infrastructure';
 
@@ -45,7 +45,7 @@ const hasSomeAvailable = computed(() => {
       </TableRow>
     </template>
 
-    <CatalogRow
+    <BuildCatalogRow
       :entry="catalog.prefecture"
       :building="infrastructure.prefecture"
       :prefecture="infrastructure.prefecture"
@@ -53,7 +53,7 @@ const hasSomeAvailable = computed(() => {
       :loading
       @build-order="(kind) => onBuildOrder('prefecture', kind)"
     />
-    <CatalogRow
+    <BuildCatalogRow
       :entry="catalog.academy"
       :building="infrastructure.academy"
       :prefecture="infrastructure.prefecture"
@@ -61,7 +61,7 @@ const hasSomeAvailable = computed(() => {
       :loading
       @build-order="(kind) => onBuildOrder('academy', kind)"
     />
-    <CatalogRow
+    <BuildCatalogRow
       :entry="catalog.stable"
       :building="infrastructure.stable"
       :prefecture="infrastructure.prefecture"
@@ -69,7 +69,7 @@ const hasSomeAvailable = computed(() => {
       :loading
       @build-order="(kind) => onBuildOrder('stable', kind)"
     />
-    <CatalogRow
+    <BuildCatalogRow
       :entry="catalog.sawmill"
       :building="infrastructure.sawmill"
       :prefecture="infrastructure.prefecture"
@@ -77,7 +77,7 @@ const hasSomeAvailable = computed(() => {
       :loading
       @build-order="(kind) => onBuildOrder('sawmill', kind)"
     />
-    <CatalogRow
+    <BuildCatalogRow
       :entry="catalog.quarry"
       :building="infrastructure.quarry"
       :prefecture="infrastructure.prefecture"
@@ -85,7 +85,7 @@ const hasSomeAvailable = computed(() => {
       :loading
       @build-order="(kind) => onBuildOrder('quarry', kind)"
     />
-    <CatalogRow
+    <BuildCatalogRow
       :entry="catalog.ironMine"
       :building="infrastructure.ironMine"
       :prefecture="infrastructure.prefecture"
@@ -93,7 +93,7 @@ const hasSomeAvailable = computed(() => {
       :loading
       @build-order="(kind) => onBuildOrder('iron-mine', kind)"
     />
-    <CatalogRow
+    <BuildCatalogRow
       :entry="catalog.farm"
       :building="infrastructure.farm"
       :prefecture="infrastructure.prefecture"
@@ -101,7 +101,7 @@ const hasSomeAvailable = computed(() => {
       :loading
       @build-order="(kind) => onBuildOrder('farm', kind)"
     />
-    <CatalogRow
+    <BuildCatalogRow
       :entry="catalog.warehouse"
       :building="infrastructure.warehouse"
       :prefecture="infrastructure.prefecture"
@@ -109,7 +109,7 @@ const hasSomeAvailable = computed(() => {
       :loading
       @build-order="(kind) => onBuildOrder('warehouse', kind)"
     />
-    <CatalogRow
+    <BuildCatalogRow
       :entry="catalog.silo"
       :building="infrastructure.silo"
       :prefecture="infrastructure.prefecture"
@@ -117,7 +117,7 @@ const hasSomeAvailable = computed(() => {
       :loading
       @build-order="(kind) => onBuildOrder('silo', kind)"
     />
-    <CatalogRow
+    <BuildCatalogRow
       :entry="catalog.wall"
       :building="infrastructure.wall"
       :prefecture="infrastructure.prefecture"

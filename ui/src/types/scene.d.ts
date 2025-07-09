@@ -9,10 +9,12 @@ type InfrastructureScene =
   | 'academy'
   | 'farm'
   | 'iron-mine'
-  | 'prefecture'
   | 'quarry'
   | 'sawmill'
   | 'silo'
   | 'stable'
   | 'wall'
-  | 'warehouse';
+  | 'warehouse'
+  | PrefectureScene;
+
+type PrefectureScene = 'prefecture' | 'village-management';

@@ -54,7 +54,7 @@ async function endTurn() {
 
 <template>
   <SidebarProvider v-model:open="isSidebarOpen">
-    <Sidebar class="z-50">
+    <Sidebar class="z-[var(--game-sidebar-z-index)]">
       <SidebarContent>
         <div v-on-click-outside="[closeSidebar, onClickOutsideOptions]" class="size-full p-4">
           <RouterLink :to="{ name: 'script' satisfies GameScene }">Scripts</RouterLink>

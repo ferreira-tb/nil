@@ -4,11 +4,11 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n';
 import { computed, nextTick } from 'vue';
-import CatalogCellBuilding from './CatalogCellBuilding.vue';
-import { useBuildingLevel } from '@/composables/prefecture';
+import BuildCatalogBuilding from './BuildCatalogBuilding.vue';
 import type { BuildingImpl } from '@/core/model/buildings/abstract';
 import { Button, TableCell, TableRow } from '@tb-dev/vue-components';
 import type { PrefectureImpl } from '@/core/model/buildings/prefecture';
+import { useResolvedBuildingLevel } from '@/composables/useResolvedBuildingLevel';
 
 const props = defineProps<{
   entry: PrefectureBuildCatalogEntry;
@@ -24,10 +24,7 @@ const { t } = useI18n();
 const { player } = NIL.player.refs();
 const { isPlayerTurn } = NIL.round.refs();
 
-const level = useBuildingLevel(
-  () => props.prefecture,
-  () => props.building
-);
+const level = useResolvedBuildingLevel(() => props.building);
 
 const canBuild = computed(() => {
   if (
@@ -65,7 +62,7 @@ async function makeOrder(kind: PrefectureBuildOrderKind) {
 <template>
   <TableRow v-if="entry.kind === 'available'">
     <TableCell class="min-w-24">
-      <CatalogCellBuilding :building :scene />
+      <BuildCatalogBuilding :building :scene />
     </TableCell>
     <TableCell>
       <div class="grid grid-cols-3 items-center justify-start gap-4">
@@ -109,7 +106,7 @@ async function makeOrder(kind: PrefectureBuildOrderKind) {
 
   <TableRow v-else-if="entry.kind === 'maxed'">
     <TableCell>
-      <CatalogCellBuilding :building :scene />
+      <BuildCatalogBuilding :building :scene />
     </TableCell>
     <TableCell colspan="4" class="w-full">
       <div class="text-muted-foreground flex w-full items-center justify-center text-sm">

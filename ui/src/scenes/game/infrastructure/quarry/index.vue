@@ -4,7 +4,7 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { useMineProduction } from '@/composables/mine';
+import { useMineProduction } from '@/composables/useMineProduction';
 import { Card, Table, TableCell, TableHead, TableRow } from '@tb-dev/vue-components';
 
 const { t } = useI18n();

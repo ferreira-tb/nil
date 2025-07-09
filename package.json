@@ -8,7 +8,7 @@
   "scripts": {
     "build": "pwsh scripts/build-bin.ps1",
     "clippy": "cargo clippy --workspace",
-    "dev": "cargo tauri dev",
+    "dev": "pwsh scripts/start-dev.ps1",
     "eslint": "eslint . --config eslint.config.js",
     "format": "prettier . --write && cargo fmt --all",
     "miri": "cargo miri test --tests",

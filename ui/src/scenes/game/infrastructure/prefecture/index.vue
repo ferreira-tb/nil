@@ -3,85 +3,66 @@
 
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n';
-import Catalog from './Catalog.vue';
-import BuildQueue from './BuildQueue.vue';
-import { handleError } from '@/lib/error';
-import { computed, ref, watch } from 'vue';
-import { asyncRef, maybe } from '@tb-dev/vue';
-import { Card } from '@tb-dev/vue-components';
+import { usePrefecture } from '@/composables/usePrefecture';
 import {
-  addPrefectureBuildOrder,
-  cancelPrefectureBuildOrder,
-  getPrefectureBuildCatalog,
-} from '@/commands';
+  Card,
+  Loading,
+  NavigationMenu,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+} from '@tb-dev/vue-components';
 
 const { t } = useI18n();
 
-const { coord, village } = NIL.village.refs();
-
-const infrastructure = computed(() => village.value?.infrastructure);
-const prefecture = computed(() => infrastructure.value?.prefecture);
-
-const {
-  state: catalog,
-  execute: loadCatalog,
-  isLoading: isLoadingCatalog,
-} = asyncRef(null, async () => {
-  return maybe(coord, getPrefectureBuildCatalog);
-});
-
-const isWaitingAddCmd = ref(false);
-const isWaitingCancelCmd = ref(false);
-const loading = computed(() => {
-  return isLoadingCatalog.value || isWaitingAddCmd.value || isWaitingCancelCmd.value;
-});
-
-watch(village, loadCatalog);
-
-async function addBuildOrder(building: BuildingId, kind: PrefectureBuildOrderKind) {
-  if (coord.value && !loading.value) {
-    try {
-      isWaitingAddCmd.value = true;
-      await addPrefectureBuildOrder({ coord: coord.value, building, kind });
-      await loadCatalog();
-    } catch (err) {
-      handleError(err);
-    } finally {
-      isWaitingAddCmd.value = false;
-    }
-  }
-}
-
-async function cancelBuildOrder() {
-  if (coord.value && !loading.value) {
-    try {
-      isWaitingCancelCmd.value = true;
-      await cancelPrefectureBuildOrder(coord.value);
-      await loadCatalog();
-    } catch (err) {
-      handleError(err);
-    } finally {
-      isWaitingCancelCmd.value = false;
-    }
-  }
-}
+const prefecture = usePrefecture();
 </script>
 
 <template>
   <div class="game-layout">
     <Card
-      v-if="infrastructure && prefecture"
+      v-if="prefecture"
       class="size-full"
       content-class="overflow-x-hidden overflow-y-auto px-2"
     >
       <template #title>
-        <span>{{ `${t('prefecture')} (${t('level-x', [prefecture.level])})` }}</span>
+        <div class="flex items-center justify-between">
+          <span>{{ `${t('prefecture')} (${t('level-x', [prefecture.level])})` }}</span>
+          <div>
+            <NavigationMenu>
+              <NavigationMenuList>
+                <NavigationMenuItem>
+                  <NavigationMenuLink as-child>
+                    <RouterLink :to="{ name: 'prefecture' satisfies PrefectureScene }">
+                      {{ t('building', 2) }}
+                    </RouterLink>
+                  </NavigationMenuLink>
+                </NavigationMenuItem>
+                <NavigationMenuItem>
+                  <NavigationMenuLink as-child>
+                    <RouterLink :to="{ name: 'village-management' satisfies PrefectureScene }">
+                      {{ t('management') }}
+                    </RouterLink>
+                  </NavigationMenuLink>
+                </NavigationMenuItem>
+              </NavigationMenuList>
+            </NavigationMenu>
+          </div>
+        </div>
       </template>
 
-      <div class="flex w-full flex-col gap-4 xl:flex-row-reverse">
-        <BuildQueue v-if="prefecture" :prefecture :loading @cancel="cancelBuildOrder" />
-        <Catalog v-if="catalog" :catalog :infrastructure :loading @build-order="addBuildOrder" />
-      </div>
+      <RouterView #default="{ Component }">
+        <template v-if="Component">
+          <KeepAlive>
+            <Suspense>
+              <component :is="Component" />
+              <template #fallback>
+                <Loading class="absolute inset-0" />
+              </template>
+            </Suspense>
+          </KeepAlive>
+        </template>
+      </RouterView>
     </Card>
   </div>
 </template>

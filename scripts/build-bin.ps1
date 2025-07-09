@@ -10,7 +10,7 @@ $ErrorActionPreference = 'Stop'
 $PSNativeCommandUseErrorActionPreference = $true
 
 if (-not $SkipWasm) {
-  pnpm run wasm
+  pnpm run wasm -Release
 }
 
 $BuildCmd = 'cargo tauri build'

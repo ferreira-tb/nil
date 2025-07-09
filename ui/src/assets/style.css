@@ -50,6 +50,10 @@
   font-display: swap;
 }
 
+:root {
+  --game-sidebar-z-index: 100;
+}
+
 button {
   cursor: pointer;
 }
