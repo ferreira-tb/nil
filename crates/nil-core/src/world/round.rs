@@ -16,13 +16,13 @@ impl World {
       .map(Player::id);
 
     self.round.start(ids)?;
-    self.emit_round_update();
+    self.emit_round_updated();
     Ok(())
   }
 
   pub fn end_turn(&mut self, player: &PlayerId) -> Result<()> {
     if self.round.phase_mut().end_turn(player) {
-      self.emit_round_update();
+      self.emit_round_updated();
     }
 
     if !self.round.has_pending_players() {
@@ -42,7 +42,7 @@ impl World {
     self.round.next(ids)?;
     self.prepare_next_round()?;
 
-    self.emit_round_update();
+    self.emit_round_updated();
     self.consume_pending_save()?;
 
     Ok(())

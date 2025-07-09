@@ -72,28 +72,58 @@ pub enum Event {
   ChatMessage {
     message: ChatMessage,
   },
+
   GuestLeft {
     guest: Player,
   },
+
   LobbyUpdated {
     lobby: LobbyState,
   },
+
   PlayerSpawned {
     player: Player,
   },
+
   PlayerStatusUpdated {
     player: PlayerId,
     status: PlayerStatus,
   },
+
   PlayerUpdated {
     player: PlayerId,
   },
+
+  /// Indica que houve uma alteração em algum dado público da aldeia.
+  ///
+  /// Via de regra, sempre que a situação exigir que esse evento seja emitido,
+  /// [`Event::VillageUpdated`] também deverá ser, mas a recíproca não é verdadeira!
+  ///
+  /// Ao contrário do evento [`Event::VillageUpdated`], que é emitido apenas para o
+  /// proprietário da aldeia, esse evento é emitido para todos os jogadores no mundo.
+  PublicVillageUpdated {
+    coord: Coord,
+  },
+
+  /// Indica mudanças no round, como o término do turno de algum jogador
+  /// ou a passagem de um round para outro após todos os jogadores concluírem suas ações.
+  ///
+  /// Quando emitido após ao início ou fim de um round, [`Event::RoundUpdated`] geralmente torna
+  /// desnecessária a emissão de outros eventos, visto que essa situação já naturalmente exige que todas
+  /// as entidades gerenciadas pelo JavaScript solicitem dados novos.
   RoundUpdated {
     round: Round,
   },
+
   VillageSpawned {
     village: PublicVillage,
   },
+
+  /// Indica que houve uma alteração em algum dado da aldeia, seja ele público ou não.
+  ///
+  /// Esse evento é emitido apenas para o proprietário da aldeia. Sendo assim, se você
+  /// acredita que todos os jogadores deveriam ser notificados, provavelmente a situação
+  /// pede a emissão do evento [`Event::PublicVillageUpdated`].
   VillageUpdated {
     coord: Coord,
   },

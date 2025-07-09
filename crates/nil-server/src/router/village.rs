@@ -29,3 +29,23 @@ pub async fn get(
     .map(|village| res!(OK, Json(village)))
     .unwrap_or_else(from_core_err)
 }
+
+pub async fn rename(
+  State(app): State<App>,
+  Extension(current_player): Extension<CurrentPlayer>,
+  Json((coord, name)): Json<(Coord, String)>,
+) -> Response {
+  let result: CoreResult<()> = try {
+    let mut world = app.world.write().await;
+    let village = world.village(coord)?;
+    if village.is_owned_by_player_and(|id| *current_player == *id) {
+      world.rename_village(coord, &name)?
+    } else {
+      return res!(FORBIDDEN);
+    }
+  };
+
+  result
+    .map(|village| res!(OK, Json(village)))
+    .unwrap_or_else(from_core_err)
+}

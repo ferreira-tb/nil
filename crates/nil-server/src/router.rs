@@ -83,6 +83,7 @@ pub(crate) fn create() -> Router<App> {
     .route("/script/update", post(script::update))
     .route("/version", get(version))
     .route("/village", post(village::get))
+    .route("/village/rename", post(village::rename))
     .route("/world/config", get(world::get_config))
     .route("/world/save", post(world::save))
     .route("/world/stats", get(world::get_stats))

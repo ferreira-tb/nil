@@ -9,6 +9,7 @@ use bon::Builder;
 use derive_more::Deref;
 use serde::{Deserialize, Serialize};
 use std::fmt;
+use std::sync::Arc;
 
 #[derive(Builder, Clone, Debug, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
@@ -40,6 +41,10 @@ impl Village {
     &self.name
   }
 
+  pub(crate) fn name_mut(&mut self) -> &mut String {
+    &mut self.name
+  }
+
   #[inline]
   pub fn owner(&self) -> &VillageOwner {
     &self.owner
@@ -60,7 +65,6 @@ impl Village {
     self.stability
   }
 
-  #[inline]
   pub(crate) fn stability_mut(&mut self) -> &mut Stability {
     &mut self.stability
   }
@@ -164,6 +168,7 @@ impl Default for Stability {
   }
 }
 
+/// Proprietário da aldeia.
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 #[serde(tag = "kind", rename_all = "kebab-case")]
 pub enum VillageOwner {
@@ -175,7 +180,7 @@ pub enum VillageOwner {
 }
 
 impl VillageOwner {
-  /// Obtém o id do jogado dono da aldeia, se houver algum.
+  /// Retorna o id do jogador ao qual a aldeia pertence, se houver.
   #[inline]
   pub fn player(&self) -> Option<&PlayerId> {
     if let Self::Player { id } = self {
@@ -198,11 +203,12 @@ impl From<&PlayerId> for VillageOwner {
   }
 }
 
+/// Dados públicos sobre uma aldeia, aos quais qualquer jogador pode ter acesso.
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct PublicVillage {
   coord: Coord,
-  name: String,
+  name: Arc<str>,
   owner: VillageOwner,
 }
 
@@ -210,7 +216,7 @@ impl From<&Village> for PublicVillage {
   fn from(village: &Village) -> Self {
     Self {
       coord: village.coord,
-      name: village.name.clone(),
+      name: Arc::from(village.name.as_str()),
       owner: village.owner.clone(),
     }
   }

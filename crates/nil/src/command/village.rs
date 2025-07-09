@@ -13,3 +13,11 @@ pub async fn get_village(app: AppHandle, coord: Coord) -> Result<Village> {
     .await?
     .map_err(Into::into)
 }
+
+#[tauri::command]
+pub async fn rename_village(app: AppHandle, coord: Coord, name: String) -> Result<()> {
+  app
+    .client(async |cl| cl.rename_village(coord, &name).await)
+    .await?
+    .map_err(Into::into)
+}

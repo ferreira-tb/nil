@@ -13,6 +13,17 @@ use nil_util::serde::{read_file, write_file};
 use serde::{Deserialize, Serialize};
 use std::path::Path;
 
+impl World {
+  pub(super) fn consume_pending_save(&mut self) -> Result<()> {
+    if let Some(mut path) = self.pending_save.take() {
+      path.set_extension("nil");
+      save(self, &path)?;
+    }
+
+    Ok(())
+  }
+}
+
 #[derive(Debug, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Savedata {
@@ -52,15 +63,4 @@ fn save(world: &World, path: &Path) -> Result<()> {
   *savedata.round.phase_mut() = Phase::Idle;
 
   write_file(path, &savedata).map_err(|_| Error::FailedToSaveWorld)
-}
-
-impl World {
-  pub(super) fn consume_pending_save(&mut self) -> Result<()> {
-    if let Some(mut path) = self.pending_save.take() {
-      path.set_extension("nil");
-      save(self, &path)?;
-    }
-
-    Ok(())
-  }
 }

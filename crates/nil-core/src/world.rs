@@ -8,6 +8,7 @@ mod infrastructure;
 mod player;
 mod round;
 mod savedata;
+mod village;
 
 use crate::chat::Chat;
 use crate::continent::Continent;

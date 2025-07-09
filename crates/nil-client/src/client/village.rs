@@ -10,4 +10,12 @@ impl Client {
   pub async fn get_village(&self, coord: Coord) -> Result<Village> {
     self.http.post_json("village", coord).await
   }
+
+  /// POST `/village/rename`
+  pub async fn rename_village(&self, coord: Coord, name: &str) -> Result<()> {
+    self
+      .http
+      .post("village/rename", (coord, name))
+      .await
+  }
 }
