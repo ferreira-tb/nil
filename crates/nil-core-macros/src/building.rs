@@ -43,6 +43,10 @@ pub fn impl_building(ast: &DeriveInput) -> TokenStream {
           self.enabled
         }
 
+        fn toggle(&mut self, enabled: bool) {
+          self.enabled = enabled;
+        }
+
         fn level(&self) -> BuildingLevel {
           self.level
         }

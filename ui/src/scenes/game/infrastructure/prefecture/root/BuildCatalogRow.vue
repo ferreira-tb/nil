@@ -17,6 +17,7 @@ const props = defineProps<{
   scene: GameScene;
   loading: boolean;
   onBuildOrder: (kind: PrefectureBuildOrderKind) => void;
+  onToggle: () => void;
 }>();
 
 const { t } = useI18n();
@@ -82,8 +83,9 @@ async function makeOrder(kind: PrefectureBuildOrderKind) {
       </div>
     </TableCell>
     <TableCell class="min-w-30">
-      <div class="grid max-w-fit grid-cols-2 items-center justify-start gap-4">
+      <div class="grid max-w-fit grid-cols-2 items-center justify-start gap-4 lg:grid-cols-3">
         <Button
+          variant="default"
           size="sm"
           :disabled="!canBuild"
           class="max-w-24"
@@ -92,10 +94,19 @@ async function makeOrder(kind: PrefectureBuildOrderKind) {
           <span>{{ t('build') }}</span>
         </Button>
         <Button
+          variant="secondary"
+          size="sm"
+          :disabled="loading || !isPlayerTurn"
+          class="max-w-24"
+          @click="() => onToggle()"
+        >
+          <span>{{ building.enabled ? t('disable') : t('enable') }}</span>
+        </Button>
+        <Button
           variant="destructive"
           size="sm"
           :disabled="!canDemolish"
-          class="max-w-24"
+          class="hidden max-w-24 lg:inline-flex"
           @click="() => makeOrder('demolition')"
         >
           <span>{{ t('demolish') }}</span>

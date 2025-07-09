@@ -38,7 +38,9 @@ use strum::{Display, EnumIter};
 
 pub trait Building {
   fn id(&self) -> BuildingId;
+
   fn is_enabled(&self) -> bool;
+  fn toggle(&mut self, enabled: bool);
 
   fn level(&self) -> BuildingLevel;
   fn min_level(&self) -> BuildingLevel;

@@ -14,23 +14,23 @@ const { coord, village } = NIL.village.refs();
 const infrastructure = useInfrastructure();
 const prefecture = usePrefecture();
 
-const { addBuildOrder, buildCatalog, cancelBuildOrder, loadCatalog, loading } =
-  usePrefectureBuildCatalog(coord);
+const { catalog, loading, add, cancel, load, toggle } = usePrefectureBuildCatalog(coord);
 
-await loadCatalog();
+await load();
 
-watch(village, loadCatalog);
+watch(village, load);
 </script>
 
 <template>
   <div class="flex w-full flex-col gap-4 xl:flex-row-reverse">
-    <BuildQueue v-if="prefecture" :prefecture :loading @cancel="cancelBuildOrder" />
+    <BuildQueue v-if="prefecture" :prefecture :loading @cancel="cancel" />
     <BuildCatalog
-      v-if="infrastructure && buildCatalog"
-      :catalog="buildCatalog"
+      v-if="infrastructure && catalog"
+      :catalog
       :infrastructure
       :loading
-      @build-order="addBuildOrder"
+      @build-order="add"
+      @toggle="toggle"
     />
   </div>
 </template>

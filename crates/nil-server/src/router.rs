@@ -61,6 +61,7 @@ pub(crate) fn create() -> Router<App> {
     .route("/infrastructure/prefecture/build/add", post(prefecture::add_build_order))
     .route("/infrastructure/prefecture/build/cancel", post(prefecture::cancel_build_order))
     .route("/infrastructure/prefecture/build/catalog", post(prefecture::get_build_catalog))
+    .route("/infrastructure/toggle", post(infrastructure::toggle))
     .route("/leave", post(leave))
     .route("/lobby", get(lobby::get))
     .route("/lobby/ready", post(lobby::ready))
