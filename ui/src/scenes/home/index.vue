@@ -15,11 +15,11 @@ const { t } = useI18n();
       {{ t('game-title') }}
     </h1>
     <div class="flex flex-col gap-2">
-      <ButtonLink to="join-game" variant="default">
-        <span>{{ t('join-game') }}</span>
-      </ButtonLink>
-      <ButtonLink to="host-game" variant="secondary">
+      <ButtonLink to="host-game" variant="default">
         <span>{{ t('host-game') }}</span>
+      </ButtonLink>
+      <ButtonLink to="join-game" variant="secondary">
+        <span>{{ t('join-game') }}</span>
       </ButtonLink>
       <ButtonLink to="settings" variant="secondary">
         <span>{{ t('settings') }}</span>
