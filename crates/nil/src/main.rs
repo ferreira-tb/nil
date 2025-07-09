@@ -60,6 +60,7 @@ fn main() {
       command::continent::get_field,
       command::continent::get_fields,
       command::continent::get_continent_size,
+      command::infrastructure::toggle_building,
       command::infrastructure::prefecture::add_prefecture_build_order,
       command::infrastructure::prefecture::cancel_prefecture_build_order,
       command::infrastructure::prefecture::get_prefecture_build_catalog,

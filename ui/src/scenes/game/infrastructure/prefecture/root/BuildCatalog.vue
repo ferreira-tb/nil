@@ -14,6 +14,7 @@ const props = defineProps<{
   infrastructure: InfrastructureImpl;
   loading: boolean;
   onBuildOrder: (id: BuildingId, kind: PrefectureBuildOrderKind) => MaybePromise<void>;
+  onToggle: (id: BuildingId, enabled: boolean) => MaybePromise<void>;
 }>();
 
 const { t } = useI18n();
@@ -52,6 +53,7 @@ const hasSomeAvailable = computed(() => {
       scene="prefecture"
       :loading
       @build-order="(kind) => onBuildOrder('prefecture', kind)"
+      @toggle="() => onToggle('prefecture', !infrastructure.prefecture.enabled)"
     />
     <BuildCatalogRow
       :entry="catalog.academy"
@@ -60,6 +62,7 @@ const hasSomeAvailable = computed(() => {
       scene="academy"
       :loading
       @build-order="(kind) => onBuildOrder('academy', kind)"
+      @toggle="() => onToggle('academy', !infrastructure.academy.enabled)"
     />
     <BuildCatalogRow
       :entry="catalog.stable"
@@ -68,6 +71,7 @@ const hasSomeAvailable = computed(() => {
       scene="stable"
       :loading
       @build-order="(kind) => onBuildOrder('stable', kind)"
+      @toggle="() => onToggle('stable', !infrastructure.stable.enabled)"
     />
     <BuildCatalogRow
       :entry="catalog.sawmill"
@@ -76,6 +80,7 @@ const hasSomeAvailable = computed(() => {
       scene="sawmill"
       :loading
       @build-order="(kind) => onBuildOrder('sawmill', kind)"
+      @toggle="() => onToggle('sawmill', !infrastructure.sawmill.enabled)"
     />
     <BuildCatalogRow
       :entry="catalog.quarry"
@@ -84,6 +89,7 @@ const hasSomeAvailable = computed(() => {
       scene="quarry"
       :loading
       @build-order="(kind) => onBuildOrder('quarry', kind)"
+      @toggle="() => onToggle('quarry', !infrastructure.quarry.enabled)"
     />
     <BuildCatalogRow
       :entry="catalog.ironMine"
@@ -92,6 +98,7 @@ const hasSomeAvailable = computed(() => {
       scene="iron-mine"
       :loading
       @build-order="(kind) => onBuildOrder('iron-mine', kind)"
+      @toggle="() => onToggle('iron-mine', !infrastructure.ironMine.enabled)"
     />
     <BuildCatalogRow
       :entry="catalog.farm"
@@ -100,6 +107,7 @@ const hasSomeAvailable = computed(() => {
       scene="farm"
       :loading
       @build-order="(kind) => onBuildOrder('farm', kind)"
+      @toggle="() => onToggle('farm', !infrastructure.farm.enabled)"
     />
     <BuildCatalogRow
       :entry="catalog.warehouse"
@@ -108,6 +116,7 @@ const hasSomeAvailable = computed(() => {
       scene="warehouse"
       :loading
       @build-order="(kind) => onBuildOrder('warehouse', kind)"
+      @toggle="() => onToggle('warehouse', !infrastructure.warehouse.enabled)"
     />
     <BuildCatalogRow
       :entry="catalog.silo"
@@ -116,6 +125,7 @@ const hasSomeAvailable = computed(() => {
       scene="silo"
       :loading
       @build-order="(kind) => onBuildOrder('silo', kind)"
+      @toggle="() => onToggle('silo', !infrastructure.silo.enabled)"
     />
     <BuildCatalogRow
       :entry="catalog.wall"
@@ -124,6 +134,7 @@ const hasSomeAvailable = computed(() => {
       scene="wall"
       :loading
       @build-order="(kind) => onBuildOrder('wall', kind)"
+      @toggle="() => onToggle('wall', !infrastructure.wall.enabled)"
     />
   </Table>
 </template>

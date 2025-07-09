@@ -2,3 +2,23 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 
 mod prefecture;
+
+use super::World;
+use crate::error::Result;
+use crate::infrastructure::building::BuildingId;
+use crate::village::Coord;
+
+impl World {
+  pub fn toggle_building(&mut self, coord: Coord, id: BuildingId, enabled: bool) -> Result<()> {
+    self
+      .continent
+      .village_mut(coord)?
+      .infrastructure_mut()
+      .building_mut(id)
+      .toggle(enabled);
+
+    self.emit_village_updated(coord);
+
+    Ok(())
+  }
+}
