@@ -24,6 +24,7 @@ impl World {
         .set_level(level);
 
       self.emit_village_updated(coord);
+
       Ok(())
     } else {
       Err(Error::CheatingNotAllowed)
@@ -57,6 +58,7 @@ impl World {
       }
 
       self.emit_village_updated(coord);
+
       Ok(())
     } else {
       Err(Error::CheatingNotAllowed)

@@ -2,10 +2,9 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 
 use crate::chat::ChatMessage;
-use crate::lobby::LobbyState;
-use crate::player::{Player, PlayerId, PlayerStatus};
+use crate::player::PlayerId;
 use crate::round::Round;
-use crate::village::{Coord, PublicVillage};
+use crate::village::Coord;
 use bytes::Bytes;
 use nil_util::serde::{from_slice, to_bytes};
 use serde::{Deserialize, Serialize};
@@ -69,25 +68,8 @@ impl fmt::Debug for Emitter {
 #[strum(serialize_all = "kebab-case")]
 #[remain::sorted]
 pub enum Event {
-  ChatMessage {
+  ChatUpdated {
     message: ChatMessage,
-  },
-
-  GuestLeft {
-    guest: Player,
-  },
-
-  LobbyUpdated {
-    lobby: LobbyState,
-  },
-
-  PlayerSpawned {
-    player: Player,
-  },
-
-  PlayerStatusUpdated {
-    player: PlayerId,
-    status: PlayerStatus,
   },
 
   PlayerUpdated {
@@ -113,10 +95,6 @@ pub enum Event {
   /// as entidades gerenciadas pelo JavaScript solicitem dados novos.
   RoundUpdated {
     round: Round,
-  },
-
-  VillageSpawned {
-    village: PublicVillage,
   },
 
   /// Indica que houve uma alteração em algum dado da aldeia, seja ele público ou não.

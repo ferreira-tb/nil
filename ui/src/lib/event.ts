@@ -34,15 +34,10 @@ class Listener<T extends EventPayload> {
 
   // prettier-ignore
   public static readonly listeners = {
-    onChatMessage: new this<ChatMessagePayload>('chat-message'),
-    onGuestLeft: new this<GuestLeftPayload>('guest-left'),
-    onLobbyUpdated: new this<LobbyUpdatedPayload>('lobby-updated'),
-    onPlayerSpawned: new this<PlayerSpawnedPayload>('player-spawned'),
-    onPlayerStatusUpdated: new this<PlayerStatusUpdatedPayload>('player-status-updated'),
+    onChatUpdated: new this<ChatUpdatedPayload>('chat-updated'),
     onPlayerUpdated: new this<PlayerUpdatedPayload>('player-updated'),
     onPublicVillageUpdated: new this<PublicVillageUpdatedPayload>('public-village-updated'),
     onRoundUpdated: new this<RoundUpdatedPayload>('round-updated'),
-    onVillageSpawned: new this<VillageSpawnedPayload>('village-spawned'),
     onVillageUpdated: new this<VillageUpdatedPayload>('village-updated')
   } as const;
 }

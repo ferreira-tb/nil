@@ -4,20 +4,12 @@
 use super::World;
 use crate::error::{Error, Result};
 use crate::player::{Player, PlayerId, PlayerStatus};
-use crate::village::{PublicVillage, Village};
+use crate::village::Village;
 
 impl World {
   #[inline]
   pub fn has_player(&self, id: &PlayerId) -> bool {
     self.player_manager.has(id)
-  }
-
-  pub fn remove_guest(&mut self, id: &PlayerId) -> Result<()> {
-    if let Some(player) = self.player_manager.remove_guest(id) {
-      self.emit_guest_left(player);
-    }
-
-    Ok(())
   }
 
   pub fn set_player_status(&mut self, id: &PlayerId, status: PlayerStatus) -> Result<()> {
@@ -26,39 +18,29 @@ impl World {
       .player_mut(id)?
       .status_mut() = status;
 
-    self.emit_player_status_updated(id.clone(), status);
+    self.emit_player_updated(id.clone());
 
     Ok(())
   }
 
-  pub fn spawn_player(&mut self, player: Player) -> Result<()> {
+  pub fn spawn_player(&mut self, mut player: Player) -> Result<()> {
     let id = player.id();
     if self.has_player(&id) {
       Err(Error::PlayerAlreadySpawned(id))
     } else {
-      self.player_manager.insert(player.clone());
-      self.emit_player_spawned(player);
-      Ok(())
-    }
-  }
-
-  pub fn spawn_player_village(&mut self, id: PlayerId) -> Result<()> {
-    let player = self.player_manager.player_mut(&id)?;
-    if player.is_guest() {
-      let coord = self.continent.find_spawn_point()?;
-      let village = Village::builder(coord)
+      let (coord, field) = self.continent.find_spawn_point()?;
+      *field = Village::builder(coord)
         .name(&*id)
         .owner(&id)
-        .build();
+        .build()
+        .into();
 
-      let public = PublicVillage::from(&village);
-      *self.continent.field_mut(coord)? = village.into();
-      self.set_player_status(&id, PlayerStatus::Active)?;
+      *player.status_mut() = PlayerStatus::Active;
+      self.player_manager.insert(player);
 
-      self.emit_village_spawned(public);
+      self.emit_public_village_updated(coord);
+
       Ok(())
-    } else {
-      Err(Error::NotAGuest(id))
     }
   }
 }

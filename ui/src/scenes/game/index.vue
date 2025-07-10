@@ -8,12 +8,14 @@ import Footer from './Footer.vue';
 import { useI18n } from 'vue-i18n';
 import * as commands from '@/commands';
 import { useToggle } from '@vueuse/core';
-import { onCtrlKeyDown } from '@tb-dev/vue';
 import { onBeforeRouteUpdate } from 'vue-router';
 import { leaveGame, saveGame } from '@/core/game';
 import { defineGlobalCheats } from '@/lib/global';
 import Finder from '@/components/finder/Finder.vue';
+import { asyncRef, onCtrlKeyDown } from '@tb-dev/vue';
 import { nextTick, onMounted, useTemplateRef } from 'vue';
+import { usePlayerTurn } from '@/composables/usePlayerTurn';
+import { writeText } from '@tauri-apps/plugin-clipboard-manager';
 import { type OnClickOutsideProps, vOnClickOutside } from '@vueuse/components';
 import {
   Button,
@@ -21,12 +23,19 @@ import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
+  SidebarHeader,
   SidebarProvider,
 } from '@tb-dev/vue-components';
 
 const { t } = useI18n();
 
-const { isPlayerTurn } = NIL.round.refs();
+const { config } = NIL.world.refs();
+const { round } = NIL.round.refs();
+
+const isPlayerTurn = usePlayerTurn();
+
+const { state: isHost } = asyncRef(false, commands.isHost);
+const { state: serverAddr } = asyncRef(null, commands.getServerAddr);
 
 const [isSidebarOpen, toggleSidebar] = useToggle(false);
 const closeSidebar = () => void toggleSidebar(false);
@@ -48,10 +57,24 @@ onBeforeRouteUpdate(closeSidebar);
 
 onMounted(() => defineGlobalCheats());
 
+async function startRound() {
+  await nextTick();
+  if (isHost.value && round.value?.phase.kind === 'idle') {
+    commands.startRound().err();
+  }
+}
+
 async function endTurn() {
   await nextTick();
   if (isPlayerTurn.value) {
     commands.endTurn().err();
+  }
+}
+
+function copyServerAddr() {
+  if (serverAddr.value) {
+    const addr = serverAddr.value.format();
+    writeText(addr).err();
   }
 }
 </script>
@@ -59,6 +82,19 @@ async function endTurn() {
 <template>
   <SidebarProvider v-model:open="isSidebarOpen">
     <Sidebar class="z-[var(--game-sidebar-z-index)]">
+      <SidebarHeader>
+        <div class="flex flex-col items-center">
+          <h1 v-if="config" class="font-nil text-lg">{{ config.name }}</h1>
+          <h2
+            v-if="serverAddr"
+            class="text-muted-foreground cursor-pointer text-sm"
+            @click="copyServerAddr"
+          >
+            {{ serverAddr.format() }}
+          </h2>
+        </div>
+      </SidebarHeader>
+
       <SidebarContent>
         <div v-on-click-outside="[closeSidebar, onClickOutsideOptions]" class="size-full p-4">
           <RouterLink :to="{ name: 'script' satisfies GameScene }">Scripts</RouterLink>
@@ -82,8 +118,10 @@ async function endTurn() {
 
     <div class="bg-muted/40 absolute inset-0 overflow-hidden">
       <Header
+        :is-host
         class="bg-background absolute inset-x-0 top-0 h-16 border-b px-4"
-        @turn-end="endTurn"
+        @start-round="startRound"
+        @end-turn="endTurn"
       />
 
       <div class="absolute inset-x-0 top-16 bottom-10 overflow-hidden">

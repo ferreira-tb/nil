@@ -17,6 +17,7 @@ impl World {
 
     self.round.start(ids)?;
     self.emit_round_updated();
+
     Ok(())
   }
 
@@ -61,8 +62,8 @@ impl World {
     let mut diff: HashMap<PlayerId, ResourcesDiff> = HashMap::new();
 
     for village in self.continent.villages() {
-      if let Some(player_id) = village.owner().player() {
-        let resources = diff.entry(player_id.clone()).or_default();
+      if let Some(player_id) = village.owner().player().cloned() {
+        let resources = diff.entry(player_id).or_default();
         *resources += village.round_production(stats)?;
         resources.food -= village.round_maintenance(stats)?;
       }

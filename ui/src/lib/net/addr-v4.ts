@@ -3,8 +3,10 @@
 
 import type { Option } from '@tb-dev/utils';
 
+type IpV4 = readonly [number, number, number, number];
+
 export class IpAddrV4 {
-  private constructor(public readonly ip: [number, number, number, number]) {}
+  private constructor(public readonly ip: IpV4) {}
 
   public format() {
     return this.ip.join('.');

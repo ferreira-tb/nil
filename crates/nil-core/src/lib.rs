@@ -11,7 +11,6 @@ pub mod continent;
 pub mod error;
 pub mod event;
 pub mod infrastructure;
-pub mod lobby;
 pub mod player;
 pub mod resource;
 pub mod round;

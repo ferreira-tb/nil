@@ -20,6 +20,6 @@ pub async fn start_client(
 }
 
 #[tauri::command]
-pub async fn stop_client(app: AppHandle) -> Result<()> {
-  app.nil().stop_client().await
+pub async fn stop_client(app: AppHandle) {
+  app.nil().stop_client().await;
 }

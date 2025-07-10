@@ -55,7 +55,6 @@ fn save(world: &World, path: &Path) -> Result<()> {
     time: Zoned::now(),
   };
 
-  savedata.player_manager.remove_guests();
   for player in savedata.player_manager.players_mut() {
     *player.status_mut() = PlayerStatus::Inactive;
   }

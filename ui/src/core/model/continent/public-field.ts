@@ -7,7 +7,7 @@ import type { CoordImpl } from '@/core/model/coord';
 import type { MaybePromise, Option } from '@tb-dev/utils';
 import { PublicVillageImpl } from '@/core/model/village/public';
 
-enum PublicFieldFlags {
+enum Flags {
   Uninit = 1,
   Loading = 1 << 1,
   Empty = 1 << 2,
@@ -16,7 +16,7 @@ enum PublicFieldFlags {
 
 export class PublicFieldImpl {
   public readonly coord: CoordImpl;
-  #flags: PublicFieldFlags = PublicFieldFlags.Uninit;
+  #flags: Flags = Flags.Uninit;
   #village: Option<PublicVillageImpl>;
 
   private constructor(coord: CoordImpl) {
@@ -24,21 +24,21 @@ export class PublicFieldImpl {
   }
 
   public async load(options?: LoadOptions) {
-    if (!(this.#flags & PublicFieldFlags.Loading)) {
-      this.#flags |= PublicFieldFlags.Loading;
+    if (!(this.#flags & Flags.Loading)) {
+      this.#flags |= Flags.Loading;
       try {
         await options?.onBeforeLoad?.();
         this.set(await getField(this.coord));
         await options?.onLoad?.();
       } catch (err) {
-        this.#flags ^= PublicFieldFlags.Loading;
+        this.#flags ^= Flags.Loading;
         throw err;
       }
     }
   }
 
   private init(field: PublicField) {
-    if (this.#flags & PublicFieldFlags.Uninit) {
+    if (this.#flags & Flags.Uninit) {
       this.set(field);
       return true;
     }
@@ -49,12 +49,12 @@ export class PublicFieldImpl {
   private set(field: PublicField) {
     switch (field.kind) {
       case 'empty': {
-        this.#flags = PublicFieldFlags.Empty;
+        this.#flags = Flags.Empty;
         this.#village = null;
         break;
       }
       case 'village': {
-        this.#flags = PublicFieldFlags.Village;
+        this.#flags = Flags.Village;
         this.#village = PublicVillageImpl.create(field.village);
         break;
       }
@@ -62,19 +62,19 @@ export class PublicFieldImpl {
   }
 
   public isUninit() {
-    return this.#flags & PublicFieldFlags.Uninit;
+    return this.#flags & Flags.Uninit;
   }
 
   public isLoading() {
-    return this.#flags & PublicFieldFlags.Loading;
+    return this.#flags & Flags.Loading;
   }
 
   public isEmpty() {
-    return this.#flags & PublicFieldFlags.Empty;
+    return this.#flags & Flags.Empty;
   }
 
   public isVillage() {
-    return this.#flags & PublicFieldFlags.Village;
+    return this.#flags & Flags.Village;
   }
 
   public isOutside(size: number) {
@@ -121,7 +121,7 @@ export class PublicFieldImpl {
       const coords: Coord[] = [];
       for (const field of fields) {
         if (
-          field.flags === PublicFieldFlags.Uninit &&
+          field.flags === Flags.Uninit &&
           !isInitializing.has(field.id) &&
           !field.coord.isOutside(continentSize)
         ) {

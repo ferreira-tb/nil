@@ -16,6 +16,7 @@ const props = defineProps<{
   prefecture: PrefectureImpl;
   scene: GameScene;
   loading: boolean;
+  isPlayerTurn: boolean;
   onBuildOrder: (kind: PrefectureBuildOrderKind) => void;
   onToggle: () => void;
 }>();
@@ -23,7 +24,6 @@ const props = defineProps<{
 const { t } = useI18n();
 
 const { player } = NIL.player.refs();
-const { isPlayerTurn } = NIL.round.refs();
 
 const level = useResolvedBuildingLevel(() => props.building);
 
@@ -31,7 +31,7 @@ const canBuild = computed(() => {
   if (
     !props.loading &&
     player.value &&
-    isPlayerTurn.value &&
+    props.isPlayerTurn &&
     props.prefecture.enabled &&
     level.value.next <= level.value.max &&
     props.entry.kind === 'available'
@@ -46,7 +46,7 @@ const canDemolish = computed(() => {
   return (
     !props.loading &&
     player.value &&
-    isPlayerTurn.value &&
+    props.isPlayerTurn &&
     props.prefecture.enabled &&
     level.value.previous >= level.value.min
   );

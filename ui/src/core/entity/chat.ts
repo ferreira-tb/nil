@@ -23,14 +23,14 @@ export class ChatEntity extends Entity {
   }
 
   protected override initListeners() {
-    this.event.onChatMessage(this.onChatMessage.bind(this));
+    this.event.onChatUpdated(this.onChatUpdated.bind(this));
   }
 
   public override async update() {
     await this.updateChat();
   }
 
-  private onChatMessage({ message }: ChatMessagePayload) {
+  private onChatUpdated({ message }: ChatUpdatedPayload) {
     this.chat.value.push(message);
     this.chat.value.sort((a, b) => compare(a.message.id, b.message.id));
     triggerRef(this.chat);

@@ -4,8 +4,8 @@
 use super::World;
 use crate::chat::ChatMessage;
 use crate::event::{Event, Listener};
-use crate::player::{Player, PlayerId, PlayerStatus};
-use crate::village::{Coord, PublicVillage};
+use crate::player::PlayerId;
+use crate::village::Coord;
 
 impl World {
   #[inline]
@@ -33,23 +33,8 @@ impl World {
   }
 
   /// Emite [`Event::ChatMessage`].
-  pub(super) fn emit_chat_message(&self, message: ChatMessage) {
-    self.broadcast(Event::ChatMessage { message });
-  }
-
-  /// Emite [`Event::GuestLeft`].
-  pub(super) fn emit_guest_left(&self, guest: Player) {
-    self.broadcast(Event::GuestLeft { guest });
-  }
-
-  /// Emite [`Event::PlayerSpawned`].
-  pub(super) fn emit_player_spawned(&self, player: Player) {
-    self.broadcast(Event::PlayerSpawned { player });
-  }
-
-  /// Emite [`Event::PlayerStatusUpdated`].
-  pub(super) fn emit_player_status_updated(&self, id: PlayerId, status: PlayerStatus) {
-    self.broadcast(Event::PlayerStatusUpdated { player: id, status });
+  pub(super) fn emit_chat_updated(&self, message: ChatMessage) {
+    self.broadcast(Event::ChatUpdated { message });
   }
 
   /// Emite [`Event::PlayerUpdated`].
@@ -66,11 +51,6 @@ impl World {
   pub(super) fn emit_round_updated(&self) {
     let round = self.round.clone();
     self.broadcast(Event::RoundUpdated { round });
-  }
-
-  /// Emite [`Event::VillageSpawned`].
-  pub(super) fn emit_village_spawned(&self, village: PublicVillage) {
-    self.broadcast(Event::VillageSpawned { village });
   }
 
   /// Emite [`Event::VillageUpdated`].

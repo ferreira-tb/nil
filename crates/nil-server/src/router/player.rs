@@ -39,10 +39,10 @@ pub async fn get_coords(State(app): State<App>, Json(id): Json<PlayerId>) -> Res
     .await
 }
 
-pub async fn remove_guest(State(app): State<App>, Json(id): Json<PlayerId>) -> Response {
+pub async fn get_status(State(app): State<App>, Json(id): Json<PlayerId>) -> Response {
   app
-    .world_mut(|world| world.remove_guest(&id))
-    .map_ok(|()| res!(OK))
+    .player_manager(|pm| pm.player(&id).map(Player::status))
+    .map_ok(|status| res!(OK, Json(status)))
     .unwrap_or_else(from_core_err)
     .await
 }
@@ -61,14 +61,6 @@ pub async fn set_status(
 pub async fn spawn(State(app): State<App>, Json(options): Json<PlayerOptions>) -> Response {
   app
     .world_mut(|world| world.spawn_player(Player::new(options)))
-    .map_ok(|()| res!(CREATED))
-    .unwrap_or_else(from_core_err)
-    .await
-}
-
-pub async fn spawn_village(State(app): State<App>, Json(id): Json<PlayerId>) -> Response {
-  app
-    .world_mut(|world| world.spawn_player_village(id))
     .map_ok(|()| res!(CREATED))
     .unwrap_or_else(from_core_err)
     .await

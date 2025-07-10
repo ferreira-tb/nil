@@ -28,8 +28,6 @@ export function usePrefectureBuildCatalog(coord?: MaybeNilRef<Option<CoordImpl>>
       } finally {
         loading.value = false;
       }
-    } else {
-      catalog.value = null;
     }
   }
 

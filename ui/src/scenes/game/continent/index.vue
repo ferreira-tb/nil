@@ -183,6 +183,7 @@ function move(dir: 'up' | 'down' | 'left' | 'right') {
     }
 
     continent.set_center(new WasmCoord(x, y));
+
     render();
   };
 }

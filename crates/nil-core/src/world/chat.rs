@@ -8,7 +8,7 @@ impl World {
   pub fn push_chat_message(&mut self, message: impl Into<ChatMessage>) -> ChatMessageId {
     let mut message: ChatMessage = message.into();
     let id = self.chat.push(&mut message);
-    self.emit_chat_message(message);
+    self.emit_chat_updated(message);
     id
   }
 }

@@ -147,7 +147,6 @@ impl Mul<f64> for RangedDebuff {
   }
 }
 
-
 #[derive(Clone, Copy, Debug, Deref, Deserialize, Serialize)]
 pub struct Speed(f64);
 

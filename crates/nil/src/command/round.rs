@@ -33,8 +33,11 @@ pub async fn is_round_idle(app: AppHandle) -> Result<bool> {
 
 #[tauri::command]
 pub async fn start_round(app: AppHandle) -> Result<()> {
-  app
-    .client(async |cl| cl.start_round().await)
-    .await?
-    .map_err(Into::into)
+  if app.nil().is_host().await {
+    app
+      .client(async |cl| cl.start_round().await)
+      .await??;
+  }
+
+  Ok(())
 }

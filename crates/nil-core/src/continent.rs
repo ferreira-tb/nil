@@ -114,8 +114,8 @@ impl Continent {
     let y = usize::from(coord.y());
     let index = (y * size) + x;
 
-    debug_assert!(x <= size);
-    debug_assert!(y <= size);
+    debug_assert!(x < size);
+    debug_assert!(y < size);
     debug_assert!(index < self.fields.len());
 
     index
@@ -132,13 +132,14 @@ impl Continent {
     ))
   }
 
-  pub(crate) fn find_spawn_point(&self) -> Result<Coord> {
+  pub(crate) fn find_spawn_point(&mut self) -> Result<(Coord, &mut Field)> {
     self
       .fields
       .iter()
       .position(Field::is_empty)
-      .map(|index| self.coord(index))
-      .ok_or(Error::WorldIsFull)?
+      .ok_or(Error::WorldIsFull)
+      .and_then(|index| self.coord(index))
+      .and_then(|coord| Ok((coord, self.field_mut(coord)?)))
   }
 }
 

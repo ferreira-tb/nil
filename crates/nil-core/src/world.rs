@@ -82,11 +82,6 @@ impl World {
   }
 
   #[inline]
-  pub(crate) fn emitter(&self) -> Emitter {
-    self.emitter.clone()
-  }
-
-  #[inline]
   pub fn config(&self) -> WorldConfig {
     self.config.clone()
   }

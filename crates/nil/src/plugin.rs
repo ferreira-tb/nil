@@ -10,11 +10,9 @@ use tauri::{AppHandle, RunEvent, Wry};
 
 pub fn on_exit() -> TauriPlugin<Wry> {
   let task = async |app: &AppHandle| {
-    let _: Result<()> = try {
-      let nil = app.nil();
-      nil.stop_client().await?;
-      nil.stop_server().await;
-    };
+    let nil = app.nil();
+    nil.stop_client().await;
+    nil.stop_server().await;
   };
 
   Builder::new("on-exit")

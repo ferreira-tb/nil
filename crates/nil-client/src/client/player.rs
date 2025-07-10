@@ -43,11 +43,11 @@ impl Client {
     self.http.post("player/spawn", options).await
   }
 
-  /// POST `/player/spawn-village`
-  pub async fn spawn_player_village(&self, id: PlayerId) -> Result<()> {
+  /// POST `/player/status`
+  pub async fn get_player_status(&self, id: PlayerId) -> Result<PlayerStatus> {
     self
       .http
-      .post("player/spawn-village", id)
+      .post_json("player/status", id)
       .await
   }
 }

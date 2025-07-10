@@ -86,13 +86,11 @@ impl Nil {
       .await
   }
 
-  pub async fn stop_client(&self) -> Result<()> {
+  pub async fn stop_client(&self) {
     let mut lock = self.client.write().await;
     if let Some(client) = lock.take() {
-      client.stop().await?;
+      client.stop().await;
     }
-
-    Ok(())
   }
 
   pub async fn stop_server(&self) {
