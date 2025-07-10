@@ -12,6 +12,7 @@ import { onCtrlKeyDown } from '@tb-dev/vue';
 import { onBeforeRouteUpdate } from 'vue-router';
 import { leaveGame, saveGame } from '@/core/game';
 import { defineGlobalCheats } from '@/lib/global';
+import Finder from '@/components/finder/Finder.vue';
 import { nextTick, onMounted, useTemplateRef } from 'vue';
 import { type OnClickOutsideProps, vOnClickOutside } from '@vueuse/components';
 import {
@@ -35,7 +36,10 @@ const onClickOutsideOptions: OnClickOutsideProps['options'] = {
   ignore: [sidebarFooter],
 };
 
+const [isFinderOpen, toggleFinder] = useToggle(false);
+
 onCtrlKeyDown(['b', 'B'], () => toggleSidebar());
+onCtrlKeyDown(['f', 'F'], () => toggleFinder());
 onCtrlKeyDown(['m', 'M'], () => go('continent'));
 onCtrlKeyDown(['s', 'S'], () => saveGame());
 onCtrlKeyDown(' ', () => endTurn());
@@ -96,6 +100,8 @@ async function endTurn() {
       </div>
 
       <Footer class="bg-background absolute inset-x-0 bottom-0 h-10 border-t px-6" />
+
+      <Finder v-model:open="isFinderOpen" />
     </div>
   </SidebarProvider>
 </template>
