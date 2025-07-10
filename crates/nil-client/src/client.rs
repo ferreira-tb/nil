@@ -5,7 +5,6 @@ mod chat;
 mod cheat;
 mod continent;
 mod infrastructure;
-mod lobby;
 mod player;
 mod round;
 mod script;
@@ -38,10 +37,9 @@ impl Client {
     Ok(Client { player, server, http, websocket })
   }
 
-  pub async fn stop(self) -> Result<()> {
-    self.http.post("leave", self.player).await?;
+  pub async fn stop(self) {
+    let _ = self.leave().await;
     self.websocket.stop();
-    Ok(())
   }
 
   pub fn player(&self) -> PlayerId {
@@ -68,6 +66,11 @@ impl Client {
       .await
       .map(|()| true)
       .unwrap_or(false)
+  }
+
+  /// GET `/leave`
+  async fn leave(&self) -> Result<()> {
+    self.http.get("leave").await
   }
 
   /// GET `/version`

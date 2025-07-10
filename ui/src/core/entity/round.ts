@@ -1,19 +1,14 @@
 // Copyright (C) Call of Nil contributors
 // SPDX-License-Identifier: AGPL-3.0-only
 
+import type { Ref } from 'vue';
 import { Entity } from './abstract';
 import { asyncRef } from '@tb-dev/vue';
 import type { Option } from '@tb-dev/utils';
 import { RoundImpl } from '@/core/model/round';
-import { computed, type ComputedRef, type Ref } from 'vue';
 
-/**
- * Depends on:
- * - [`CurrentPlayerEntity`](./current-player.ts)
- */
 export class RoundEntity extends Entity {
   private readonly round: Ref<Option<RoundImpl>>;
-  private readonly isPlayerTurn: ComputedRef<boolean>;
 
   private readonly updateRound: () => Promise<void>;
 
@@ -23,13 +18,6 @@ export class RoundEntity extends Entity {
     const round = asyncRef(null, () => RoundImpl.load());
     this.round = round.state;
     this.updateRound = round.execute;
-
-    const { player } = NIL.player.refs();
-    this.isPlayerTurn = computed(() => {
-      const id = player.value?.id;
-      const pending = id ? this.round.value?.isPending(id) : null;
-      return pending ?? false;
-    });
 
     this.initListeners();
   }
@@ -44,11 +32,19 @@ export class RoundEntity extends Entity {
 
   private async onRoundUpdated({ round }: RoundUpdatedPayload) {
     // Isso geralmente indica que o round atual acabou, então nós atualizamos todas as entidades.
-    if (round.id !== this.round.value?.id || round.phase.kind !== this.round.value.phase.kind) {
+    if (round.id !== this.id || round.phase.kind !== this.phase?.kind) {
       await NIL.update();
     } else {
       this.round.value = RoundImpl.create(round);
     }
+  }
+
+  get id() {
+    return this.round.value?.id;
+  }
+
+  get phase() {
+    return this.round.value?.phase;
   }
 
   public static use() {
@@ -58,7 +54,6 @@ export class RoundEntity extends Entity {
   public static refs() {
     const instance = this.use();
     return {
-      isPlayerTurn: instance.isPlayerTurn,
       round: instance.round as Readonly<typeof instance.round>,
     } as const;
   }

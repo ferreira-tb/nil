@@ -23,15 +23,17 @@ impl Player {
   pub fn new(options: PlayerOptions) -> Self {
     Self {
       id: options.id,
-      status: PlayerStatus::Guest,
+      status: PlayerStatus::Active,
       resources: Resources::PLAYER.clone(),
     }
   }
 
+  #[inline]
   pub fn id(&self) -> PlayerId {
     self.id.clone()
   }
 
+  #[inline]
   pub fn status(&self) -> PlayerStatus {
     self.status
   }
@@ -40,6 +42,7 @@ impl Player {
     &mut self.status
   }
 
+  #[inline]
   pub fn resources(&self) -> &Resources {
     &self.resources
   }
@@ -48,14 +51,12 @@ impl Player {
     &mut self.resources
   }
 
-  pub fn is_guest(&self) -> bool {
-    matches!(self.status, PlayerStatus::Guest)
-  }
-
+  #[inline]
   pub fn is_active(&self) -> bool {
     matches!(self.status, PlayerStatus::Active)
   }
 
+  #[inline]
   pub fn is_inactive(&self) -> bool {
     matches!(self.status, PlayerStatus::Inactive)
   }
@@ -85,11 +86,9 @@ impl Deref for PlayerId {
   }
 }
 
-#[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Deserialize, Serialize)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Deserialize, Serialize)]
 #[serde(rename_all = "kebab-case")]
 pub enum PlayerStatus {
-  #[default]
-  Guest,
   Active,
   Inactive,
 }

@@ -5,7 +5,6 @@
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { compare } from '@/lib/intl';
-import type { FinderItem } from './types';
 import {
   CommandDialog,
   CommandEmpty,
@@ -18,6 +17,11 @@ import {
 const open = defineModel<boolean>('open', { required: true });
 
 const { t } = useI18n();
+
+interface FinderItem {
+  value: GameScene;
+  label: string;
+}
 
 const items = computed<FinderItem[]>(() => {
   const _items: FinderItem[] = [

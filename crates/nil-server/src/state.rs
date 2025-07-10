@@ -3,7 +3,6 @@
 
 use nil_core::chat::Chat;
 use nil_core::continent::Continent;
-use nil_core::lobby::Lobby;
 use nil_core::player::PlayerManager;
 use nil_core::round::Round;
 use nil_core::script::Scripting;
@@ -13,16 +12,11 @@ use tokio::sync::RwLock;
 
 pub(crate) struct App {
   pub(crate) world: Arc<RwLock<World>>,
-  pub(crate) lobby: Arc<RwLock<Lobby>>,
 }
 
 impl App {
   pub fn new(world: World) -> Self {
-    let lobby = Lobby::from(&world);
-    Self {
-      world: Arc::new(RwLock::new(world)),
-      lobby: Arc::new(RwLock::new(lobby)),
-    }
+    Self { world: Arc::new(RwLock::new(world)) }
   }
 
   pub async fn world<F, T>(&self, f: F) -> T
@@ -53,20 +47,6 @@ impl App {
     self
       .world(|world| f(world.continent()))
       .await
-  }
-
-  pub async fn lobby<F, T>(&self, f: F) -> T
-  where
-    F: FnOnce(&Lobby) -> T,
-  {
-    f(&*self.lobby.read().await)
-  }
-
-  pub async fn lobby_mut<F, T>(&self, f: F) -> T
-  where
-    F: FnOnce(&mut Lobby) -> T,
-  {
-    f(&mut *self.lobby.write().await)
   }
 
   pub async fn player_manager<F, T>(&self, f: F) -> T
@@ -106,9 +86,6 @@ impl App {
 
 impl Clone for App {
   fn clone(&self) -> Self {
-    Self {
-      world: Arc::clone(&self.world),
-      lobby: Arc::clone(&self.lobby),
-    }
+    Self { world: Arc::clone(&self.world) }
   }
 }

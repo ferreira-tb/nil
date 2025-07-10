@@ -6,7 +6,11 @@ import Round from './Round.vue';
 import type { MaybePromise } from '@tb-dev/utils';
 import { ButtonLink, SidebarTrigger } from '@tb-dev/vue-components';
 
-defineProps<{ onTurnEnd: () => MaybePromise<void> }>();
+defineProps<{
+  isHost: boolean;
+  onStartRound: () => MaybePromise<void>;
+  onEndTurn: () => MaybePromise<void>;
+}>();
 
 const { village } = NIL.village.refs();
 </script>
@@ -15,14 +19,19 @@ const { village } = NIL.village.refs();
   <header class="flex items-center justify-between">
     <div class="flex items-center gap-2">
       <SidebarTrigger />
-      <ButtonLink to="village" variant="ghost" button-class="py-2 text-base lg:text-lg">
-        <span>{{ village?.name }}</span>
-        <span>({{ village?.coord.format() }})</span>
+      <ButtonLink
+        v-if="village"
+        to="village"
+        variant="ghost"
+        button-class="py-2 text-base lg:text-lg"
+      >
+        <span>{{ village.name }}</span>
+        <span>({{ village.coord.format() }})</span>
       </ButtonLink>
     </div>
 
     <div class="flex items-center">
-      <Round @turn-end="onTurnEnd" />
+      <Round :is-host @start-round="onStartRound" @end-turn="onEndTurn" />
     </div>
   </header>
 </template>

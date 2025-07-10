@@ -32,18 +32,15 @@ export class CurrentPlayerEntity extends Entity {
   }
 
   protected override initListeners() {
-    this.watch(this.id, this.update.bind(this));
-    this.event
-      .onPlayerUpdated(this.update.bind(this))
-      .onVillageSpawned(this.onVillageSpawned.bind(this));
+    this.event.onPlayerUpdated(this.onPlayerUpdated.bind(this));
   }
 
   public override async update() {
     await this.updatePlayer();
   }
 
-  private async onVillageSpawned({ village }: VillageSpawnedPayload) {
-    if (village.owner.kind === 'player' && village.owner.id === this.id.value) {
+  private async onPlayerUpdated({ player }: PlayerUpdatedPayload) {
+    if (player === this.id.value) {
       await this.update();
     }
   }
@@ -65,8 +62,10 @@ export class CurrentPlayerEntity extends Entity {
     return this.use().update();
   }
 
-  public static setId(id: PlayerId) {
-    this.use().id.value = id;
+  public static async setId(id?: Option<PlayerId>) {
+    const player = this.use();
+    player.id.value = id;
+    await player.update();
   }
 
   public static init() {

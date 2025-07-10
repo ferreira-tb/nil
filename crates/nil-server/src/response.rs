@@ -51,7 +51,6 @@ pub(crate) fn from_core_err(err: CoreError) -> Response {
     MineStatsNotFound(_) => res!(NOT_FOUND, text),
     MineStatsNotFoundForLevel(_, _) => res!(NOT_FOUND, text),
     NoPlayer => res!(BAD_REQUEST, text),
-    NotAGuest(_) => res!(BAD_REQUEST, text),
     PlayerAlreadySpawned(_) => res!(CONFLICT, text),
     PlayerIsNotPending(_) => res!(BAD_REQUEST, text),
     PlayerNotFound(_) => res!(NOT_FOUND, text),

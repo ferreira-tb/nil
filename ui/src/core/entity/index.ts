@@ -22,7 +22,7 @@ export function initEntities() {
 
   WorldEntity.init();
   ChatEntity.init();
+  RoundEntity.init();
   CurrentPlayerEntity.init();
   CurrentVillageEntity.init();
-  RoundEntity.init();
 }

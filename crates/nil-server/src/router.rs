@@ -5,27 +5,26 @@ mod chat;
 mod cheat;
 mod continent;
 mod infrastructure;
-mod lobby;
 mod player;
 mod round;
 mod script;
 mod village;
 mod world;
 
-use crate::error::CoreResult;
 use crate::middleware::{CurrentPlayer, authorization};
 use crate::res;
 use crate::response::from_core_err;
 use crate::state::App;
 use crate::websocket::handle_socket;
+use axum::extract::State;
 use axum::extract::ws::WebSocketUpgrade;
-use axum::extract::{Json, State};
 use axum::http::StatusCode;
 use axum::response::Response;
 use axum::routing::{any, get, post};
 use axum::{Extension, Router, middleware};
+use futures::TryFutureExt;
 use infrastructure::prelude::*;
-use nil_core::player::{PlayerId, PlayerStatus};
+use nil_core::player::PlayerStatus;
 use nil_core::world::World;
 
 #[cfg(debug_assertions)]
@@ -62,17 +61,14 @@ pub(crate) fn create() -> Router<App> {
     .route("/infrastructure/prefecture/build/cancel", post(prefecture::cancel_build_order))
     .route("/infrastructure/prefecture/build/catalog", post(prefecture::get_build_catalog))
     .route("/infrastructure/toggle", post(infrastructure::toggle))
-    .route("/leave", post(leave))
-    .route("/lobby", get(lobby::get))
-    .route("/lobby/ready", post(lobby::ready))
+    .route("/leave", get(leave))
     .route("/player", get(player::get_all))
     .route("/player", post(player::get))
     .route("/player/coord", post(player::get_coords))
     .route("/player/exists", post(player::exists))
-    .route("/player/remove-guest", post(player::remove_guest))
     .route("/player/set-status", post(player::set_status))
     .route("/player/spawn", post(player::spawn))
-    .route("/player/spawn-village", post(player::spawn_village))
+    .route("/player/status", post(player::get_status))
     .route("/round", get(round::get))
     .route("/round/end-turn", post(round::end_turn))
     .route("/round/start", get(round::start))
@@ -123,18 +119,14 @@ async fn version() -> &'static str {
   env!("CARGO_PKG_VERSION")
 }
 
-async fn leave(State(app): State<App>, Json(id): Json<PlayerId>) -> Response {
-  let result: CoreResult<Response> = try {
-    let mut world = app.world.write().await;
-    let player = world.player(&id)?;
-    if player.is_guest() {
-      world.remove_guest(&id)?;
-    } else if player.is_active() {
-      world.set_player_status(&id, PlayerStatus::Inactive)?;
-    }
-
-    res!(OK)
-  };
-
-  result.unwrap_or_else(from_core_err)
+async fn leave(
+  State(app): State<App>,
+  Extension(current_player): Extension<CurrentPlayer>,
+) -> Response {
+  let id = &current_player.0;
+  app
+    .world_mut(|world| world.set_player_status(id, PlayerStatus::Inactive))
+    .map_ok(|()| res!(OK))
+    .unwrap_or_else(from_core_err)
+    .await
 }

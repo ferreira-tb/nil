@@ -39,8 +39,8 @@ declare global {
 
     /** Aldeia atual. */
     readonly village: {
-      readonly go: (typeof CurrentVillageEntity)['go'];
       readonly refs: (typeof CurrentVillageEntity)['refs'];
+      readonly setCoord: (typeof CurrentVillageEntity)['setCoord'];
       readonly use: (typeof CurrentVillageEntity)['use'];
     };
 

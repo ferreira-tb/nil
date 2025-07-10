@@ -9,7 +9,7 @@ interface Player {
 
 type PlayerId = string;
 
-type PlayerStatus = 'active' | 'guest' | 'inactive';
+type PlayerStatus = 'active' | 'inactive';
 
 interface PlayerOptions {
   readonly id: PlayerId;

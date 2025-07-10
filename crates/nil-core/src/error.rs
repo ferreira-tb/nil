@@ -56,9 +56,6 @@ pub enum Error {
   #[error("No players in the world")]
   NoPlayer,
 
-  #[error("Player \"{0}\" is not a guest")]
-  NotAGuest(PlayerId),
-
   #[error("Player already spawned: {0}")]
   PlayerAlreadySpawned(PlayerId),
 

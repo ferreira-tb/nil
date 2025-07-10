@@ -40,20 +40,4 @@ impl PlayerManager {
   pub(crate) fn insert(&mut self, player: Player) {
     self.0.insert(player.id(), player);
   }
-
-  pub(crate) fn remove_guest(&mut self, id: &PlayerId) -> Option<Player> {
-    let index = self
-      .0
-      .iter()
-      .position(|(_, player)| player.is_guest() && player.id == *id)?;
-
-    self
-      .0
-      .shift_remove_index(index)
-      .map(|(_, player)| player)
-  }
-
-  pub(crate) fn remove_guests(&mut self) {
-    self.0.retain(|_, player| !player.is_guest());
-  }
 }

@@ -4,33 +4,30 @@
 import { go } from '@/router';
 import * as commands from '@/commands';
 import * as dialog from '@/lib/dialog';
+import { handleError } from '@/lib/error';
 import { Entity } from '@/core/entity/abstract';
 import { exit } from '@tauri-apps/plugin-process';
 import type { SocketAddrV4 } from '@/lib/net/addr-v4';
 
 export async function joinGame(options: { player: PlayerOptions; serverAddr: SocketAddrV4 }) {
+  const id = options.player.id;
   await commands.startClient(options.player.id, options.serverAddr);
 
-  // O jogador já existirá no mundo se isso for um jogo salvo.
-  if (!(await commands.playerExists(options.player.id))) {
+  if (await commands.playerExists(id)) {
+    // TODO: o que fazer se o jogador já estiver ativo?
+    const status = await commands.getPlayerStatus(id);
+    if (status === 'inactive') {
+      await commands.setPlayerStatus(id, 'active');
+    }
+  } else {
     await commands.spawnPlayer(options.player);
   }
 
-  NIL.player.setId(options.player.id);
+  await NIL.player.setId(id);
+  await NIL.village.setCoord();
   await NIL.update();
 
-  if (await commands.isRoundIdle()) {
-    await go('lobby');
-  } else {
-    const player = NIL.player.refs().player;
-    if (player.value?.isGuest()) {
-      await commands.spawnPlayerVillage(player.value.id);
-    } else if (player.value?.isInactive()) {
-      await commands.setPlayerStatus(player.value.id, 'active');
-    }
-
-    await NIL.village.go({ timeout: 500, keepTrying: true });
-  }
+  await go('village');
 }
 
 export async function hostGame(options: { player: PlayerOptions; world: WorldOptions }) {
@@ -44,11 +41,15 @@ export async function hostSavedGame(options: { path: string; player: PlayerOptio
 }
 
 export async function leaveGame() {
-  await commands.stopClient();
-  await commands.stopServer();
-
-  Entity.dispose();
-  await go('home');
+  try {
+    Entity.dispose();
+    await commands.stopClient();
+    await commands.stopServer();
+  } catch (err) {
+    handleError(err);
+  } finally {
+    await go('home');
+  }
 }
 
 export async function exitGame() {

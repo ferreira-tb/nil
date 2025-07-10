@@ -28,11 +28,6 @@ export const router = createRouter({
       name: 'join-game' satisfies Scene,
     },
     {
-      component: () => import('@/scenes/lobby/index.vue'),
-      path: '/lobby',
-      name: 'lobby' satisfies Scene,
-    },
-    {
       component: () => import('@/scenes/settings/index.vue'),
       path: '/settings',
       name: 'settings' satisfies Scene,

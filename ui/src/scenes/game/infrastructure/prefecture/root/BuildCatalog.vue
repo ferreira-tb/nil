@@ -6,6 +6,7 @@ import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import type { MaybePromise } from '@tb-dev/utils';
 import BuildCatalogRow from './BuildCatalogRow.vue';
+import { usePlayerTurn } from '@/composables/usePlayerTurn';
 import { Table, TableHead, TableRow } from '@tb-dev/vue-components';
 import type { InfrastructureImpl } from '@/core/model/infrastructure';
 
@@ -18,6 +19,8 @@ const props = defineProps<{
 }>();
 
 const { t } = useI18n();
+
+const isPlayerTurn = usePlayerTurn();
 
 const hasSomeAvailable = computed(() => {
   return Object.values(props.catalog).some((it) => it.kind === 'available');
@@ -52,6 +55,7 @@ const hasSomeAvailable = computed(() => {
       :prefecture="infrastructure.prefecture"
       scene="prefecture"
       :loading
+      :is-player-turn
       @build-order="(kind) => onBuildOrder('prefecture', kind)"
       @toggle="() => onToggle('prefecture', !infrastructure.prefecture.enabled)"
     />
@@ -61,6 +65,7 @@ const hasSomeAvailable = computed(() => {
       :prefecture="infrastructure.prefecture"
       scene="academy"
       :loading
+      :is-player-turn
       @build-order="(kind) => onBuildOrder('academy', kind)"
       @toggle="() => onToggle('academy', !infrastructure.academy.enabled)"
     />
@@ -70,6 +75,7 @@ const hasSomeAvailable = computed(() => {
       :prefecture="infrastructure.prefecture"
       scene="stable"
       :loading
+      :is-player-turn
       @build-order="(kind) => onBuildOrder('stable', kind)"
       @toggle="() => onToggle('stable', !infrastructure.stable.enabled)"
     />
@@ -79,6 +85,7 @@ const hasSomeAvailable = computed(() => {
       :prefecture="infrastructure.prefecture"
       scene="sawmill"
       :loading
+      :is-player-turn
       @build-order="(kind) => onBuildOrder('sawmill', kind)"
       @toggle="() => onToggle('sawmill', !infrastructure.sawmill.enabled)"
     />
@@ -88,6 +95,7 @@ const hasSomeAvailable = computed(() => {
       :prefecture="infrastructure.prefecture"
       scene="quarry"
       :loading
+      :is-player-turn
       @build-order="(kind) => onBuildOrder('quarry', kind)"
       @toggle="() => onToggle('quarry', !infrastructure.quarry.enabled)"
     />
@@ -97,6 +105,7 @@ const hasSomeAvailable = computed(() => {
       :prefecture="infrastructure.prefecture"
       scene="iron-mine"
       :loading
+      :is-player-turn
       @build-order="(kind) => onBuildOrder('iron-mine', kind)"
       @toggle="() => onToggle('iron-mine', !infrastructure.ironMine.enabled)"
     />
@@ -106,6 +115,7 @@ const hasSomeAvailable = computed(() => {
       :prefecture="infrastructure.prefecture"
       scene="farm"
       :loading
+      :is-player-turn
       @build-order="(kind) => onBuildOrder('farm', kind)"
       @toggle="() => onToggle('farm', !infrastructure.farm.enabled)"
     />
@@ -115,6 +125,7 @@ const hasSomeAvailable = computed(() => {
       :prefecture="infrastructure.prefecture"
       scene="warehouse"
       :loading
+      :is-player-turn
       @build-order="(kind) => onBuildOrder('warehouse', kind)"
       @toggle="() => onToggle('warehouse', !infrastructure.warehouse.enabled)"
     />
@@ -124,6 +135,7 @@ const hasSomeAvailable = computed(() => {
       :prefecture="infrastructure.prefecture"
       scene="silo"
       :loading
+      :is-player-turn
       @build-order="(kind) => onBuildOrder('silo', kind)"
       @toggle="() => onToggle('silo', !infrastructure.silo.enabled)"
     />
@@ -133,6 +145,7 @@ const hasSomeAvailable = computed(() => {
       :prefecture="infrastructure.prefecture"
       scene="wall"
       :loading
+      :is-player-turn
       @build-order="(kind) => onBuildOrder('wall', kind)"
       @toggle="() => onToggle('wall', !infrastructure.wall.enabled)"
     />

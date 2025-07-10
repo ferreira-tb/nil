@@ -12,11 +12,16 @@ export class PlayerImpl implements Player {
   public readonly status: PlayerStatus;
   public readonly coords: readonly CoordImpl[];
 
-  private constructor(player: Player, coords: readonly Coord[]) {
-    this.id = player.id;
-    this.resources = ResourcesImpl.create(player.resources);
-    this.status = player.status;
-    this.coords = coords.map((it) => CoordImpl.create(it));
+  private constructor(args: {
+    id: string;
+    resources: ResourcesImpl;
+    status: PlayerStatus;
+    coords: readonly CoordImpl[];
+  }) {
+    this.id = args.id;
+    this.resources = args.resources;
+    this.status = args.status;
+    this.coords = args.coords;
   }
 
   public hasResources(resources: PartialNullish<Resources>) {
@@ -25,10 +30,6 @@ export class PlayerImpl implements Player {
 
   public hasVillage(coord: Coord) {
     return this.coords.some((it) => it.is(coord));
-  }
-
-  public isGuest() {
-    return this.status === 'guest';
   }
 
   public isActive() {
@@ -45,6 +46,11 @@ export class PlayerImpl implements Player {
       commands.getPlayerCoords(id),
     ]);
 
-    return new PlayerImpl(player, coords);
+    return new PlayerImpl({
+      id: player.id,
+      resources: ResourcesImpl.create(player.resources),
+      status: player.status,
+      coords: coords.map((it) => CoordImpl.create(it)),
+    });
   }
 }

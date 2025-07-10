@@ -24,6 +24,14 @@ pub async fn get_player_coords(app: AppHandle, id: PlayerId) -> Result<Vec<Coord
 }
 
 #[tauri::command]
+pub async fn get_player_status(app: AppHandle, id: PlayerId) -> Result<PlayerStatus> {
+  app
+    .client(async |cl| cl.get_player_status(id).await)
+    .await?
+    .map_err(Into::into)
+}
+
+#[tauri::command]
 pub async fn get_players(app: AppHandle) -> Result<Vec<Player>> {
   app
     .client(async |cl| cl.get_players().await)
@@ -51,14 +59,6 @@ pub async fn set_player_status(app: AppHandle, id: PlayerId, status: PlayerStatu
 pub async fn spawn_player(app: AppHandle, options: PlayerOptions) -> Result<()> {
   app
     .client(async |cl| cl.spawn_player(options).await)
-    .await?
-    .map_err(Into::into)
-}
-
-#[tauri::command]
-pub async fn spawn_player_village(app: AppHandle, id: PlayerId) -> Result<()> {
-  app
-    .client(async |cl| cl.spawn_player_village(id).await)
     .await?
     .map_err(Into::into)
 }
