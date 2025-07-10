@@ -91,13 +91,8 @@ const items = computed<FinderItem[]>(() => {
     <CommandList>
       <CommandEmpty>{{ t('no-results-found') }}</CommandEmpty>
       <CommandGroup>
-        <CommandItem
-          v-for="item of items"
-          :key="item.value"
-          :value="item.value"
-          @click="() => (open = false)"
-        >
-          <RouterLink :to="{ name: item.value }" class="w-full">
+        <CommandItem v-for="item of items" :key="item.value" :value="item.value">
+          <RouterLink :to="{ name: item.value }" class="w-full" @click="() => (open = false)">
             {{ item.label }}
           </RouterLink>
         </CommandItem>
