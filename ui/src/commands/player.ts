@@ -15,6 +15,10 @@ export async function getPlayerStatus(id: PlayerId) {
   return invoke<PlayerStatus>('get_player_status', { id });
 }
 
+export async function getPlayerStorageCapacity() {
+  return invoke<PlayerStorageCapacity>('get_player_storage_capacity');
+}
+
 export function getPlayers() {
   return invoke<readonly Player[]>('get_players');
 }
@@ -23,8 +27,8 @@ export function playerExists(id: PlayerId) {
   return invoke<boolean>('player_exists', { id });
 }
 
-export function setPlayerStatus(id: PlayerId, status: PlayerStatus) {
-  return invoke<null>('set_player_status', { id, status });
+export function setPlayerStatus(status: PlayerStatus) {
+  return invoke<null>('set_player_status', { status });
 }
 
 export function spawnPlayer(options: PlayerOptions) {

@@ -2,14 +2,18 @@
 <!-- SPDX-License-Identifier: AGPL-3.0-only -->
 
 <script setup lang="ts">
-const { resources } = NIL.player.refs();
+import { usePlayerResources } from '@/composables/usePlayerResources';
+import { usePlayerStorageCapacity } from '@/composables/usePlayerStorageCapacity';
+
+const resources = usePlayerResources();
+const capacity = usePlayerStorageCapacity();
 </script>
 
 <template>
   <div class="grid grid-cols-4 items-center gap-8">
-    <Wood :amount="resources?.wood" />
-    <Stone :amount="resources?.stone" />
-    <Iron :amount="resources?.iron" />
-    <Food :amount="resources?.food" />
+    <Wood :amount="resources?.wood" :capacity="capacity?.warehouse" />
+    <Stone :amount="resources?.stone" :capacity="capacity?.warehouse" />
+    <Iron :amount="resources?.iron" :capacity="capacity?.warehouse" />
+    <Food :amount="resources?.food" :capacity="capacity?.silo" />
   </div>
 </template>

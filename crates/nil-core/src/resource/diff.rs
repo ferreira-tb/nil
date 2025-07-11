@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 
 use super::{Food, Iron, Resources, Stone, Wood};
+use crate::infrastructure::storage::StorageCapacity;
 use derive_more::{Deref, Display};
 use serde::{Deserialize, Serialize};
 use std::ops::{Add, AddAssign, Sub, SubAssign};
@@ -149,7 +150,20 @@ impl SubAssign<ResourcesDiff> for Resources {
 macro_rules! decl_resource_diff {
   ($($original:ident => $diff:ident),+ $(,)?) => {
     $(
-      #[derive(Clone, Copy, Debug, Default, Deref, Display, Deserialize, Serialize)]
+      #[derive(
+        Clone,
+        Copy,
+        Debug,
+        Default,
+        Deref,
+        Display,
+        PartialEq,
+        Eq,
+        PartialOrd,
+        Ord,
+        Deserialize,
+        Serialize,
+      )]
       pub struct $diff(i32);
 
       impl $diff {
@@ -245,6 +259,15 @@ macro_rules! decl_resource_diff {
       impl SubAssign<$diff> for $original {
         fn sub_assign(&mut self, rhs: $diff) {
           *self = *self - rhs;
+        }
+      }
+
+      impl $original {
+        pub fn add_if_within_capacity(&mut self, rhs: $diff, capacity: StorageCapacity) {
+          if self.0 < *capacity {
+            let capacity = $original::from(capacity);
+            *self = (*self + rhs).min(capacity);
+          }
         }
       }
     )+

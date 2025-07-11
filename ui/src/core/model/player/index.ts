@@ -2,26 +2,30 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 
 import * as commands from '@/commands';
-import { ResourcesImpl } from './resource';
+import { ResourcesImpl } from '../resource';
 import { CoordImpl } from '@/core/model/coord';
 import type { PartialNullish } from '@tb-dev/utils';
+import { PlayerStorageCapacityImpl } from './storage-capacity';
 
 export class PlayerImpl implements Player {
   public readonly id: string;
-  public readonly resources: ResourcesImpl;
   public readonly status: PlayerStatus;
   public readonly coords: readonly CoordImpl[];
+  public readonly resources: ResourcesImpl;
+  public readonly capacity: PlayerStorageCapacityImpl;
 
   private constructor(args: {
     id: string;
-    resources: ResourcesImpl;
     status: PlayerStatus;
     coords: readonly CoordImpl[];
+    resources: ResourcesImpl;
+    capacity: PlayerStorageCapacityImpl;
   }) {
     this.id = args.id;
-    this.resources = args.resources;
     this.status = args.status;
     this.coords = args.coords;
+    this.resources = args.resources;
+    this.capacity = args.capacity;
   }
 
   public hasResources(resources: PartialNullish<Resources>) {
@@ -41,9 +45,10 @@ export class PlayerImpl implements Player {
   }
 
   public static async load(id: PlayerId) {
-    const [player, coords] = await Promise.all([
+    const [player, coords, capacity] = await Promise.all([
       commands.getPlayer(id),
       commands.getPlayerCoords(id),
+      commands.getPlayerStorageCapacity(),
     ]);
 
     return new PlayerImpl({
@@ -51,6 +56,7 @@ export class PlayerImpl implements Player {
       resources: ResourcesImpl.create(player.resources),
       status: player.status,
       coords: coords.map((it) => CoordImpl.create(it)),
+      capacity: PlayerStorageCapacityImpl.create(capacity),
     });
   }
 }

@@ -16,7 +16,7 @@ pub fn impl_building(ast: &DeriveInput) -> TokenStream {
   let stream = quote! {
     mod __impl_building {
       use super::#name;
-      use crate::error::{Error, Result};
+      use crate::error::Result;
       use crate::infrastructure::requirements::InfrastructureRequirements;
       use crate::infrastructure::building::{
         Building,

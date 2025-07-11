@@ -3,6 +3,7 @@
 
 mod manager;
 
+use crate::infrastructure::storage::StorageCapacity;
 use crate::resource::Resources;
 use derive_more::{Display, From};
 use serde::{Deserialize, Serialize};
@@ -97,4 +98,11 @@ pub enum PlayerStatus {
 #[serde(rename_all = "camelCase")]
 pub struct PlayerOptions {
   pub id: PlayerId,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct PlayerStorageCapacity {
+  pub silo: StorageCapacity,
+  pub warehouse: StorageCapacity,
 }

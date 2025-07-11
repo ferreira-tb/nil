@@ -14,3 +14,8 @@ type PlayerStatus = 'active' | 'inactive';
 interface PlayerOptions {
   readonly id: PlayerId;
 }
+
+interface PlayerStorageCapacity {
+  readonly silo: number;
+  readonly warehouse: number;
+}

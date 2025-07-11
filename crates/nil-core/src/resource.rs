@@ -4,9 +4,11 @@
 mod cost;
 mod diff;
 mod maintenance;
+pub mod prelude;
 mod workforce;
 
 use crate::infrastructure::mine::MineProduction;
+use crate::infrastructure::storage::StorageCapacity;
 use crate::village::Stability;
 use derive_more::{Deref, Display};
 use nil_num::impl_mul_ceil;
@@ -179,7 +181,20 @@ impl SubAssign<&Resources> for Resources {
 macro_rules! decl_resource {
   ($($name:ident),+ $(,)?) => {
     $(
-      #[derive(Clone, Copy, Debug, Default, Deref, Display, Deserialize, Serialize)]
+      #[derive(
+        Clone,
+        Copy,
+        Debug,
+        Default,
+        Deref,
+        Display,
+        PartialEq,
+        Eq,
+        PartialOrd,
+        Ord,
+        Deserialize,
+        Serialize,
+      )]
       pub struct $name(u32);
 
       impl $name {
@@ -227,6 +242,12 @@ macro_rules! decl_resource {
 
       impl From<MineProduction> for $name {
         fn from(value: MineProduction) -> Self {
+          Self::new(*value)
+        }
+      }
+
+      impl From<StorageCapacity> for $name {
+        fn from(value: StorageCapacity) -> Self {
           Self::new(*value)
         }
       }

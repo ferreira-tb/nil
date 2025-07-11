@@ -5,11 +5,20 @@
 import type { Option } from '@tb-dev/utils';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@tb-dev/vue-components';
 
-defineProps<{
+const props = defineProps<{
   amount?: Option<number>;
+  capacity?: Option<number>;
   color: string;
   name: string;
 }>();
+
+function isOverflowing() {
+  return (
+    typeof props.amount === 'number' &&
+    typeof props.capacity === 'number' &&
+    props.amount >= props.capacity
+  );
+}
 </script>
 
 <template>
@@ -29,6 +38,8 @@ defineProps<{
       </Tooltip>
     </TooltipProvider>
 
-    <div v-if="typeof amount === 'number'">{{ amount }}</div>
+    <div :class="isOverflowing() ? 'text-red-400' : null">
+      {{ amount ?? 0 }}
+    </div>
   </div>
 </template>

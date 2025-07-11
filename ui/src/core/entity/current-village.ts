@@ -13,7 +13,7 @@ export class CurrentVillageEntity extends Entity {
   private readonly village: Ref<VillageImpl | null>;
   private readonly production: Ref<Option<Partial<Resources>>>;
 
-  private readonly updateVillage: () => Promise<void>;
+  public readonly updateVillage: () => Promise<void>;
 
   constructor() {
     super();

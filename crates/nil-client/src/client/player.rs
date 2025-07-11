@@ -3,7 +3,7 @@
 
 use super::Client;
 use crate::error::Result;
-use nil_core::player::{Player, PlayerId, PlayerOptions, PlayerStatus};
+use nil_core::player::{Player, PlayerId, PlayerOptions, PlayerStatus, PlayerStorageCapacity};
 use nil_core::village::Coord;
 
 impl Client {
@@ -15,6 +15,11 @@ impl Client {
   /// POST `/player`
   pub async fn get_player(&self, id: PlayerId) -> Result<Player> {
     self.http.post_json("player", id).await
+  }
+
+  /// GET `/player/capacity`
+  pub async fn get_player_storage_capacity(&self) -> Result<PlayerStorageCapacity> {
+    self.http.get_json("player/capacity").await
   }
 
   /// POST `/player/coord`
@@ -31,10 +36,10 @@ impl Client {
   }
 
   /// POST `/player/set-status`
-  pub async fn set_player_status(&self, id: PlayerId, status: PlayerStatus) -> Result<()> {
+  pub async fn set_player_status(&self, status: PlayerStatus) -> Result<()> {
     self
       .http
-      .post("player/set-status", (id, status))
+      .post("player/set-status", status)
       .await
   }
 

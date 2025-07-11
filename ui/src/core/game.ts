@@ -17,7 +17,7 @@ export async function joinGame(options: { player: PlayerOptions; serverAddr: Soc
     // TODO: o que fazer se o jogador já estiver ativo?
     const status = await commands.getPlayerStatus(id);
     if (status === 'inactive') {
-      await commands.setPlayerStatus(id, 'active');
+      await commands.setPlayerStatus('active');
     }
   } else {
     await commands.spawnPlayer(options.player);
