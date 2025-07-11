@@ -8,6 +8,8 @@ import { until } from '@vueuse/core';
 import { localRef } from '@tb-dev/vue';
 import type { WritablePartial } from '@tb-dev/utils';
 import { hostGame, hostSavedGame } from '@/core/game';
+import enUS from '@/locale/en-US/scenes/host-game.json';
+import ptBR from '@/locale/pt-BR/scenes/host-game.json';
 import { open as pickFile } from '@tauri-apps/plugin-dialog';
 import { isPlayerOptions, isWorldOptions } from '@/lib/schema';
 import {
@@ -20,7 +22,12 @@ import {
   Label,
 } from '@tb-dev/vue-components';
 
-const { t } = useI18n();
+const { t } = useI18n({
+  messages: {
+    'en-US': enUS,
+    'pt-BR': ptBR,
+  },
+});
 
 const world = localRef<WritablePartial<WorldOptions>>('host-game:world', {
   name: null,

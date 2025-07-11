@@ -7,6 +7,8 @@ import { useI18n } from 'vue-i18n';
 import type { MaybePromise } from '@tb-dev/utils';
 import { ChevronDownIcon, ChevronUpIcon } from 'lucide-vue-next';
 import type { PrefectureImpl } from '@/core/model/buildings/prefecture';
+import enUS from '@/locale/en-US/scenes/game/infrastructure/prefecture.json';
+import ptBR from '@/locale/pt-BR/scenes/game/infrastructure/prefecture.json';
 import { Button, cn, Table, TableCell, TableHead, TableRow } from '@tb-dev/vue-components';
 
 const props = defineProps<{
@@ -15,7 +17,12 @@ const props = defineProps<{
   onCancel: () => MaybePromise<void>;
 }>();
 
-const { t } = useI18n();
+const { t } = useI18n({
+  messages: {
+    'en-US': enUS,
+    'pt-BR': ptBR,
+  },
+});
 
 const last = computed(() => props.prefecture.buildQueue.last());
 

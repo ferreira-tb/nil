@@ -4,6 +4,8 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n';
 import { usePrefecture } from '@/composables/useBuilding';
+import enUS from '@/locale/en-US/scenes/game/infrastructure/prefecture.json';
+import ptBR from '@/locale/pt-BR/scenes/game/infrastructure/prefecture.json';
 import {
   Card,
   Loading,
@@ -13,7 +15,12 @@ import {
   NavigationMenuList,
 } from '@tb-dev/vue-components';
 
-const { t } = useI18n();
+const { t } = useI18n({
+  messages: {
+    'en-US': enUS,
+    'pt-BR': ptBR,
+  },
+});
 
 const prefecture = usePrefecture();
 </script>

@@ -9,6 +9,8 @@ import BuildCatalogRow from './BuildCatalogRow.vue';
 import { usePlayerTurn } from '@/composables/usePlayerTurn';
 import { Table, TableHead, TableRow } from '@tb-dev/vue-components';
 import type { InfrastructureImpl } from '@/core/model/infrastructure';
+import enUS from '@/locale/en-US/scenes/game/infrastructure/prefecture.json';
+import ptBR from '@/locale/pt-BR/scenes/game/infrastructure/prefecture.json';
 
 const props = defineProps<{
   catalog: PrefectureBuildCatalog;
@@ -18,7 +20,12 @@ const props = defineProps<{
   onToggle: (id: BuildingId, enabled: boolean) => MaybePromise<void>;
 }>();
 
-const { t } = useI18n();
+const { t } = useI18n({
+  messages: {
+    'en-US': enUS,
+    'pt-BR': ptBR,
+  },
+});
 
 const isPlayerTurn = usePlayerTurn();
 

@@ -5,9 +5,16 @@
 import { useI18n } from 'vue-i18n';
 import { useFarm } from '@/composables/useBuilding';
 import { useMineProduction } from '@/composables/useMineProduction';
+import enUS from '@/locale/en-US/scenes/game/infrastructure/mine.json';
+import ptBR from '@/locale/pt-BR/scenes/game/infrastructure/mine.json';
 import { Card, Table, TableCell, TableHead, TableRow } from '@tb-dev/vue-components';
 
-const { t } = useI18n();
+const { t } = useI18n({
+  messages: {
+    'en-US': enUS,
+    'pt-BR': ptBR,
+  },
+});
 
 const farm = useFarm();
 const { level, actual, base, stabilityLoss } = useMineProduction(farm);

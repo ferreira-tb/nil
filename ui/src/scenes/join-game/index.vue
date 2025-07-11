@@ -9,10 +9,17 @@ import { joinGame } from '@/core/game';
 import { localRef } from '@tb-dev/vue';
 import { isPlayerOptions } from '@/lib/schema';
 import { SocketAddrV4 } from '@/lib/net/addr-v4';
+import enUS from '@/locale/en-US/scenes/join-game.json';
+import ptBR from '@/locale/pt-BR/scenes/join-game.json';
 import type { Option, WritablePartial } from '@tb-dev/utils';
 import { Button, ButtonLink, Card, InputText, Label } from '@tb-dev/vue-components';
 
-const { t } = useI18n();
+const { t } = useI18n({
+  messages: {
+    'en-US': enUS,
+    'pt-BR': ptBR,
+  },
+});
 
 const player = localRef<WritablePartial<PlayerOptions>>('join-game:player', {
   id: null,

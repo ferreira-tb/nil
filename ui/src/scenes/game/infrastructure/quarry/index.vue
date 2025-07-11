@@ -4,10 +4,17 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n';
 import { useQuarry } from '@/composables/useBuilding';
+import enUS from '@/locale/en-US/infrastructure/mine.json';
+import ptBR from '@/locale/pt-BR/infrastructure/mine.json';
 import { useMineProduction } from '@/composables/useMineProduction';
 import { Card, Table, TableCell, TableHead, TableRow } from '@tb-dev/vue-components';
 
-const { t } = useI18n();
+const { t } = useI18n({
+  messages: {
+    'en-US': enUS,
+    'pt-BR': ptBR,
+  },
+});
 
 const quarry = useQuarry();
 const { level, actual, base, stabilityLoss } = useMineProduction(quarry);

@@ -8,6 +8,8 @@ import BuildCatalogBuilding from './BuildCatalogBuilding.vue';
 import type { BuildingImpl } from '@/core/model/buildings/abstract';
 import { Button, TableCell, TableRow } from '@tb-dev/vue-components';
 import type { PrefectureImpl } from '@/core/model/buildings/prefecture';
+import enUS from '@/locale/en-US/scenes/game/infrastructure/prefecture.json';
+import ptBR from '@/locale/pt-BR/scenes/game/infrastructure/prefecture.json';
 import { useResolvedBuildingLevel } from '@/composables/useResolvedBuildingLevel';
 
 const props = defineProps<{
@@ -21,7 +23,12 @@ const props = defineProps<{
   onToggle: () => void;
 }>();
 
-const { t } = useI18n();
+const { t } = useI18n({
+  messages: {
+    'en-US': enUS,
+    'pt-BR': ptBR,
+  },
+});
 
 const { player } = NIL.player.refs();
 

@@ -6,8 +6,15 @@ import { ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { renameVillage } from '@/commands';
 import { Button, InputText, Label } from '@tb-dev/vue-components';
+import enUS from '@/locale/en-US/scenes/game/infrastructure/prefecture.json';
+import ptBR from '@/locale/pt-BR/scenes/game/infrastructure/prefecture.json';
 
-const { t } = useI18n();
+const { t } = useI18n({
+  messages: {
+    'en-US': enUS,
+    'pt-BR': ptBR,
+  },
+});
 
 const { coord, village } = NIL.village.refs();
 
