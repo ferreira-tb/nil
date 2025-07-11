@@ -1,8 +1,69 @@
 <!-- Copyright (C) Call of Nil contributors -->
 <!-- SPDX-License-Identifier: AGPL-3.0-only -->
 
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { useI18n } from 'vue-i18n';
+import { useWarehouse } from '@/composables/useBuilding';
+import enUS from '@/locale/en-US/infrastructure/storage.json';
+import ptBR from '@/locale/pt-BR/infrastructure/storage.json';
+import { useStorageCapacity } from '@/composables/useStorageCapacity';
+import { Card, Table, TableCell, TableHead, TableRow } from '@tb-dev/vue-components';
+
+const { t } = useI18n({
+  messages: {
+    'en-US': enUS,
+    'pt-BR': ptBR,
+  },
+});
+
+const warehouse = useWarehouse();
+const { level, capacity } = useStorageCapacity(warehouse);
+</script>
 
 <template>
-  <div class="game-layout"></div>
+  <div class="game-layout">
+    <Card v-if="warehouse" class="w-full" content-class="px-2">
+      <template #title>
+        <span>{{ `${t('warehouse')} (${t('level-x', [level.current])})` }}</span>
+      </template>
+
+      <Table>
+        <template #header>
+          <TableRow class="bg-background hover:bg-background">
+            <TableHead></TableHead>
+            <TableHead>{{ t('capacity') }}</TableHead>
+          </TableRow>
+        </template>
+
+        <TableRow>
+          <TableCell class="w-72">
+            <span>{{ t('current-capacity') }}</span>
+          </TableCell>
+          <TableCell>
+            <span>{{ capacity.current }}</span>
+          </TableCell>
+        </TableRow>
+
+        <TableRow v-if="!level.isMax">
+          <TableCell class="w-72">
+            <span>{{ t('capacity-on-level-x', [level.next]) }}</span>
+          </TableCell>
+          <TableCell>
+            <span>{{ capacity.next }}</span>
+          </TableCell>
+        </TableRow>
+
+        <template #footer>
+          <TableRow class="bg-background hover:bg-background">
+            <TableCell colspan="2">
+              <div class="flex w-full items-center justify-end gap-2 px-2 pt-4">
+                <div>{{ `${t('maintenance')}:` }}</div>
+                <Food :amount="warehouse.getMaintenance()" />
+              </div>
+            </TableCell>
+          </TableRow>
+        </template>
+      </Table>
+    </Card>
+  </div>
 </template>

@@ -2,16 +2,14 @@
 <!-- SPDX-License-Identifier: AGPL-3.0-only -->
 
 <script setup lang="ts">
-import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { useIronMine } from '@/composables/useBuilding';
 import { useMineProduction } from '@/composables/useMineProduction';
 import { Card, Table, TableCell, TableHead, TableRow } from '@tb-dev/vue-components';
 
 const { t } = useI18n();
 
-const { village } = NIL.village.refs();
-
-const ironMine = computed(() => village.value?.ironMine);
+const ironMine = useIronMine();
 const { level, actual, base, stabilityLoss } = useMineProduction(ironMine);
 </script>
 

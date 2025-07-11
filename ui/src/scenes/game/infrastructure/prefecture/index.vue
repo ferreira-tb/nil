@@ -3,7 +3,7 @@
 
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n';
-import { usePrefecture } from '@/composables/usePrefecture';
+import { usePrefecture } from '@/composables/useBuilding';
 import {
   Card,
   Loading,

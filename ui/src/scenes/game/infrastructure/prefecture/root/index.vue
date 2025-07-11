@@ -5,7 +5,7 @@
 import { watch } from 'vue';
 import BuildQueue from './BuildQueue.vue';
 import BuildCatalog from './BuildCatalog.vue';
-import { usePrefecture } from '@/composables/usePrefecture';
+import { usePrefecture } from '@/composables/useBuilding';
 import { useInfrastructure } from '@/composables/useInfrastructure';
 import { usePrefectureBuildCatalog } from '@/composables/usePrefectureBuildCatalog';
 
