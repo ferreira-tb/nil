@@ -10,11 +10,13 @@ pub fn impl_storage(ast: &DeriveInput) -> TokenStream {
   let stream = quote! {
     mod __impl_storage {
       use super::#name;
+      use crate::error::Result;
       use crate::infrastructure::storage::{
         Storage,
         StorageCapacity,
         StorageCapacityGrowth,
-        StorageId
+        StorageId,
+        StorageStatsTable
       };
 
       impl Storage for #name {
@@ -28,6 +30,10 @@ pub fn impl_storage(ast: &DeriveInput) -> TokenStream {
 
         fn capacity_growth(&self) -> StorageCapacityGrowth {
           Self::CAPACITY_GROWTH
+        }
+
+        fn current_capacity(&self, stats: &StorageStatsTable) -> Result<StorageCapacity> {
+          Ok(stats.get(self.level)?.capacity)
         }
       }
     }

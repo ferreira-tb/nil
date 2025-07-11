@@ -97,14 +97,22 @@ impl Continent {
       .filter_map(Field::village_mut)
   }
 
-  /// Coleta as coordenadas das aldeias de um determinado jogador.
-  pub fn player_coords(&self, player: &PlayerId) -> impl Iterator<Item = Coord> {
+  pub fn player_coords_by<F>(&self, f: F) -> impl Iterator<Item = Coord>
+  where
+    F: Fn(&PlayerId) -> bool,
+  {
     self
-      .fields
-      .iter()
-      .filter_map(Field::village)
-      .filter(move |village| village.is_owned_by_player_and(|id| id == player))
+      .player_villages_by(f)
       .map(Village::coord)
+  }
+
+  pub fn player_villages_by<F>(&self, f: F) -> impl Iterator<Item = &Village>
+  where
+    F: Fn(&PlayerId) -> bool,
+  {
+    self
+      .villages()
+      .filter(move |village| village.is_owned_by_player_and(|id| f(id)))
   }
 
   /// Determina a posição da coordenada no vetor.
@@ -123,8 +131,12 @@ impl Continent {
 
   /// Determina a coordenada a partir de sua posição no vetor.
   fn coord(&self, index: usize) -> Result<Coord> {
-    let x = index % self.size;
-    let y = index / self.size;
+    let size = self.size.get();
+    let x = index % size;
+    let y = index / size;
+
+    debug_assert!(x < size);
+    debug_assert!(y < size);
 
     Ok(Coord::new(
       u8::try_from(x).map_err(|_| Error::IndexOutOfBounds(index))?,

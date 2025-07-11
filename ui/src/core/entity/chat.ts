@@ -10,7 +10,7 @@ import { type ShallowRef, triggerRef } from 'vue';
 export class ChatEntity extends Entity {
   private readonly chat: ShallowRef<ChatMessage[]>;
 
-  private readonly updateChat: () => Promise<void>;
+  public readonly updateChat: () => Promise<void>;
 
   constructor() {
     super();

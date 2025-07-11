@@ -10,7 +10,7 @@ import { RoundImpl } from '@/core/model/round';
 export class RoundEntity extends Entity {
   private readonly round: Ref<Option<RoundImpl>>;
 
-  private readonly updateRound: () => Promise<void>;
+  public readonly updateRound: () => Promise<void>;
 
   constructor() {
     super();

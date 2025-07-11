@@ -13,7 +13,7 @@ import {
   toggleBuilding,
 } from '@/commands';
 
-export function usePrefectureBuildCatalog(coord?: MaybeNilRef<Option<CoordImpl>>) {
+export function usePrefectureBuildCatalog(coord?: MaybeNilRef<CoordImpl>) {
   const coordRef = coord ? toRef(coord) : NIL.village.refs().coord;
   const catalog = shallowRef<Option<PrefectureBuildCatalog>>();
   const loading = ref(false);

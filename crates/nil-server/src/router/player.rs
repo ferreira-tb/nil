@@ -1,10 +1,11 @@
 // Copyright (C) Call of Nil contributors
 // SPDX-License-Identifier: AGPL-3.0-only
 
+use crate::middleware::CurrentPlayer;
 use crate::res;
 use crate::response::from_core_err;
 use crate::state::App;
-use axum::extract::{Json, State};
+use axum::extract::{Extension, Json, State};
 use axum::response::Response;
 use futures::{FutureExt, TryFutureExt};
 use itertools::Itertools;
@@ -34,7 +35,10 @@ pub async fn get_all(State(app): State<App>) -> Response {
 
 pub async fn get_coords(State(app): State<App>, Json(id): Json<PlayerId>) -> Response {
   app
-    .continent(|k| k.player_coords(&id).collect_vec())
+    .continent(|k| {
+      k.player_coords_by(|player| player == &id)
+        .collect_vec()
+    })
     .map(|coords| res!(OK, Json(coords)))
     .await
 }
@@ -47,12 +51,26 @@ pub async fn get_status(State(app): State<App>, Json(id): Json<PlayerId>) -> Res
     .await
 }
 
+pub async fn get_storage_capacity(
+  State(app): State<App>,
+  Extension(current_player): Extension<CurrentPlayer>,
+) -> Response {
+  let id = &current_player.0;
+  app
+    .world(|world| world.get_player_storage_capacity(id))
+    .map_ok(|capacity| res!(OK, Json(capacity)))
+    .unwrap_or_else(from_core_err)
+    .await
+}
+
 pub async fn set_status(
   State(app): State<App>,
-  Json((id, status)): Json<(PlayerId, PlayerStatus)>,
+  Extension(current_player): Extension<CurrentPlayer>,
+  Json(status): Json<PlayerStatus>,
 ) -> Response {
+  let id = &current_player.0;
   app
-    .world_mut(|world| world.set_player_status(&id, status))
+    .world_mut(|world| world.set_player_status(id, status))
     .map_ok(|()| res!(OK))
     .unwrap_or_else(from_core_err)
     .await

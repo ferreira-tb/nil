@@ -8,12 +8,12 @@ import Footer from './Footer.vue';
 import { useI18n } from 'vue-i18n';
 import * as commands from '@/commands';
 import { useToggle } from '@vueuse/core';
+import { onMounted, useTemplateRef } from 'vue';
 import { onBeforeRouteUpdate } from 'vue-router';
 import { leaveGame, saveGame } from '@/core/game';
 import { defineGlobalCheats } from '@/lib/global';
 import Finder from '@/components/finder/Finder.vue';
 import { asyncRef, onCtrlKeyDown } from '@tb-dev/vue';
-import { nextTick, onMounted, useTemplateRef } from 'vue';
 import { usePlayerTurn } from '@/composables/usePlayerTurn';
 import { writeText } from '@tauri-apps/plugin-clipboard-manager';
 import { type OnClickOutsideProps, vOnClickOutside } from '@vueuse/components';
@@ -50,24 +50,28 @@ const [isFinderOpen, toggleFinder] = useToggle(false);
 onCtrlKeyDown(['b', 'B'], () => toggleSidebar());
 onCtrlKeyDown(['f', 'F'], () => toggleFinder());
 onCtrlKeyDown(['m', 'M'], () => go('continent'));
-onCtrlKeyDown(['s', 'S'], () => saveGame());
+onCtrlKeyDown(['s', 'S'], () => save());
 onCtrlKeyDown(' ', () => endTurn());
 
 onBeforeRouteUpdate(closeSidebar);
 
 onMounted(() => defineGlobalCheats());
 
-async function startRound() {
-  await nextTick();
+function startRound() {
   if (isHost.value && round.value?.phase.kind === 'idle') {
     commands.startRound().err();
   }
 }
 
-async function endTurn() {
-  await nextTick();
+function endTurn() {
   if (isPlayerTurn.value) {
     commands.endTurn().err();
+  }
+}
+
+function save() {
+  if (isHost.value && round.value?.phase.kind !== 'idle') {
+    saveGame().err();
   }
 }
 
@@ -106,7 +110,7 @@ function copyServerAddr() {
           ref="sidebarFooterEl"
           class="grid grid-cols-2 items-center justify-center gap-4 px-6 pb-4"
         >
-          <Button size="sm" @click="saveGame">
+          <Button size="sm" :disabled="!isHost || round?.phase.kind === 'idle'" @click="save">
             <span>{{ t('save') }}</span>
           </Button>
           <Button variant="destructive" size="sm" @click="leaveGame">

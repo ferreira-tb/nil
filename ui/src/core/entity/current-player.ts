@@ -2,31 +2,23 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 
 import { Entity } from './abstract';
+import { ref, type Ref } from 'vue';
+import { asyncRef } from '@tb-dev/vue';
 import type { Option } from '@tb-dev/utils';
-import { asyncRef, maybe } from '@tb-dev/vue';
-import { computed, ref, type Ref } from 'vue';
 import { PlayerImpl } from '@/core/model/player';
 
 export class CurrentPlayerEntity extends Entity {
   private readonly id = ref<Option<PlayerId>>();
   private readonly player: Ref<Option<PlayerImpl>>;
-  private readonly resources: Ref<Option<Resources>>;
 
-  private readonly updatePlayer: () => Promise<void>;
+  public readonly updatePlayer: () => Promise<void>;
 
   constructor() {
     super();
 
-    const player = asyncRef(null, async () => {
-      return maybe(this.id, (id) => PlayerImpl.load(id));
-    });
-
+    const player = usePlayer(this.id);
     this.player = player.state;
     this.updatePlayer = player.execute;
-
-    this.resources = computed(() => {
-      return this.player.value?.resources;
-    });
 
     this.initListeners();
   }
@@ -54,7 +46,6 @@ export class CurrentPlayerEntity extends Entity {
     return {
       id: instance.id as Readonly<typeof instance.id>,
       player: instance.player as Readonly<typeof instance.player>,
-      resources: instance.resources as Readonly<typeof instance.resources>,
     } as const;
   }
 
@@ -85,4 +76,10 @@ export class CurrentPlayerEntity extends Entity {
       });
     }
   }
+}
+
+function usePlayer(id: Ref<Option<PlayerId>>) {
+  return asyncRef(null, async () => {
+    return id.value ? PlayerImpl.load(id.value) : null;
+  });
 }

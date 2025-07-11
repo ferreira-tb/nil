@@ -23,9 +23,14 @@ const isPlayerTurn = usePlayerTurn();
 
 <template>
   <div class="flex items-center justify-center gap-4">
-    <div v-if="round && player" class="flex flex-col items-center justify-center">
-      <span class="text-sm font-semibold">{{ `${t('round')} ${round.id}` }}</span>
-      <span v-if="round?.phase.kind === 'player'" class="text-muted-foreground text-sm">
+    <div
+      v-if="player && round?.phase.kind === 'player'"
+      class="flex flex-col items-center justify-center"
+    >
+      <span class="text-sm font-semibold">
+        {{ `${t('round')} ${round.id}` }}
+      </span>
+      <span class="text-muted-foreground text-sm">
         {{ isPlayerTurn ? t('your-turn') : t('waiting-players') }}
       </span>
     </div>

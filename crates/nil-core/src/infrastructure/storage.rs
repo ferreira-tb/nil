@@ -6,7 +6,7 @@ use crate::error::{Error, Result};
 use derive_more::Deref;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
-use std::num::NonZeroU32;
+use std::ops::{Add, AddAssign, Sub, SubAssign};
 use strum::{Display, EnumIter};
 
 /// Um edifício que armazena recursos.
@@ -16,6 +16,8 @@ pub trait Storage: Building {
   fn capacity(&self) -> StorageCapacity;
   /// Taxa de crescimento da capacidade de armazenamento.
   fn capacity_growth(&self) -> StorageCapacityGrowth;
+  /// Capacidade de armazenamento em seu nível atual.
+  fn current_capacity(&self, stats: &StorageStatsTable) -> Result<StorageCapacity>;
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, Deserialize, Serialize, Display, EnumIter)]
@@ -94,23 +96,75 @@ impl StorageStatsTable {
 }
 
 /// Capacidade de armazenamento do edifício.
-#[derive(Clone, Copy, Debug, Deref, Deserialize, Serialize)]
-pub struct StorageCapacity(NonZeroU32);
+#[derive(Clone, Copy, Debug, Deref, Default, Deserialize, Serialize)]
+pub struct StorageCapacity(u32);
 
 impl StorageCapacity {
   #[inline]
   pub const fn new(value: u32) -> Self {
-    Self(if value > 0 {
-      unsafe { NonZeroU32::new_unchecked(value) }
-    } else {
-      NonZeroU32::MIN
-    })
+    Self(value)
+  }
+}
+
+impl Add for StorageCapacity {
+  type Output = StorageCapacity;
+
+  fn add(self, rhs: Self) -> Self::Output {
+    Self(self.0.saturating_add(rhs.0))
+  }
+}
+
+impl Add<u32> for StorageCapacity {
+  type Output = StorageCapacity;
+
+  fn add(self, rhs: u32) -> Self::Output {
+    Self(self.0.saturating_add(rhs))
+  }
+}
+
+impl AddAssign for StorageCapacity {
+  fn add_assign(&mut self, rhs: Self) {
+    *self = *self + rhs;
+  }
+}
+
+impl AddAssign<u32> for StorageCapacity {
+  fn add_assign(&mut self, rhs: u32) {
+    *self = *self + rhs;
+  }
+}
+
+impl Sub for StorageCapacity {
+  type Output = StorageCapacity;
+
+  fn sub(self, rhs: Self) -> Self::Output {
+    Self(self.0.saturating_sub(rhs.0))
+  }
+}
+
+impl Sub<u32> for StorageCapacity {
+  type Output = StorageCapacity;
+
+  fn sub(self, rhs: u32) -> Self::Output {
+    Self(self.0.saturating_sub(rhs))
+  }
+}
+
+impl SubAssign for StorageCapacity {
+  fn sub_assign(&mut self, rhs: Self) {
+    *self = *self - rhs;
+  }
+}
+
+impl SubAssign<u32> for StorageCapacity {
+  fn sub_assign(&mut self, rhs: u32) {
+    *self = *self - rhs;
   }
 }
 
 impl From<StorageCapacity> for f64 {
   fn from(value: StorageCapacity) -> Self {
-    f64::from(value.0.get())
+    f64::from(value.0)
   }
 }
 

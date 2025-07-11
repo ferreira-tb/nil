@@ -10,7 +10,7 @@ pub fn impl_mine(ast: &DeriveInput) -> TokenStream {
   let stream = quote! {
     mod __impl_mine {
       use super::#name;
-      use crate::error::{Error, Result, WrapOk};
+      use crate::error::Result;
       use crate::infrastructure::building::Building;
       use crate::infrastructure::mine::{
         Mine,

@@ -3,7 +3,7 @@
 
 use crate::error::Result;
 use crate::manager::ManagerExt;
-use nil_core::player::{Player, PlayerId, PlayerOptions, PlayerStatus};
+use nil_core::player::{Player, PlayerId, PlayerOptions, PlayerStatus, PlayerStorageCapacity};
 use nil_core::village::Coord;
 use tauri::AppHandle;
 
@@ -32,6 +32,14 @@ pub async fn get_player_status(app: AppHandle, id: PlayerId) -> Result<PlayerSta
 }
 
 #[tauri::command]
+pub async fn get_player_storage_capacity(app: AppHandle) -> Result<PlayerStorageCapacity> {
+  app
+    .client(async |cl| cl.get_player_storage_capacity().await)
+    .await?
+    .map_err(Into::into)
+}
+
+#[tauri::command]
 pub async fn get_players(app: AppHandle) -> Result<Vec<Player>> {
   app
     .client(async |cl| cl.get_players().await)
@@ -48,9 +56,9 @@ pub async fn player_exists(app: AppHandle, id: PlayerId) -> Result<bool> {
 }
 
 #[tauri::command]
-pub async fn set_player_status(app: AppHandle, id: PlayerId, status: PlayerStatus) -> Result<()> {
+pub async fn set_player_status(app: AppHandle, status: PlayerStatus) -> Result<()> {
   app
-    .client(async |cl| cl.set_player_status(id, status).await)
+    .client(async |cl| cl.set_player_status(status).await)
     .await?
     .map_err(Into::into)
 }

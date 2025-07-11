@@ -4,7 +4,7 @@
 use super::World;
 use crate::error::Result;
 use crate::player::{Player, PlayerId};
-use crate::resource::ResourcesDiff;
+use crate::resource::prelude::*;
 use std::collections::HashMap;
 
 impl World {
@@ -70,8 +70,21 @@ impl World {
     }
 
     for (player_id, resources) in diff {
-      let player = self.player_mut(&player_id)?;
-      *player.resources_mut() += resources;
+      let capacity = self.get_player_storage_capacity(&player_id)?;
+      let current = self.player_mut(&player_id)?.resources_mut();
+
+      macro_rules! add {
+        ($res:ident, $storage:ident) => {
+          current
+            .$res
+            .add_if_within_capacity(resources.$res, capacity.$storage);
+        };
+      }
+
+      add!(food, silo);
+      add!(iron, warehouse);
+      add!(stone, warehouse);
+      add!(wood, warehouse);
     }
 
     Ok(())
