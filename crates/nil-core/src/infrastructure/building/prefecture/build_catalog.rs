@@ -65,16 +65,16 @@ pub enum PrefectureBuildCatalogEntry {
 }
 
 impl PrefectureBuildCatalogEntry {
-  fn new(infra: &Infrastructure, table: &BuildingStatsTable) -> Result<Self> {
+  fn new(infrastructure: &Infrastructure, table: &BuildingStatsTable) -> Result<Self> {
     let id = table.id();
-    let building = infra.building(id);
+    let building = infrastructure.building(id);
     let infra_req = building.infrastructure_requirements();
 
-    if !infra_req.has_required_levels(infra) {
+    if !infra_req.has_required_levels(infrastructure) {
       return Ok(Self::Unmet { requirements: infra_req.clone() });
     }
 
-    let target_level = infra
+    let target_level = infrastructure
       .prefecture
       .build_queue
       .iter()
