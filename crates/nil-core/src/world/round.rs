@@ -65,7 +65,7 @@ impl World {
       if let Some(player_id) = village.owner().player().cloned() {
         let resources = diff.entry(player_id).or_default();
         *resources += village.round_production(stats)?;
-        resources.food -= village.round_maintenance(stats)?;
+        resources.food -= village.maintenance(stats)?;
       }
     }
 

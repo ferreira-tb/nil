@@ -63,10 +63,3 @@ declare global {
     err: (message?: Option<string>) => void;
   }
 }
-
-declare module 'vue' {
-  interface ComponentCustomProperties {
-    $c: typeof commands;
-    $go: typeof go;
-  }
-}

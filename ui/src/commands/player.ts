@@ -11,6 +11,10 @@ export async function getPlayerCoords(id: PlayerId) {
   return invoke<readonly Coord[]>('get_player_coords', { id });
 }
 
+export async function getPlayerMaintenance() {
+  return invoke<number>('get_player_maintenance');
+}
+
 export async function getPlayerStatus(id: PlayerId) {
   return invoke<PlayerStatus>('get_player_status', { id });
 }

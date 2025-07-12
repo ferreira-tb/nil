@@ -69,6 +69,7 @@ pub(crate) fn create() -> Router<App> {
     .route("/player/capacity", get(player::get_storage_capacity))
     .route("/player/coord", post(player::get_coords))
     .route("/player/exists", post(player::exists))
+    .route("/player/maintenance", get(player::get_maintenance))
     .route("/player/set-status", post(player::set_status))
     .route("/player/spawn", post(player::spawn))
     .route("/player/status", post(player::get_status))

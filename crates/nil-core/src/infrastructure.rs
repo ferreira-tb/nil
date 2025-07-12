@@ -108,7 +108,7 @@ impl Infrastructure {
   }
 
   /// Determina a taxa de manutenção exigida por todos os edifícios em seus respectivos níveis.
-  pub fn round_base_maintenance(&self, stats: &InfrastructureStats) -> Result<Maintenance> {
+  pub fn base_maintenance(&self, stats: &InfrastructureStats) -> Result<Maintenance> {
     let mut maintenance = Maintenance::default();
 
     macro_rules! add {

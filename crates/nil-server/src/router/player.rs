@@ -43,6 +43,18 @@ pub async fn get_coords(State(app): State<App>, Json(id): Json<PlayerId>) -> Res
     .await
 }
 
+pub async fn get_maintenance(
+  State(app): State<App>,
+  Extension(current_player): Extension<CurrentPlayer>,
+) -> Response {
+  let id = &current_player.0;
+  app
+    .world(|world| world.get_player_maintenance(id))
+    .map_ok(|maintenance| res!(OK, Json(maintenance)))
+    .unwrap_or_else(from_core_err)
+    .await
+}
+
 pub async fn get_status(State(app): State<App>, Json(id): Json<PlayerId>) -> Response {
   app
     .player_manager(|pm| pm.player(&id).map(Player::status))

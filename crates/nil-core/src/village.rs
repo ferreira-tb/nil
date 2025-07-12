@@ -108,10 +108,8 @@ impl Village {
   /// Determina a taxa de manutenção exigida pelos edifícios da aldeia.
   ///
   /// No momento, não há modificadores para a taxa, mas, quanto houver, eles deverão ser aplicados aqui.
-  pub fn round_maintenance(&self, stats: &InfrastructureStats) -> Result<Maintenance> {
-    self
-      .infrastructure
-      .round_base_maintenance(stats)
+  pub fn maintenance(&self, stats: &InfrastructureStats) -> Result<Maintenance> {
+    self.infrastructure.base_maintenance(stats)
   }
 }
 

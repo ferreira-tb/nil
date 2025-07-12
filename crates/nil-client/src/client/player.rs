@@ -4,6 +4,7 @@
 use super::Client;
 use crate::error::Result;
 use nil_core::player::{Player, PlayerId, PlayerOptions, PlayerStatus, PlayerStorageCapacity};
+use nil_core::resource::Maintenance;
 use nil_core::village::Coord;
 
 impl Client {
@@ -32,6 +33,14 @@ impl Client {
     self
       .http
       .post_json("player/exists", id)
+      .await
+  }
+
+  /// GET `/player/maintenance`
+  pub async fn get_player_maintenance(&self) -> Result<Maintenance> {
+    self
+      .http
+      .get_json("player/maintenance")
       .await
   }
 

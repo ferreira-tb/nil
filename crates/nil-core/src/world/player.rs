@@ -5,9 +5,19 @@ use super::World;
 use crate::error::{Error, Result};
 use crate::infrastructure::storage::StorageId;
 use crate::player::{Player, PlayerId, PlayerStatus, PlayerStorageCapacity};
+use crate::resource::Maintenance;
 use crate::village::Village;
 
 impl World {
+  pub fn get_player_maintenance(&self, player: &PlayerId) -> Result<Maintenance> {
+    self
+      .continent
+      .player_villages_by(|id| id == player)
+      .try_fold(Maintenance::default(), |acc, village| {
+        Ok(acc + village.maintenance(&self.stats.infrastructure)?)
+      })
+  }
+
   pub fn get_player_storage_capacity(&self, player: &PlayerId) -> Result<PlayerStorageCapacity> {
     let silo_stats = self
       .stats
@@ -21,7 +31,7 @@ impl World {
 
     self
       .continent
-      .player_villages_by(move |id| id == player)
+      .player_villages_by(|id| id == player)
       .try_fold(PlayerStorageCapacity::default(), |mut acc, village| {
         let infra = village.infrastructure();
         acc.silo += infra

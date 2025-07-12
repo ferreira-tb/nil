@@ -8,16 +8,13 @@ import '@/lib/prototype';
 import App from '@/App.vue';
 import { createApp } from 'vue';
 import { i18n } from '@/locale';
-import { go, router } from '@/router';
-import * as commands from '@/commands';
+import { router } from '@/router';
 import { handleError } from '@/lib/error';
 import { initEntities } from '@/core/entity';
 import { registerGlobalComponents } from '@/components';
 import { setCurrentApp, setErrorHandler } from '@tb-dev/vue';
 
 const app = createApp(App);
-app.config.globalProperties.$go = go;
-app.config.globalProperties.$c = commands;
 
 setCurrentApp(app);
 setErrorHandler(handleError, app);

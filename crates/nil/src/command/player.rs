@@ -4,6 +4,7 @@
 use crate::error::Result;
 use crate::manager::ManagerExt;
 use nil_core::player::{Player, PlayerId, PlayerOptions, PlayerStatus, PlayerStorageCapacity};
+use nil_core::resource::Maintenance;
 use nil_core::village::Coord;
 use tauri::AppHandle;
 
@@ -19,6 +20,14 @@ pub async fn get_player(app: AppHandle, id: PlayerId) -> Result<Player> {
 pub async fn get_player_coords(app: AppHandle, id: PlayerId) -> Result<Vec<Coord>> {
   app
     .client(async |cl| cl.get_player_coords(id).await)
+    .await?
+    .map_err(Into::into)
+}
+
+#[tauri::command]
+pub async fn get_player_maintenance(app: AppHandle) -> Result<Maintenance> {
+  app
+    .client(async |cl| cl.get_player_maintenance().await)
     .await?
     .map_err(Into::into)
 }
