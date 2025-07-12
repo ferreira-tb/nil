@@ -27,6 +27,14 @@ export function cheatSetMaxResources() {
   return invoke<null>('cheat_set_max_resources');
 }
 
+export function cheatSetMaxSiloResources() {
+  return invoke<null>('cheat_set_max_silo_resources');
+}
+
+export function cheatSetMaxWarehouseResources() {
+  return invoke<null>('cheat_set_max_warehouse_resources');
+}
+
 export function cheatSetResources(resources: Resources) {
   return invoke<null>('cheat_set_resources', { resources });
 }

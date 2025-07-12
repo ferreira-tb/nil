@@ -57,6 +57,22 @@ pub async fn cheat_set_max_resources(app: AppHandle) -> Result<()> {
 }
 
 #[tauri::command]
+pub async fn cheat_set_max_silo_resources(app: AppHandle) -> Result<()> {
+  app
+    .client(async |cl| cl.cheat_set_max_silo_resources().await)
+    .await?
+    .map_err(Into::into)
+}
+
+#[tauri::command]
+pub async fn cheat_set_max_warehouse_resources(app: AppHandle) -> Result<()> {
+  app
+    .client(async |cl| cl.cheat_set_max_warehouse_resources().await)
+    .await?
+    .map_err(Into::into)
+}
+
+#[tauri::command]
 pub async fn cheat_set_resources(app: AppHandle, resources: Resources) -> Result<()> {
   app
     .client(async |cl| cl.cheat_set_resources(resources).await)

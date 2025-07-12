@@ -69,6 +69,30 @@ pub async fn set_max_resources(
     .await
 }
 
+pub async fn set_max_silo_resources(
+  State(app): State<App>,
+  Extension(current_player): Extension<CurrentPlayer>,
+) -> Response {
+  let player = current_player.0;
+  app
+    .world_mut(|world| world.cheat_set_max_silo_resources(player))
+    .map_ok(|()| res!(OK))
+    .unwrap_or_else(from_core_err)
+    .await
+}
+
+pub async fn set_max_warehouse_resources(
+  State(app): State<App>,
+  Extension(current_player): Extension<CurrentPlayer>,
+) -> Response {
+  let player = current_player.0;
+  app
+    .world_mut(|world| world.cheat_set_max_warehouse_resources(player))
+    .map_ok(|()| res!(OK))
+    .unwrap_or_else(from_core_err)
+    .await
+}
+
 pub async fn set_resources(
   State(app): State<App>,
   Extension(current_player): Extension<CurrentPlayer>,

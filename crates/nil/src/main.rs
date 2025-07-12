@@ -51,6 +51,8 @@ fn main() {
       command::cheat::cheat_set_iron,
       command::cheat::cheat_set_max_infrastructure,
       command::cheat::cheat_set_max_resources,
+      command::cheat::cheat_set_max_silo_resources,
+      command::cheat::cheat_set_max_warehouse_resources,
       command::cheat::cheat_set_resources,
       command::cheat::cheat_set_stability,
       command::cheat::cheat_set_stone,

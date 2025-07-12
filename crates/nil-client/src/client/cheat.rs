@@ -58,11 +58,24 @@ impl Client {
       .await
   }
 
+  /// GET `/cheat/resources/silo`
+  pub async fn cheat_set_max_silo_resources(&self) -> Result<()> {
+    self.http.get("cheat/resources/silo").await
+  }
+
   /// POST `/cheat/resources/stone`
   pub async fn cheat_set_stone(&self, stone: Stone) -> Result<()> {
     self
       .http
       .post("cheat/resources/stone", stone)
+      .await
+  }
+
+  /// GET `/cheat/resources/warehouse`
+  pub async fn cheat_set_max_warehouse_resources(&self) -> Result<()> {
+    self
+      .http
+      .get("cheat/resources/warehouse")
       .await
   }
 

@@ -5,7 +5,7 @@ use super::World;
 use crate::error::{Error, Result};
 use crate::infrastructure::building::{BuildingId, BuildingLevel};
 use crate::player::PlayerId;
-use crate::resource::{Food, Iron, Resources, Stone, Wood};
+use crate::resource::prelude::*;
 use crate::village::{Coord, Stability};
 use strum::IntoEnumIterator;
 
@@ -68,6 +68,28 @@ impl World {
   #[inline]
   pub fn cheat_set_max_resources(&mut self, player_id: PlayerId) -> Result<()> {
     self.cheat_set_resources(player_id, Resources::MAX.clone())
+  }
+
+  pub fn cheat_set_max_silo_resources(&mut self, player_id: PlayerId) -> Result<()> {
+    self.cheat_set_resources(
+      player_id,
+      Resources {
+        food: Food::MAX,
+        ..Default::default()
+      },
+    )
+  }
+
+  pub fn cheat_set_max_warehouse_resources(&mut self, player_id: PlayerId) -> Result<()> {
+    self.cheat_set_resources(
+      player_id,
+      Resources {
+        iron: Iron::MAX,
+        stone: Stone::MAX,
+        wood: Wood::MAX,
+        ..Default::default()
+      },
+    )
   }
 
   pub fn cheat_set_resources(&mut self, player_id: PlayerId, resources: Resources) -> Result<()> {
