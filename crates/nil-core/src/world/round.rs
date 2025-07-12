@@ -71,20 +71,10 @@ impl World {
 
     for (player_id, resources) in diff {
       let capacity = self.get_player_storage_capacity(&player_id)?;
-      let current = self.player_mut(&player_id)?.resources_mut();
-
-      macro_rules! add {
-        ($res:ident, $storage:ident) => {
-          current
-            .$res
-            .add_if_within_capacity(resources.$res, capacity.$storage);
-        };
-      }
-
-      add!(food, silo);
-      add!(iron, warehouse);
-      add!(stone, warehouse);
-      add!(wood, warehouse);
+      self
+        .player_mut(&player_id)?
+        .resources_mut()
+        .add_if_within_capacity(resources, capacity);
     }
 
     Ok(())

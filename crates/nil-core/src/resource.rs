@@ -9,11 +9,13 @@ mod workforce;
 
 use crate::infrastructure::mine::MineProduction;
 use crate::infrastructure::storage::StorageCapacity;
+use crate::player::PlayerStorageCapacity;
 use crate::village::Stability;
 use derive_more::{Deref, Display};
 use nil_num::impl_mul_ceil;
 use nil_num::ops::MulCeil;
 use serde::{Deserialize, Serialize};
+use std::cmp::Ordering;
 use std::ops::{Add, AddAssign, Mul, MulAssign, Sub, SubAssign};
 
 pub use cost::{Cost, ResourceRatio};
@@ -69,6 +71,21 @@ impl Resources {
   #[must_use]
   pub fn with_wood(&self, wood: Wood) -> Self {
     Self { wood, ..self.clone() }
+  }
+
+  pub fn add_if_within_capacity(&mut self, diff: ResourcesDiff, capacity: PlayerStorageCapacity) {
+    self
+      .food
+      .add_if_within_capacity(diff.food, capacity.silo);
+    self
+      .iron
+      .add_if_within_capacity(diff.iron, capacity.warehouse);
+    self
+      .stone
+      .add_if_within_capacity(diff.stone, capacity.warehouse);
+    self
+      .wood
+      .add_if_within_capacity(diff.wood, capacity.warehouse);
   }
 
   /// Retorna `None` se não houver recursos o suficiente.
@@ -179,7 +196,7 @@ impl SubAssign<&Resources> for Resources {
 }
 
 macro_rules! decl_resource {
-  ($($name:ident),+ $(,)?) => {
+  ($($name:ident => $diff:ident),+ $(,)?) => {
     $(
       #[derive(
         Clone,
@@ -209,6 +226,27 @@ macro_rules! decl_resource {
         #[inline]
         pub fn checked_sub(self, rhs: Self) -> Option<Self> {
           self.0.checked_sub(rhs.0).map(Self::new)
+        }
+
+        pub fn add_if_within_capacity(&mut self, diff: $diff, capacity: StorageCapacity) {
+          if diff < 0i32 {
+            *self += diff;
+          } else if self.0 < *capacity {
+            let capacity = $name::from(capacity);
+            *self = (*self + diff).min(capacity);
+          }
+        }
+      }
+
+      impl PartialEq<u32> for $name {
+        fn eq(&self, other: &u32) -> bool {
+          self.0.eq(other)
+        }
+      }
+
+      impl PartialOrd<u32> for $name {
+        fn partial_cmp(&self, other: &u32) -> Option<Ordering> {
+          self.0.partial_cmp(other)
         }
       }
 
@@ -299,4 +337,4 @@ macro_rules! decl_resource {
   };
 }
 
-decl_resource!(Food, Iron, Stone, Wood);
+decl_resource!(Food => FoodDiff, Iron => IronDiff, Stone => StoneDiff, Wood => WoodDiff);

@@ -129,8 +129,6 @@ impl SubAssign<Maintenance> for FoodDiff {
 }
 
 /// Proporção do custo base que deve ser usado como taxa de manutenção.
-///
-/// `MAINTENANCE = BASE_COST * MAINTENANCE_RATIO`
 #[derive(Clone, Copy, Debug, Deref, Deserialize, Serialize)]
 pub struct MaintenanceRatio(f64);
 

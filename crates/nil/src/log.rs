@@ -28,7 +28,6 @@ pub fn setup() {
           .add_directive("nil_client=trace".parse()?)
           .add_directive("nil_core=trace".parse()?)
           .add_directive("nil_server=trace".parse()?)
-          .add_directive("nil_util=trace".parse()?)
           .add_directive("tower_http=trace".parse()?),
       );
 

@@ -2,9 +2,9 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 
 use super::{Food, Iron, Resources, Stone, Wood};
-use crate::infrastructure::storage::StorageCapacity;
 use derive_more::{Deref, Display};
 use serde::{Deserialize, Serialize};
+use std::cmp::Ordering;
 use std::ops::{Add, AddAssign, Sub, SubAssign};
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -178,6 +178,18 @@ macro_rules! decl_resource_diff {
         }
       }
 
+      impl PartialEq<i32> for $diff {
+        fn eq(&self, other: &i32) -> bool {
+          self.0.eq(other)
+        }
+      }
+
+      impl PartialOrd<i32> for $diff {
+        fn partial_cmp(&self, other: &i32) -> Option<Ordering> {
+          self.0.partial_cmp(other)
+        }
+      }
+
       impl Add for $diff {
         type Output = Self;
 
@@ -259,15 +271,6 @@ macro_rules! decl_resource_diff {
       impl SubAssign<$diff> for $original {
         fn sub_assign(&mut self, rhs: $diff) {
           *self = *self - rhs;
-        }
-      }
-
-      impl $original {
-        pub fn add_if_within_capacity(&mut self, rhs: $diff, capacity: StorageCapacity) {
-          if self.0 < *capacity {
-            let capacity = $original::from(capacity);
-            *self = (*self + rhs).min(capacity);
-          }
         }
       }
     )+

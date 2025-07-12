@@ -45,7 +45,7 @@ impl From<f64> for Workforce {
 
 impl PartialEq<u32> for Workforce {
   fn eq(&self, other: &u32) -> bool {
-    self.0 == *other
+    self.0.eq(other)
   }
 }
 

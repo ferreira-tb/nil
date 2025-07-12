@@ -176,8 +176,9 @@ impl BuildingStatsTable {
       debug_assert!(maintenance >= 0.0);
 
       cost += cost * cost_growth;
-      maintenance = cost * maintenance_ratio;
       workforce += workforce * workforce_growth;
+
+      maintenance = cost * maintenance_ratio;
     }
 
     table.shrink_to_fit();
