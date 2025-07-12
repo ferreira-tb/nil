@@ -10,5 +10,7 @@ pub fn growth(
   #[builder(into)] min_level: f64,
   #[builder(into)] max_level: f64,
 ) -> f64 {
+  debug_assert!(ceil > floor);
+  debug_assert!(max_level > min_level);
   ((ceil / floor).powf(1.0 / (max_level - min_level))) - 1.0
 }
