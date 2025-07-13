@@ -50,7 +50,7 @@ impl Scripting {
       .collect()
   }
 
-  /// Adiciona um novo script.
+  /// Adds a new script.
   pub fn add(&mut self, mut script: Script) -> ScriptId {
     self.current_id = self.current_id.next();
     script.id = self.current_id;
@@ -58,7 +58,7 @@ impl Scripting {
     self.current_id
   }
 
-  /// Atualiza um script já existente.
+  /// Updates an existing script.
   #[inline]
   pub fn update(&mut self, script: Script) {
     if let Some(old) = self.get_mut(script.id) {
@@ -66,6 +66,7 @@ impl Scripting {
     }
   }
 
+  /// Removes a script.
   #[inline]
   pub fn remove(&mut self, id: ScriptId) -> bool {
     self.scripts.remove(&id).is_some()

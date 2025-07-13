@@ -10,20 +10,20 @@ use axum::extract::{Extension, Json, State};
 use axum::response::Response;
 use nil_core::infrastructure::building::prefecture::{
   PrefectureBuildCatalog,
-  PrefectureBuildOrderOptions,
+  PrefectureBuildOrderRequest,
 };
 use nil_core::village::Coord;
 
 pub async fn add_build_order(
   State(app): State<App>,
   Extension(player): Extension<CurrentPlayer>,
-  Json(options): Json<PrefectureBuildOrderOptions>,
+  Json(request): Json<PrefectureBuildOrderRequest>,
 ) -> Response {
   let result: CoreResult<()> = try {
     let mut world = app.world.write().await;
     bail_not_pending!(world, &player.0);
-    bail_not_owned_by!(world, &player.0, options.coord);
-    world.add_prefecture_build_order(&options)?;
+    bail_not_owned_by!(world, &player.0, request.coord);
+    world.add_prefecture_build_order(&request)?;
   };
 
   result

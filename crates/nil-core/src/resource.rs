@@ -33,7 +33,7 @@ pub struct Resources {
 }
 
 impl Resources {
-  /// Quantidade padrão de recursos para um novo jogador.
+  /// Default amount of resources for a new player.
   pub const PLAYER: Self = Self {
     food: Food::new(800),
     iron: Iron::new(800),
@@ -41,7 +41,7 @@ impl Resources {
     wood: Wood::new(800),
   };
 
-  /// Quantidade máxima de recursos possível.
+  /// Maximum possible amount of resources.
   pub const MAX: Self = Self {
     food: Food::MAX,
     iron: Iron::MAX,
@@ -77,18 +77,22 @@ impl Resources {
     self
       .food
       .add_if_within_capacity(diff.food, capacity.silo);
+
     self
       .iron
       .add_if_within_capacity(diff.iron, capacity.warehouse);
+
     self
       .stone
       .add_if_within_capacity(diff.stone, capacity.warehouse);
+
     self
       .wood
       .add_if_within_capacity(diff.wood, capacity.warehouse);
   }
 
-  /// Retorna `None` se não houver recursos o suficiente.
+  /// Checked resource subtraction.
+  /// Returns `None` if there are not enough resources available.
   pub fn checked_sub(&self, rhs: &Self) -> Option<Self> {
     Some(Self {
       food: self.food.checked_sub(rhs.food)?,

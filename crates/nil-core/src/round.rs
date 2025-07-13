@@ -64,7 +64,7 @@ impl Round {
     self.phase.is_idle()
   }
 
-  /// Determina se o jogador consta como pendente no round atual.
+  /// Determines whether the player is pending in the current round.
   #[inline]
   pub fn is_player_pending(&self, player: &PlayerId) -> bool {
     self
@@ -102,11 +102,11 @@ impl Default for RoundId {
 #[derive(Clone, Debug, Default, Deserialize, Serialize, EnumIs)]
 #[serde(tag = "kind", rename_all = "kebab-case")]
 pub enum Phase {
-  /// Jogo ainda não começou.
+  /// The game hasn't started yet.
   #[default]
   Idle,
 
-  /// Há jogadores que ainda não encerraram o turno.
+  /// There are players who haven't finished their turn yet.
   Player { pending: HashSet<PlayerId> },
 }
 
