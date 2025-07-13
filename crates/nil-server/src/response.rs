@@ -4,6 +4,7 @@
 use crate::error::CoreError;
 use axum::response::Response;
 
+#[doc(hidden)]
 #[macro_export]
 macro_rules! res {
   ($status:ident) => {{
@@ -63,4 +64,29 @@ pub(crate) fn from_core_err(err: CoreError) -> Response {
     VillageNotFound(_) => res!(NOT_FOUND, text),
     WorldIsFull => res!(INTERNAL_SERVER_ERROR, text),
   }
+}
+
+#[doc(hidden)]
+#[macro_export]
+macro_rules! bail_not_pending {
+  ($world:expr, $player:expr) => {
+    if !$world.round().is_player_pending($player) {
+      use nil_core::error::Error;
+      let err = Error::PlayerIsNotPending($player.clone());
+      return $crate::response::from_core_err(err);
+    }
+  };
+}
+
+#[doc(hidden)]
+#[macro_export]
+macro_rules! bail_not_owned_by {
+  ($world:expr, $player:expr, $coord:expr) => {
+    if !$world
+      .village($coord)?
+      .is_owned_by_player_and(|id| $player == id)
+    {
+      return $crate::res!(FORBIDDEN);
+    }
+  };
 }

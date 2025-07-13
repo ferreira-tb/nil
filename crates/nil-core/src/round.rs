@@ -64,16 +64,6 @@ impl Round {
     self.phase.is_idle()
   }
 
-  /// Verifica se o jogador está pendente, retornando um erro se não estiver.
-  #[inline]
-  pub fn check_if_player_is_pending(&self, player: &PlayerId) -> Result<()> {
-    if self.is_player_pending(player) {
-      Ok(())
-    } else {
-      Err(Error::PlayerIsNotPending(player.clone()))
-    }
-  }
-
   /// Determina se o jogador consta como pendente no round atual.
   #[inline]
   pub fn is_player_pending(&self, player: &PlayerId) -> bool {
