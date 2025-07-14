@@ -3,7 +3,7 @@
 
 use crate::error::{Error, Result};
 use crate::manager::ManagerExt;
-use nil_core::script::{Script, ScriptId};
+use nil_core::script::{EXTENSION, Script, ScriptId, Stdio};
 use std::ffi::OsStr;
 use std::io::ErrorKind::NotADirectory;
 use std::path::PathBuf;
@@ -24,7 +24,7 @@ pub async fn add_scripts(app: AppHandle, scripts: Vec<Script>) -> Result<Vec<Scr
 }
 
 #[tauri::command]
-pub async fn execute_script(app: AppHandle, id: ScriptId) -> Result<()> {
+pub async fn execute_script(app: AppHandle, id: ScriptId) -> Result<Stdio> {
   app
     .client(async |cl| cl.execute_script(id).await)
     .await?
@@ -35,7 +35,7 @@ pub async fn execute_script(app: AppHandle, id: ScriptId) -> Result<()> {
 pub async fn export_script(dir: PathBuf, script: Script) -> Result<()> {
   if dir.is_dir() {
     let mut path = dir.join(&script.name);
-    path.set_extension(Script::EXTENSION);
+    path.set_extension(EXTENSION);
 
     let bytes = script.code.as_bytes();
     let file = File::create(&path).await?;

@@ -5,6 +5,7 @@ use crate::bail_not_owned_by;
 use crate::world::script::WorldUserData;
 use mlua::{LuaSerdeExt, UserDataMethods, Value};
 
+#[expect(clippy::too_many_lines)]
 pub(super) fn add_methods<'a, M: UserDataMethods<WorldUserData<'a>>>(methods: &mut M) {
   methods.add_method_mut(
     "cheat_set_building_level",

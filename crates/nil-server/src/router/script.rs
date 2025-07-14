@@ -10,7 +10,7 @@ use axum::extract::{Extension, Json, State};
 use axum::response::Response;
 use futures::{FutureExt, TryFutureExt};
 use nil_core::player::PlayerId;
-use nil_core::script::{Script, ScriptId};
+use nil_core::script::{Script, ScriptId, Stdio};
 
 pub async fn add(
   State(app): State<App>,
@@ -38,16 +38,16 @@ pub async fn execute(
   Extension(player): Extension<CurrentPlayer>,
   Json(id): Json<ScriptId>,
 ) -> Response {
-  let result: CoreResult<()> = try {
+  let result: CoreResult<Stdio> = try {
     let mut world = app.world.write().await;
     let scripting = world.scripting();
     let script = scripting.get(id)?;
     bail_not_player!(player.0, script.owner);
-    world.execute_script(id)?;
+    world.execute_script(id)?
   };
 
   result
-    .map(|()| res!(OK))
+    .map(|stdio| res!(OK, Json(stdio)))
     .unwrap_or_else(from_core_err)
 }
 

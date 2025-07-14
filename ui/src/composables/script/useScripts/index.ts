@@ -27,7 +27,11 @@ export function useScripts(editor: Ref<Option<CodeEditor>>) {
       try {
         await saveScript();
         loading.value = true;
-        await commands.executeScript(current.value.id);
+        const stdio = await commands.executeScript(current.value.id);
+
+        if (__DEBUG_ASSERTIONS__) {
+          console.log(stdio.stdout.join('\n'));
+        }
       } catch (err) {
         handleError(err);
       } finally {

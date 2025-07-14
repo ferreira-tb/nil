@@ -8,6 +8,8 @@ use itertools::Itertools;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 
+pub const EXTENSION: &str = "lua";
+
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Scripting {
@@ -79,10 +81,6 @@ pub struct Script {
   pub owner: PlayerId,
 }
 
-impl Script {
-  pub const EXTENSION: &str = "lua";
-}
-
 #[derive(
   Clone,
   Copy,
@@ -105,5 +103,18 @@ impl ScriptId {
   #[must_use]
   const fn next(self) -> Self {
     Self(self.0.wrapping_add(1))
+  }
+}
+
+#[must_use]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct Stdio {
+  stdout: Vec<Box<str>>,
+}
+
+impl Stdio {
+  pub(crate) fn push_stdout(&mut self, value: &str) {
+    self.stdout.push(Box::from(value));
   }
 }

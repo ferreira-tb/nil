@@ -2,15 +2,16 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 
 mod cheat;
-mod global;
 mod player;
 mod village;
 
 use super::World;
 use crate::error::{Error, Result};
 use crate::player::PlayerId;
-use crate::script::ScriptId;
-use mlua::{Lua, LuaOptions, StdLib, UserData, UserDataMethods};
+use crate::script::{ScriptId, Stdio};
+use mlua::{Lua, LuaOptions, StdLib, UserData, UserDataMethods, Value, Variadic};
+use std::cell::RefCell;
+use std::rc::Rc;
 use std::sync::LazyLock;
 
 static LUA: LazyLock<Lua> = LazyLock::new(|| {
@@ -19,12 +20,12 @@ static LUA: LazyLock<Lua> = LazyLock::new(|| {
 });
 
 impl World {
-  pub fn execute_script(&mut self, id: ScriptId) -> Result<()> {
+  pub fn execute_script(&mut self, id: ScriptId) -> Result<Stdio> {
     let script = self.scripting.get(id).cloned()?;
     self.execute_chunk(script.owner, &script.code)
   }
 
-  fn execute_chunk(&mut self, player: PlayerId, chunk: &str) -> Result<()> {
+  fn execute_chunk(&mut self, player: PlayerId, chunk: &str) -> Result<Stdio> {
     WorldUserData::new(self, player).execute(chunk)
   }
 }
@@ -39,14 +40,32 @@ impl<'a> WorldUserData<'a> {
     Self { world, player }
   }
 
-  fn execute(self, chunk: &str) -> Result<()> {
+  fn execute(self, chunk: &str) -> Result<Stdio> {
+    let stdio = Rc::new(RefCell::new(Stdio::default()));
     let result = LUA.scope(|scope| {
       let globals = LUA.create_table()?;
       let world = scope.create_userdata(self)?;
+      let print = scope.create_function_mut({
+        let stdio = Rc::downgrade(&stdio);
+        move |_, values: Variadic<Value>| {
+          if let Some(stdio) = stdio.upgrade() {
+            for value in values {
+              let value = value.to_string()?;
+              stdio.borrow_mut().push_stdout(&value);
+
+              #[cfg(debug_assertions)]
+              tracing::info!(lua_print = %value);
+            }
+          }
+
+          Ok(())
+        }
+      })?;
+
       globals.set("world", world)?;
+      globals.set("print", print)?;
 
       LUA.set_globals(globals)?;
-
       LUA.load(chunk).exec()
     });
 
@@ -56,7 +75,8 @@ impl<'a> WorldUserData<'a> {
     {
       Err(err.clone())
     } else {
-      result.map_err(Into::into)
+      result?;
+      Ok(Rc::unwrap_or_clone(stdio).into_inner())
     }
   }
 }

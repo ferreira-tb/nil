@@ -11,6 +11,10 @@ export function addScripts(scripts: Script[]) {
   return invoke<readonly ScriptId[]>('add_scripts', { scripts });
 }
 
+export function executeScript(id: ScriptId) {
+  return invoke<Stdio>('execute_script', { id });
+}
+
 export function exportScript(dir: string, script: Script) {
   return invoke<null>('export_script', { dir, script });
 }
@@ -29,10 +33,6 @@ export function importScripts(paths: string[]) {
 
 export function removeScript(id: ScriptId) {
   return invoke<null>('remove_script', { id });
-}
-
-export function executeScript(id: ScriptId) {
-  return invoke<null>('execute_script', { id });
 }
 
 export function updateScript(script: Script) {

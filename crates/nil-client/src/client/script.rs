@@ -3,7 +3,7 @@
 
 use super::Client;
 use crate::error::Result;
-use nil_core::script::{Script, ScriptId};
+use nil_core::script::{Script, ScriptId, Stdio};
 
 impl Client {
   /// POST `/script`
@@ -28,8 +28,11 @@ impl Client {
   }
 
   /// POST `/script/execute`
-  pub async fn execute_script(&self, id: ScriptId) -> Result<()> {
-    self.http.post("script/execute", id).await
+  pub async fn execute_script(&self, id: ScriptId) -> Result<Stdio> {
+    self
+      .http
+      .post_json("script/execute", id)
+      .await
   }
 
   /// POST `/script/remove`
