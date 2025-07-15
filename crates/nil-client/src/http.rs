@@ -100,7 +100,7 @@ pub(crate) async fn request(
 ) -> Result<Response> {
   let mut request = HTTP.request(method, url);
   if let Some(authorization) = authorization {
-    request = request.header(AUTHORIZATION, authorization)
+    request = request.header(AUTHORIZATION, authorization);
   }
 
   let response = request.send().await?;
@@ -125,7 +125,7 @@ where
 {
   let mut request = HTTP.request(method, url);
   if let Some(authorization) = authorization {
-    request = request.header(AUTHORIZATION, authorization)
+    request = request.header(AUTHORIZATION, authorization);
   }
 
   let response = request.json(&body).send().await?;
