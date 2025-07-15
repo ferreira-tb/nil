@@ -9,7 +9,7 @@ import { asyncComputed } from '@tb-dev/vue';
 import { nextTick, readonly, ref, shallowRef } from 'vue';
 
 export interface ScriptContents {
-  readonly about: string;
+  readonly readme: string;
   readonly script: string;
 }
 
@@ -27,12 +27,12 @@ export function useNsr() {
       if (!cached && !loading.value) {
         try {
           loading.value = true;
-          const [about, script] = await Promise.all([
-            commands.fetchNsrAbout(id),
+          const [readme, script] = await Promise.all([
+            commands.fetchNsrReadme(id),
             commands.fetchNsrScript(id),
           ]);
 
-          cached = { about, script };
+          cached = { readme, script };
           cache.set(id, cached);
         } catch (err) {
           handleError(err);

@@ -70,7 +70,7 @@ fn main() {
       command::infrastructure::prefecture::add_prefecture_build_order,
       command::infrastructure::prefecture::cancel_prefecture_build_order,
       command::infrastructure::prefecture::get_prefecture_build_catalog,
-      command::nsr::fetch_nsr_about,
+      command::nsr::fetch_nsr_readme,
       command::nsr::fetch_nsr_registry,
       command::nsr::fetch_nsr_script,
       command::player::get_player,

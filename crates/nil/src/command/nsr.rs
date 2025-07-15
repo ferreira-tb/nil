@@ -5,8 +5,8 @@ use crate::error::Result;
 use nil_client::nsr::{self, NsrScript};
 
 #[tauri::command]
-pub async fn fetch_nsr_about(id: String) -> Result<String> {
-  nsr::about(&id).await.map_err(Into::into)
+pub async fn fetch_nsr_readme(id: String) -> Result<String> {
+  nsr::readme(&id).await.map_err(Into::into)
 }
 
 #[tauri::command]

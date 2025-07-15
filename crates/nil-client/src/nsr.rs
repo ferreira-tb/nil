@@ -16,7 +16,7 @@ pub const NSR: &str = "https://nil.dev.br/nsr";
 #[serde(rename_all = "camelCase")]
 pub struct NsrScript {
   id: String,
-  about: Url,
+  readme: Url,
   script: Url,
   frontmatter: NsrScriptFrontmatter,
 }
@@ -50,8 +50,8 @@ pub async fn script(id: &str) -> Result<String> {
     .map_err(Into::into)
 }
 
-pub async fn about(id: &str) -> Result<String> {
-  let url = format!("{NSR}/{id}/about.md");
+pub async fn readme(id: &str) -> Result<String> {
+  let url = format!("{NSR}/{id}/readme.md");
   request(Method::GET, &url)
     .call()
     .await?

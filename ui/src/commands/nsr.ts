@@ -3,8 +3,8 @@
 
 import { invoke } from '@tauri-apps/api/core';
 
-export function fetchNsrAbout(id: string) {
-  return invoke<string>('fetch_nsr_about', { id });
+export function fetchNsrReadme(id: string) {
+  return invoke<string>('fetch_nsr_readme', { id });
 }
 
 export function fetchNsrRegistry() {

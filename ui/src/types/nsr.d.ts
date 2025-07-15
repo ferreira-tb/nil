@@ -3,7 +3,7 @@
 
 interface NsrScript {
   readonly id: string;
-  readonly about: string;
+  readonly readme: string;
   readonly script: string;
   readonly frontmatter: NsrScriptFrontmatter;
 }

@@ -48,7 +48,7 @@ onBeforeMount(loadRegistry);
 
 <template>
   <div class="game-layout">
-    <Card class="size-full p-0" content-class="relative size-full overflow-hidden">
+    <Card class="size-full p-0" content-class="relative size-full overflow-hidden rounded-xl">
       <UseOnline #default="{ isOnline }: { isOnline: boolean }">
         <div v-if="isOnline" class="flex size-full items-center justify-between">
           <Sidebar :registry @entry-click="setCurrent" />
