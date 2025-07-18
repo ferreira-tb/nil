@@ -3,6 +3,7 @@
 
 interface Bot {
   readonly id: BotId;
+  readonly name: string;
   readonly ethics: Ethics;
   readonly resources: Resources;
 }
