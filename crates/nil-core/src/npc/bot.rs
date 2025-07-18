@@ -7,6 +7,7 @@ use crate::ethic::Ethics;
 use crate::resource::Resources;
 use derive_more::Display;
 use serde::{Deserialize, Serialize};
+use std::sync::Arc;
 
 pub use manager::BotManager;
 
@@ -14,14 +15,18 @@ pub use manager::BotManager;
 #[serde(rename_all = "camelCase")]
 pub struct Bot {
   id: BotId,
+  name: Arc<str>,
   ethics: Ethics,
   resources: Resources,
 }
 
 impl Bot {
   fn new(id: BotId) -> Self {
+    // TODO: These guys deserve better names.
+    let name = format!("Bot {id}");
     Self {
       id,
+      name: Arc::from(name),
       ethics: Ethics::random(),
       resources: Resources::BOT.clone(),
     }
