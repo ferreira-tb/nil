@@ -65,12 +65,7 @@ pub struct WallDefensePercent(f64);
 impl WallDefensePercent {
   #[inline]
   pub const fn new(value: f64) -> Self {
-    Self(value)
-  }
-
-  #[inline]
-  pub const fn as_f64(self) -> f64 {
-    self.0
+    Self(value.clamp(0.0, 100.0))
   }
 }
 
