@@ -9,14 +9,7 @@ import ActionTooltip from '../root/ActionTooltip.vue';
 import type { MaybePromise, Option } from '@tb-dev/utils';
 import { writeText } from '@tauri-apps/plugin-clipboard-manager';
 import type { ScriptContents } from '@/composables/script/useNsr';
-import {
-  CopyIcon,
-  DownloadIcon,
-  FileCodeIcon,
-  PlayIcon,
-  RefreshCwIcon,
-  SaveIcon,
-} from 'lucide-vue-next';
+import { CopyIcon, DownloadIcon, PlayIcon, RefreshCwIcon, SaveIcon } from 'lucide-vue-next';
 
 const props = defineProps<{
   current: Option<NsrScript>;
@@ -41,7 +34,7 @@ function onCopy() {
 
 <template>
   <div class="flex items-center justify-end">
-    <div class="grid max-w-fit grid-cols-6 gap-2">
+    <div class="grid max-w-fit grid-cols-5 gap-2">
       <ActionTooltip :label="t('execute')">
         <Button variant="ghost" size="icon" :disabled="isReadonly || loading" @click="onExecute">
           <PlayIcon />
@@ -69,14 +62,6 @@ function onCopy() {
       <ActionTooltip :label="t('reload')">
         <Button variant="ghost" size="icon" :disabled="loading" @click="onReload">
           <RefreshCwIcon />
-        </Button>
-      </ActionTooltip>
-
-      <ActionTooltip :label="t('script', 2)">
-        <Button variant="ghost" size="icon" :disabled="loading">
-          <RouterLink :to="{ name: 'script' satisfies ScriptScene }">
-            <FileCodeIcon />
-          </RouterLink>
         </Button>
       </ActionTooltip>
     </div>
