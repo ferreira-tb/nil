@@ -116,7 +116,7 @@ pub struct RangedDebuff(f64);
 impl RangedDebuff {
   #[inline]
   pub const fn new(value: f64) -> Self {
-    Self(value)
+    Self(value.clamp(0.0, 1.0))
   }
 }
 
