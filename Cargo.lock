@@ -2725,7 +2725,10 @@ name = "nil-num"
 version = "0.1.0"
 dependencies = [
  "bon",
+ "derive_more 2.0.1",
  "nil-num-macros",
+ "serde",
+ "strum",
 ]
 
 [[package]]

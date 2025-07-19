@@ -59,10 +59,12 @@ impl PrecursorManager {
 }
 
 #[derive(Clone, Copy, Debug, Display, PartialEq, Eq, Hash, Deserialize, Serialize)]
-#[serde(rename_all = "kebab-case")]
-#[strum(serialize_all = "kebab-case")]
 pub enum PrecursorId {
+  #[serde(rename = "A")]
+  #[strum(serialize = "A")]
   A,
+  #[serde(rename = "B")]
+  #[strum(serialize = "B")]
   B,
 }
 

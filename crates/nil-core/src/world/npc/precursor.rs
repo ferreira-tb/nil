@@ -6,6 +6,7 @@ use crate::infrastructure::Infrastructure;
 use crate::npc::precursor::{self, PrecursorId};
 use crate::village::Village;
 use crate::world::World;
+use nil_num::roman::ToRoman;
 use rand::seq::IndexedRandom;
 
 impl World {
@@ -35,8 +36,16 @@ impl World {
       let field = self.continent.field_mut(coord)?;
       debug_assert!(field.is_empty());
 
+      // TODO: Our roman numerals implementation only supports numbers between 1 and 3999.
+      // Currently, this is not a problem, but it could become one in the future.
+      // In that case, we should come up with a good way to handle it.
+      let ridx = idx
+        .saturating_add(1)
+        .to_roman()
+        .unwrap_or_default();
+
       *field = Village::builder(coord)
-        .name(format!("Precursor {id} {idx}"))
+        .name(format!("Precursor {id} {ridx}"))
         .owner(id)
         .infrastructure(Infrastructure::with_max_level())
         .build()

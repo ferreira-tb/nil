@@ -30,10 +30,10 @@ const color = computed(() => {
 
 function getPrecursorColor(id: PrecursorId) {
   switch (id) {
-    case 'a': {
+    case 'A': {
       return 'bg-green-900';
     }
-    case 'b': {
+    case 'B': {
       return 'bg-purple-900';
     }
   }
