@@ -20,10 +20,7 @@ fn default_continent_is_empty() {
 
 #[test]
 fn center() {
-  let mut continent = Continent::new(50);
-  assert_eq!(continent.center(), Coord::splat(25));
-
-  continent = Continent::new(100);
+  let mut continent = Continent::new(100);
   assert_eq!(continent.center(), Coord::splat(50));
 
   continent = Continent::new(200);

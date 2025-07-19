@@ -3,11 +3,21 @@
 
 use crate::error::Result;
 use crate::infrastructure::Infrastructure;
+use crate::infrastructure::storage::OverallStorageCapacity;
+use crate::npc::bot::BotId;
 use crate::village::Village;
 use crate::with_random_level;
 use crate::world::World;
 
 impl World {
+  pub(crate) fn get_bot_storage_capacity(&self, bot: BotId) -> Result<OverallStorageCapacity> {
+    let villages = self
+      .continent
+      .bot_villages_by(|id| id == bot);
+
+    self.get_storage_capacity(villages)
+  }
+
   pub(crate) fn spawn_bots(&mut self) -> Result<()> {
     let size = u16::from(self.continent.size());
     for _ in 0..(size.saturating_mul(2)) {

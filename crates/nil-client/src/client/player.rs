@@ -4,7 +4,8 @@
 use super::Client;
 use crate::error::Result;
 use nil_core::continent::Coord;
-use nil_core::player::{Player, PlayerId, PlayerOptions, PlayerStatus, PlayerStorageCapacity};
+use nil_core::infrastructure::storage::OverallStorageCapacity;
+use nil_core::player::{Player, PlayerId, PlayerOptions, PlayerStatus};
 use nil_core::resource::Maintenance;
 
 impl Client {
@@ -19,7 +20,7 @@ impl Client {
   }
 
   /// GET `/player/capacity`
-  pub async fn get_player_storage_capacity(&self) -> Result<PlayerStorageCapacity> {
+  pub async fn get_player_storage_capacity(&self) -> Result<OverallStorageCapacity> {
     self.http.get_json("player/capacity").await
   }
 

@@ -35,6 +35,16 @@ impl VillageOwner {
       None
     }
   }
+
+  /// Returns the id of the precursor to whom the village belongs, if any.
+  #[inline]
+  pub fn precursor(&self) -> Option<PrecursorId> {
+    if let Self::Precursor { id } = self {
+      Some(*id)
+    } else {
+      None
+    }
+  }
 }
 
 impl From<BotId> for VillageOwner {

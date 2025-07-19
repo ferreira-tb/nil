@@ -8,6 +8,8 @@ mod field;
 mod tests;
 
 use crate::error::{Error, Result};
+use crate::npc::bot::BotId;
+use crate::npc::precursor::PrecursorId;
 use crate::player::PlayerId;
 use crate::village::Village;
 use derive_more::Deref;
@@ -122,6 +124,24 @@ impl Continent {
     self
       .player_villages_by(f)
       .map(Village::coord)
+  }
+
+  pub fn bot_villages_by<F>(&self, f: F) -> impl Iterator<Item = &Village>
+  where
+    F: Fn(BotId) -> bool,
+  {
+    self
+      .villages()
+      .filter(move |village| village.is_owned_by_bot_and(|id| f(id)))
+  }
+
+  pub fn precursor_villages_by<F>(&self, f: F) -> impl Iterator<Item = &Village>
+  where
+    F: Fn(PrecursorId) -> bool,
+  {
+    self
+      .villages()
+      .filter(move |village| village.is_owned_by_precursor_and(|id| f(id)))
   }
 
   /// Searches for a coordinate in the slice, returning its index.

@@ -3,8 +3,8 @@
 
 use super::World;
 use crate::error::{Error, Result};
-use crate::infrastructure::building::StorageId;
-use crate::player::{Player, PlayerId, PlayerStatus, PlayerStorageCapacity};
+use crate::infrastructure::storage::OverallStorageCapacity;
+use crate::player::{Player, PlayerId, PlayerStatus};
 use crate::resource::Maintenance;
 use crate::village::Village;
 
@@ -18,32 +18,12 @@ impl World {
       })
   }
 
-  pub fn get_player_storage_capacity(&self, player: &PlayerId) -> Result<PlayerStorageCapacity> {
-    let silo_stats = self
-      .stats
-      .infrastructure
-      .storage(StorageId::Silo)?;
-
-    let warehouse_stats = self
-      .stats
-      .infrastructure
-      .storage(StorageId::Warehouse)?;
-
-    self
+  pub fn get_player_storage_capacity(&self, player: &PlayerId) -> Result<OverallStorageCapacity> {
+    let villages = self
       .continent
-      .player_villages_by(|id| id == player)
-      .try_fold(PlayerStorageCapacity::default(), |mut acc, village| {
-        let infra = village.infrastructure();
-        acc.silo += infra
-          .storage(StorageId::Silo)
-          .capacity(silo_stats)?;
+      .player_villages_by(|id| id == player);
 
-        acc.warehouse += infra
-          .storage(StorageId::Warehouse)
-          .capacity(warehouse_stats)?;
-
-        Ok(acc)
-      })
+    self.get_storage_capacity(villages)
   }
 
   #[inline]

@@ -33,10 +33,17 @@ impl PrecursorManager {
     Self { a: A::new(size), b: B::new(size) }
   }
 
-  pub fn precursor(&self, id: PrecursorId) -> &dyn Precursor {
+  pub(crate) fn precursor(&self, id: PrecursorId) -> &dyn Precursor {
     match id {
       PrecursorId::A => &self.a,
       PrecursorId::B => &self.b,
+    }
+  }
+
+  pub(crate) fn precursor_mut(&mut self, id: PrecursorId) -> &mut dyn Precursor {
+    match id {
+      PrecursorId::A => &mut self.a,
+      PrecursorId::B => &mut self.b,
     }
   }
 

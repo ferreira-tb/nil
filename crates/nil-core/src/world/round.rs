@@ -1,11 +1,11 @@
 // Copyright (C) Call of Nil contributors
 // SPDX-License-Identifier: AGPL-3.0-only
 
+mod resource;
+
 use super::World;
 use crate::error::Result;
 use crate::player::{Player, PlayerId};
-use crate::resource::prelude::*;
-use std::collections::HashMap;
 
 impl World {
   pub fn start_round(&mut self) -> Result<()> {
@@ -53,32 +53,9 @@ impl World {
 
   fn prepare_next_round(&mut self) -> Result<()> {
     self.update_player_resources()?;
+    self.update_bot_resources()?;
+    self.update_precursor_resources()?;
     self.process_village_queues();
-    Ok(())
-  }
-
-  /// Updates all players' resources by increasing them with the amount generated
-  /// in the current round and then deducting all maintenance-related costs.
-  fn update_player_resources(&mut self) -> Result<()> {
-    let stats = self.stats.infrastructure.as_ref();
-    let mut diff: HashMap<PlayerId, ResourcesDiff> = HashMap::new();
-
-    for village in self.continent.villages() {
-      if let Some(player_id) = village.owner().player().cloned() {
-        let resources = diff.entry(player_id).or_default();
-        *resources += village.round_production(stats)?;
-        resources.food -= village.maintenance(stats)?;
-      }
-    }
-
-    for (player_id, resources) in diff {
-      let capacity = self.get_player_storage_capacity(&player_id)?;
-      self
-        .player_mut(&player_id)?
-        .resources_mut()
-        .add_if_within_capacity(&resources, &capacity);
-    }
-
     Ok(())
   }
 

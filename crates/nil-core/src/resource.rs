@@ -8,8 +8,7 @@ pub mod prelude;
 mod workforce;
 
 use crate::infrastructure::mine::MineProduction;
-use crate::infrastructure::storage::StorageCapacity;
-use crate::player::PlayerStorageCapacity;
+use crate::infrastructure::storage::{OverallStorageCapacity, StorageCapacity};
 use crate::village::Stability;
 use derive_more::{Deref, Display, Into};
 use nil_num::impl_mul_ceil;
@@ -95,7 +94,11 @@ impl Resources {
     Self { wood, ..self.clone() }
   }
 
-  pub fn add_if_within_capacity(&mut self, diff: &ResourcesDiff, capacity: &PlayerStorageCapacity) {
+  pub fn add_if_within_capacity(
+    &mut self,
+    diff: &ResourcesDiff,
+    capacity: &OverallStorageCapacity,
+  ) {
     macro_rules! add {
       ($($res:ident => $storage:ident),+ $(,)?) => {
         $(

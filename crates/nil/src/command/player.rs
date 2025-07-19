@@ -4,7 +4,8 @@
 use crate::error::Result;
 use crate::manager::ManagerExt;
 use nil_core::continent::Coord;
-use nil_core::player::{Player, PlayerId, PlayerOptions, PlayerStatus, PlayerStorageCapacity};
+use nil_core::infrastructure::storage::OverallStorageCapacity;
+use nil_core::player::{Player, PlayerId, PlayerOptions, PlayerStatus};
 use nil_core::resource::Maintenance;
 use tauri::AppHandle;
 
@@ -41,7 +42,7 @@ pub async fn get_player_status(app: AppHandle, id: PlayerId) -> Result<PlayerSta
 }
 
 #[tauri::command]
-pub async fn get_player_storage_capacity(app: AppHandle) -> Result<PlayerStorageCapacity> {
+pub async fn get_player_storage_capacity(app: AppHandle) -> Result<OverallStorageCapacity> {
   app
     .client(async |cl| cl.get_player_storage_capacity().await)
     .await?

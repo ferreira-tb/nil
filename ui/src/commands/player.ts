@@ -20,7 +20,7 @@ export async function getPlayerStatus(id: PlayerId) {
 }
 
 export async function getPlayerStorageCapacity() {
-  return invoke<PlayerStorageCapacity>('get_player_storage_capacity');
+  return invoke<OverallStorageCapacity>('get_player_storage_capacity');
 }
 
 export function getPlayers() {

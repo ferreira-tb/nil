@@ -3,9 +3,9 @@
 
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n';
-import type { BuildingImpl } from '@/core/model/building/abstract';
 import enUS from '@/locale/en-US/scenes/game/infrastructure/prefecture.json';
 import ptBR from '@/locale/pt-BR/scenes/game/infrastructure/prefecture.json';
+import type { BuildingImpl } from '@/core/model/infrastructure/building/abstract';
 
 defineProps<{
   building: BuildingImpl;
