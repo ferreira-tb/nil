@@ -8,7 +8,16 @@ use crate::with_random_level;
 use crate::world::World;
 
 impl World {
-  pub(crate) fn spawn_bot(&mut self) -> Result<()> {
+  pub(crate) fn spawn_bots(&mut self) -> Result<()> {
+    let size = u16::from(self.continent.size());
+    for _ in 0..(size.saturating_mul(2)) {
+      self.spawn_bot()?;
+    }
+
+    Ok(())
+  }
+
+  fn spawn_bot(&mut self) -> Result<()> {
     let (id, name) = self.bot_manager.spawn();
     let (coord, field) = self.find_spawn_point()?;
 

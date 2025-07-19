@@ -69,11 +69,7 @@ impl World {
     };
 
     world.spawn_precursors()?;
-
-    let size = u16::from(world.continent.size());
-    for _ in 0..(size.saturating_mul(2)) {
-      world.spawn_bot()?;
-    }
+    world.spawn_bots()?;
 
     Ok(world)
   }

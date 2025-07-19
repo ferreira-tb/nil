@@ -6,7 +6,6 @@ use crate::infrastructure::Infrastructure;
 use crate::npc::precursor::{self, PrecursorId};
 use crate::village::Village;
 use crate::world::World;
-use itertools::Itertools;
 use rand::seq::IndexedRandom;
 
 impl World {
@@ -20,14 +19,13 @@ impl World {
     let size = self.continent.size();
     let radius = precursor::initial_territory_radius(size);
     let amount = precursor::initial_village_amount(size);
-    let coords = self
+    let mut coords = self
       .precursor_manager
       .precursor(id)
       .origin()
-      .within_distance_inclusive(radius)
-      .into_iter()
-      .filter(|coord| coord.is_within_continent(size))
-      .collect_vec();
+      .within_distance_inclusive(radius);
+
+    coords.retain(|coord| coord.is_within_continent(size));
 
     for (idx, coord) in coords
       .choose_multiple(&mut rand::rng(), amount.into())
