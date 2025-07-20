@@ -5,19 +5,27 @@ import * as commands from '@/commands';
 
 export class RoundImpl implements Round {
   public readonly id: number;
-  public readonly phase: RoundPhase;
+  public readonly state: RoundState;
 
   private constructor(round: Round) {
     this.id = round.id;
-    this.phase = round.phase;
+    this.state = round.state;
   }
 
   public isIdle() {
-    return this.phase.kind === 'idle';
+    return this.state.kind === 'idle';
   }
 
-  public isPending(id: PlayerId) {
-    return this.phase.kind === 'player' && this.phase.pending.includes(id);
+  public isWaiting() {
+    return this.state.kind === 'waiting';
+  }
+
+  public isWaitingPlayer(id: PlayerId) {
+    return this.state.kind === 'waiting' && this.state.players.includes(id);
+  }
+
+  public isDone() {
+    return this.state.kind === 'done';
   }
 
   public static create(round: Round) {

@@ -78,7 +78,7 @@ pub(crate) fn from_core_err(err: CoreError) -> Response {
 #[macro_export]
 macro_rules! bail_not_pending {
   ($world:expr, $player:expr) => {
-    if !$world.round().is_player_pending($player) {
+    if !$world.round().is_waiting_player($player) {
       use nil_core::error::Error;
       let err = Error::PlayerIsNotPending($player.clone());
       return $crate::response::from_core_err(err);

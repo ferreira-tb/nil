@@ -7,7 +7,7 @@ use crate::error::{Error, Result};
 use crate::npc::bot::BotManager;
 use crate::npc::precursor::PrecursorManager;
 use crate::player::{PlayerManager, PlayerStatus};
-use crate::round::{Phase, Round};
+use crate::round::Round;
 use crate::script::Scripting;
 use crate::world::{World, WorldConfig, WorldStats};
 use jiff::Zoned;
@@ -49,7 +49,7 @@ impl Savedata {
 
 fn save(world: &World, path: &Path) -> Result<()> {
   let mut savedata = Savedata {
-    round: world.round.clone(),
+    round: world.round.to_idle(),
     continent: world.continent.clone(),
     player_manager: world.player_manager.clone(),
     bot_manager: world.bot_manager.clone(),
@@ -64,8 +64,6 @@ fn save(world: &World, path: &Path) -> Result<()> {
   for player in savedata.player_manager.players_mut() {
     *player.status_mut() = PlayerStatus::Inactive;
   }
-
-  *savedata.round.phase_mut() = Phase::Idle;
 
   write_file(path, &savedata).map_err(|_| Error::FailedToSaveWorld)
 }

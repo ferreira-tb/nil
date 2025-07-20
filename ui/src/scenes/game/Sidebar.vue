@@ -108,7 +108,7 @@ function copyServerAddr() {
         ref="sidebarFooterEl"
         class="grid grid-cols-2 items-center justify-center gap-4 px-6 pb-4"
       >
-        <Button size="sm" :disabled="!isHost || round?.phase.kind === 'idle'" @click="onSave">
+        <Button size="sm" :disabled="!isHost || round?.state.kind === 'idle'" @click="onSave">
           <span>{{ t('save') }}</span>
         </Button>
         <Button variant="destructive" size="sm" @click="onLeave">

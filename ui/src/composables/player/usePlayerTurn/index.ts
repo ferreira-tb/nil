@@ -11,7 +11,7 @@ export function usePlayerTurn(player?: MaybeNilRef<PlayerImpl>) {
   const playerRef = toPlayerRef(player);
   return computed(() => {
     const id = playerRef.value?.id;
-    const pending = id ? round.value?.isPending(id) : null;
-    return pending ?? false;
+    const isWaiting = id ? round.value?.isWaitingPlayer(id) : null;
+    return isWaiting ?? false;
   });
 }

@@ -31,8 +31,8 @@ export class RoundEntity extends Entity {
   }
 
   private async onRoundUpdated({ round }: RoundUpdatedPayload) {
-    // Isso geralmente indica que o round atual acabou, então nós atualizamos todas as entidades.
-    if (round.id !== this.id || round.phase.kind !== this.phase?.kind) {
+    // This typically indicates that the current round is complete, so we update all the entities.
+    if (round.id !== this.id || round.state.kind !== this.state?.kind) {
       await NIL.update();
     } else {
       this.round.value = RoundImpl.create(round);
@@ -43,8 +43,8 @@ export class RoundEntity extends Entity {
     return this.round.value?.id;
   }
 
-  get phase() {
-    return this.round.value?.phase;
+  get state() {
+    return this.round.value?.state;
   }
 
   public static use() {

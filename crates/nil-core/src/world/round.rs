@@ -24,11 +24,11 @@ impl World {
   }
 
   pub fn end_turn(&mut self, player: &PlayerId) -> Result<()> {
-    if self.round.phase_mut().end_turn(player) {
+    if self.round.end_turn(player) {
       self.emit_round_updated();
     }
 
-    if !self.round.has_pending_players() {
+    if self.round.is_done() {
       self.next_round()?;
     }
 

@@ -33,7 +33,7 @@ onCtrlKeyDown(' ', () => endTurn());
 onMounted(() => defineGlobalCheats());
 
 function startRound() {
-  if (isHost.value && round.value?.phase.kind === 'idle') {
+  if (isHost.value && round.value?.state.kind === 'idle') {
     commands.startRound().err();
   }
 }
@@ -45,7 +45,7 @@ function endTurn() {
 }
 
 function save() {
-  if (isHost.value && round.value?.phase.kind !== 'idle') {
+  if (isHost.value && round.value?.state.kind !== 'idle') {
     saveGame().err();
   }
 }
