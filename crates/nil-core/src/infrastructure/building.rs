@@ -14,7 +14,7 @@ pub mod warehouse;
 
 use crate::error::{Error, Result};
 use crate::infrastructure::requirements::InfrastructureRequirements;
-use crate::resource::prelude::*;
+use crate::resources::prelude::*;
 use derive_more::{Deref, Into};
 use nil_num::growth::growth;
 use serde::{Deserialize, Serialize};

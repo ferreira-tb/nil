@@ -11,16 +11,13 @@ impl Client {
     self.http.get_json("round").await
   }
 
-  /// POST `/round/end-turn`
-  pub async fn end_turn(&self) -> Result<()> {
-    self
-      .http
-      .post("round/end-turn", &self.player)
-      .await
-  }
-
   /// GET `/round/start`
   pub async fn start_round(&self) -> Result<()> {
     self.http.get("round/start").await
+  }
+
+  /// GET `/round/turn/end`
+  pub async fn end_turn(&self) -> Result<()> {
+    self.http.get("round/turn/end").await
   }
 }

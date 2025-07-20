@@ -19,7 +19,7 @@ pub fn impl_building(ast: &DeriveInput) -> TokenStream {
         BuildingLevel,
         BuildingStatsTable,
       };
-      use crate::resource::{
+      use crate::resources::{
         Cost,
         Maintenance,
         MaintenanceRatio,

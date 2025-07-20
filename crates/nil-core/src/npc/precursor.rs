@@ -6,7 +6,7 @@ mod b;
 
 use crate::continent::{ContinentSize, Coord};
 use crate::ethic::Ethics;
-use crate::resource::Resources;
+use crate::resources::Resources;
 use serde::{Deserialize, Serialize};
 use strum::Display;
 

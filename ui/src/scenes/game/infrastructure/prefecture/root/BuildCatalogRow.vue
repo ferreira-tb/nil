@@ -5,7 +5,7 @@
 import { useI18n } from 'vue-i18n';
 import { computed, nextTick } from 'vue';
 import type { Option } from '@tb-dev/utils';
-import type { ResourcesImpl } from '@/core/model/resource';
+import type { ResourcesImpl } from '@/core/model/resources';
 import BuildCatalogBuilding from './BuildCatalogBuilding.vue';
 import { Button, TableCell, TableRow } from '@tb-dev/vue-components';
 import enUS from '@/locale/en-US/scenes/game/infrastructure/prefecture.json';

@@ -6,7 +6,7 @@ use crate::error::Result;
 use nil_core::continent::Coord;
 use nil_core::infrastructure::storage::OverallStorageCapacity;
 use nil_core::player::{Player, PlayerId, PlayerOptions, PlayerStatus};
-use nil_core::resource::Maintenance;
+use nil_core::resources::Maintenance;
 
 impl Client {
   /// GET `/player`
@@ -24,32 +24,11 @@ impl Client {
     self.http.get_json("player/capacity").await
   }
 
-  /// POST `/player/coord`
-  pub async fn get_player_coords(&self, id: PlayerId) -> Result<Vec<Coord>> {
-    self.http.post_json("player/coord", id).await
-  }
-
-  /// POST `/player/exists`
-  pub async fn player_exists(&self, id: PlayerId) -> Result<bool> {
-    self
-      .http
-      .post_json("player/exists", id)
-      .await
-  }
-
   /// GET `/player/maintenance`
   pub async fn get_player_maintenance(&self) -> Result<Maintenance> {
     self
       .http
       .get_json("player/maintenance")
-      .await
-  }
-
-  /// POST `/player/set-status`
-  pub async fn set_player_status(&self, status: PlayerStatus) -> Result<()> {
-    self
-      .http
-      .post("player/set-status", status)
       .await
   }
 
@@ -59,10 +38,31 @@ impl Client {
   }
 
   /// POST `/player/status`
+  pub async fn set_player_status(&self, status: PlayerStatus) -> Result<()> {
+    self.http.post("player/status", status).await
+  }
+
+  /// GET `/player/{id}/coord`
+  pub async fn get_player_coords(&self, id: PlayerId) -> Result<Vec<Coord>> {
+    self
+      .http
+      .get_json(&format!("player/{id}/coord"))
+      .await
+  }
+
+  /// GET `/player/{id}/exists`
+  pub async fn player_exists(&self, id: PlayerId) -> Result<bool> {
+    self
+      .http
+      .get_json(&format!("player/{id}/exists"))
+      .await
+  }
+
+  /// GET `/player/{id}/status`
   pub async fn get_player_status(&self, id: PlayerId) -> Result<PlayerStatus> {
     self
       .http
-      .post_json("player/status", id)
+      .get_json(&format!("player/{id}/status"))
       .await
   }
 }

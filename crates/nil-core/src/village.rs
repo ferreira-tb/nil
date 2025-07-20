@@ -9,7 +9,7 @@ use crate::infrastructure::{Infrastructure, InfrastructureStats};
 use crate::npc::bot::BotId;
 use crate::npc::precursor::PrecursorId;
 use crate::player::PlayerId;
-use crate::resource::{Maintenance, Resources};
+use crate::resources::{Maintenance, Resources};
 use bon::Builder;
 use derive_more::{Deref, Into};
 use serde::{Deserialize, Serialize};

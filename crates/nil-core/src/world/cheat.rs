@@ -2,7 +2,8 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 
 mod infrastructure;
-mod resource;
+mod npc;
+mod resources;
 mod village;
 
 #[doc(hidden)]
@@ -10,6 +11,7 @@ mod village;
 macro_rules! bail_cheat_not_allowed {
   ($world:expr) => {
     if !$world.config.allow_cheats {
+      use $crate::error::Error;
       return Err(Error::CheatingNotAllowed);
     }
   };

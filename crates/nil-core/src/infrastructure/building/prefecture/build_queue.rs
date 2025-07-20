@@ -4,7 +4,7 @@
 use crate::continent::Coord;
 use crate::error::{Error, Result};
 use crate::infrastructure::building::{BuildingId, BuildingLevel, BuildingStatsTable};
-use crate::resource::{Resources, Workforce};
+use crate::resources::{Resources, Workforce};
 use derive_more::Deref;
 use nil_num::BigIntU64;
 use nil_num::ops::MulCeil;

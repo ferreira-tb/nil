@@ -6,7 +6,7 @@ use crate::manager::ManagerExt;
 use nil_core::continent::Coord;
 use nil_core::infrastructure::storage::OverallStorageCapacity;
 use nil_core::player::{Player, PlayerId, PlayerOptions, PlayerStatus};
-use nil_core::resource::Maintenance;
+use nil_core::resources::Maintenance;
 use tauri::AppHandle;
 
 #[tauri::command]

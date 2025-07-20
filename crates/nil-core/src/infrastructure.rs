@@ -10,7 +10,7 @@ pub mod storage;
 use crate::error::{Error, Result};
 
 use crate::infrastructure::building::wall::WallStatsTable;
-use crate::resource::{Maintenance, Resources};
+use crate::resources::{Maintenance, Resources};
 use bon::Builder;
 use building::prefecture::{
   PrefectureBuildOrder,

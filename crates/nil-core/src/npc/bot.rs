@@ -3,7 +3,7 @@
 
 use crate::error::{Error, Result};
 use crate::ethic::Ethics;
-use crate::resource::Resources;
+use crate::resources::Resources;
 use derive_more::Display;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;

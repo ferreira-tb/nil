@@ -114,7 +114,7 @@ impl Continent {
   {
     self
       .villages()
-      .filter(move |village| village.is_owned_by_player_and(|id| f(id)))
+      .filter(move |village| village.is_owned_by_player_and(&f))
   }
 
   pub fn player_coords_by<F>(&self, f: F) -> impl Iterator<Item = Coord>
@@ -132,7 +132,7 @@ impl Continent {
   {
     self
       .villages()
-      .filter(move |village| village.is_owned_by_bot_and(|id| f(id)))
+      .filter(move |village| village.is_owned_by_bot_and(&f))
   }
 
   pub fn precursor_villages_by<F>(&self, f: F) -> impl Iterator<Item = &Village>
@@ -141,7 +141,7 @@ impl Continent {
   {
     self
       .villages()
-      .filter(move |village| village.is_owned_by_precursor_and(|id| f(id)))
+      .filter(move |village| village.is_owned_by_precursor_and(&f))
   }
 
   /// Searches for a coordinate in the slice, returning its index.

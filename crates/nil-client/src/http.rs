@@ -1,6 +1,8 @@
 // Copyright (C) Call of Nil contributors
 // SPDX-License-Identifier: AGPL-3.0-only
 
+mod authorization;
+
 use crate::error::{Error, Result};
 use futures::TryFutureExt;
 use http::header::AUTHORIZATION;
@@ -12,6 +14,9 @@ use serde::de::DeserializeOwned;
 use std::net::SocketAddrV4;
 use std::sync::LazyLock;
 use tokio::time::Duration;
+use url::Url;
+
+pub(crate) use authorization::Authorization;
 
 pub const USER_AGENT: &str = concat!("nil/", env!("CARGO_PKG_VERSION"));
 
@@ -26,21 +31,18 @@ static HTTP: LazyLock<HttpClient> = LazyLock::new(|| {
 
 pub struct Http {
   server: SocketAddrV4,
-  authorization: HeaderValue,
+  authorization: Authorization,
 }
 
 impl Http {
   pub fn new(server: SocketAddrV4, player: &PlayerId) -> Result<Self> {
-    let Ok(authorization) = HeaderValue::from_str(player) else {
-      return Err(Error::InvalidPlayerId(player.clone()));
-    };
-
+    let authorization = player.try_into()?;
     Ok(Self { server, authorization })
   }
 
   pub(crate) async fn get(&self, route: &str) -> Result<()> {
-    let url = url(self.server, route);
-    request(Method::GET, &url)
+    let url = self.url(route)?;
+    request(Method::GET, url.as_str())
       .authorization(&self.authorization)
       .call()
       .await
@@ -48,8 +50,8 @@ impl Http {
   }
 
   pub(crate) async fn get_text(&self, route: &str) -> Result<String> {
-    let url = url(self.server, route);
-    request(Method::GET, &url)
+    let url = self.url(route)?;
+    request(Method::GET, url.as_str())
       .authorization(&self.authorization)
       .call()
       .await?
@@ -62,8 +64,8 @@ impl Http {
   where
     R: DeserializeOwned,
   {
-    let url = url(self.server, route);
-    request(Method::GET, &url)
+    let url = self.url(route)?;
+    request(Method::GET, url.as_str())
       .authorization(&self.authorization)
       .call()
       .and_then(async |res| json::<R>(res).await)
@@ -71,8 +73,8 @@ impl Http {
   }
 
   pub(crate) async fn post(&self, route: &str, body: impl Serialize) -> Result<()> {
-    let url = url(self.server, route);
-    request_with_body(Method::POST, &url, body)
+    let url = self.url(route)?;
+    request_with_body(Method::POST, url.as_str(), body)
       .authorization(&self.authorization)
       .call()
       .await
@@ -83,12 +85,18 @@ impl Http {
   where
     R: DeserializeOwned,
   {
-    let url = url(self.server, route);
-    request_with_body(Method::POST, &url, body)
+    let url = self.url(route)?;
+    request_with_body(Method::POST, url.as_str(), body)
       .authorization(&self.authorization)
       .call()
       .and_then(async |res| json::<R>(res).await)
       .await
+  }
+
+  fn url(&self, route: &str) -> Result<Url> {
+    let ip = self.server.ip();
+    let port = self.server.port();
+    Ok(Url::parse(&format!("http://{ip}:{port}/{route}"))?)
   }
 }
 
@@ -151,10 +159,4 @@ where
       Err(Error::Reqwest(err))
     }
   }
-}
-
-fn url(server: SocketAddrV4, route: &str) -> String {
-  let ip = server.ip();
-  let port = server.port();
-  format!("http://{ip}:{port}/{route}")
 }

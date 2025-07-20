@@ -5,7 +5,7 @@ use crate::error::Result;
 use crate::npc::bot::BotId;
 use crate::npc::precursor::PrecursorId;
 use crate::player::PlayerId;
-use crate::resource::prelude::*;
+use crate::resources::prelude::*;
 use crate::world::World;
 use std::collections::HashMap;
 

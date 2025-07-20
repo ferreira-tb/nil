@@ -104,9 +104,7 @@ pub trait ToRoman {
 
 impl ToRoman for usize {
   fn to_roman(mut self) -> Option<Roman> {
-    if self < Roman::MIN || self > Roman::MAX {
-      None
-    } else {
+    if (Roman::MIN..=Roman::MAX).contains(&self) {
       let mut roman = Vec::new();
       for numeral in Numeral::iter().rev() {
         if self == 0 {
@@ -120,6 +118,8 @@ impl ToRoman for usize {
       }
 
       Some(Roman(roman.into_boxed_slice()))
+    } else {
+      None
     }
   }
 }

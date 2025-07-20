@@ -2,9 +2,10 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 
 use crate::error::{Error, Result};
-use crate::resource::Resources;
+use crate::resources::Resources;
 use derive_more::{Display, From};
 use serde::{Deserialize, Serialize};
+use std::borrow::Cow;
 use std::collections::HashMap;
 use std::ops::Deref;
 use std::sync::Arc;
@@ -98,7 +99,7 @@ impl Player {
 }
 
 #[derive(Debug, Display, From, PartialEq, Eq, Hash, Deserialize, Serialize)]
-#[from(String, &str, Arc<str>, Box<str>)]
+#[from(String, &str, Arc<str>, Box<str>, Cow<'_, str>)]
 pub struct PlayerId(Arc<str>);
 
 impl Clone for PlayerId {

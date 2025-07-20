@@ -5,7 +5,7 @@ use super::{BuildingId, BuildingLevel, StorageId};
 use crate::check_total_resource_ratio;
 use crate::infrastructure::requirements::InfrastructureRequirements;
 use crate::infrastructure::storage::StorageCapacity;
-use crate::resource::{Cost, MaintenanceRatio, ResourceRatio, Workforce};
+use crate::resources::{Cost, MaintenanceRatio, ResourceRatio, Workforce};
 use nil_core_macros::{Building, Storage};
 use serde::{Deserialize, Serialize};
 

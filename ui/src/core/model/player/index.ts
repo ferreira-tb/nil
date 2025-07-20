@@ -3,7 +3,7 @@
 
 import * as commands from '@/commands';
 import type { PartialNullish } from '@tb-dev/utils';
-import { ResourcesImpl } from '@/core/model/resource';
+import { ResourcesImpl } from '@/core/model/resources';
 import { CoordImpl } from '@/core/model/continent/coord';
 import { OverallStorageCapacityImpl } from '@/core/model/infrastructure/storage-capacity';
 

@@ -6,7 +6,7 @@ use crate::infrastructure::building::prefecture::PrefectureBuildOrderKind;
 use crate::infrastructure::building::{BuildingId, BuildingLevel, BuildingStatsTable};
 use crate::infrastructure::requirements::InfrastructureRequirements;
 use crate::infrastructure::{Infrastructure, InfrastructureStats};
-use crate::resource::{Maintenance, Resources, Workforce};
+use crate::resources::{Maintenance, Resources, Workforce};
 use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Debug, Deserialize, Serialize)]

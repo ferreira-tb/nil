@@ -1,7 +1,7 @@
 // Copyright (C) Call of Nil contributors
 // SPDX-License-Identifier: AGPL-3.0-only
 
-mod resource;
+mod resources;
 
 use super::World;
 use crate::error::Result;

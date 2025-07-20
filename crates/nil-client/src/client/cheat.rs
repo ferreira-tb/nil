@@ -2,5 +2,6 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 
 mod infrastructure;
-mod resource;
+mod npc;
+mod resources;
 mod village;

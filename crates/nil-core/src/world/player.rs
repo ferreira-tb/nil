@@ -5,7 +5,7 @@ use super::World;
 use crate::error::{Error, Result};
 use crate::infrastructure::storage::OverallStorageCapacity;
 use crate::player::{Player, PlayerId, PlayerStatus};
-use crate::resource::Maintenance;
+use crate::resources::Maintenance;
 use crate::village::Village;
 
 impl World {

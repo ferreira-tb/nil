@@ -14,7 +14,7 @@ pub mod event;
 pub mod infrastructure;
 pub mod npc;
 pub mod player;
-pub mod resource;
+pub mod resources;
 pub mod round;
 pub mod script;
 pub mod unit;

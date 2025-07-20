@@ -2,13 +2,13 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 
 use crate::error::{Error, Result};
-use crate::http::USER_AGENT;
+use crate::http::{Authorization, USER_AGENT};
 use anyhow::Result as AnyResult;
 use bytes::Bytes;
 use futures::future::BoxFuture;
 use futures::stream::{SplitSink, SplitStream};
 use futures::{Sink, SinkExt, StreamExt};
-use http::{HeaderValue, header};
+use http::header;
 use nil_core::event::Event;
 use nil_core::player::PlayerId;
 use std::net::SocketAddrV4;
@@ -21,6 +21,7 @@ use tokio::time::{Duration, sleep};
 use tokio_tungstenite::tungstenite::client::IntoClientRequest;
 use tokio_tungstenite::tungstenite::protocol::Message;
 use tokio_tungstenite::{MaybeTlsStream, WebSocketStream, connect_async};
+use url::Url;
 
 type ReceiverStream = SplitStream<WebSocketStream<MaybeTlsStream<TcpStream>>>;
 
@@ -34,16 +35,13 @@ impl WebSocketClient {
   where
     F: Fn(Event) -> BoxFuture<'static, ()> + Send + Sync + 'static,
   {
-    let Ok(authorization) = HeaderValue::from_str(player) else {
-      return Err(Error::InvalidPlayerId(player.clone()));
-    };
-
+    let authorization = Authorization::try_from(player)?;
     let ws_stream: AnyResult<WebSocketStream<_>> = try {
-      let url = format!("ws://{addr}/ws");
+      let url = Url::parse(&format!("ws://{addr}/ws"))?;
       let mut request = url.into_client_request()?;
 
       let headers = request.headers_mut();
-      headers.insert(header::AUTHORIZATION, authorization);
+      headers.insert(header::AUTHORIZATION, authorization.into_inner());
       headers.insert(header::USER_AGENT, USER_AGENT.parse()?);
 
       connect_async(request)

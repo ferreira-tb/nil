@@ -27,7 +27,7 @@ impl World {
     Ok(())
   }
 
-  fn spawn_bot(&mut self) -> Result<()> {
+  pub(crate) fn spawn_bot(&mut self) -> Result<BotId> {
     let (id, name) = self.bot_manager.spawn();
     let (coord, field) = self.find_spawn_point()?;
 
@@ -48,6 +48,6 @@ impl World {
       .build()
       .into();
 
-    Ok(())
+    Ok(id)
   }
 }
