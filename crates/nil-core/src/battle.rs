@@ -5,7 +5,8 @@
 mod tests;
 
 use crate::infrastructure::building::wall::WallStats;
-use crate::unit::{Squad, UnitKind};
+use crate::military::squad::Squad;
+use crate::military::unit::UnitKind;
 use bon::Builder;
 
 #[derive(Builder)]

@@ -49,7 +49,6 @@ pub(crate) fn from_core_err(err: CoreError) -> Response {
     CannotDecreaseBuildingLevel(_) => res!(BAD_REQUEST, text),
     CannotIncreaseBuildingLevel(_) => res!(BAD_REQUEST, text),
     CheatingNotAllowed => res!(BAD_REQUEST, text),
-    CoordOutOfBounds(_) => res!(BAD_REQUEST, text),
     FailedToExecuteScript(_) => res!(INTERNAL_SERVER_ERROR, text),
     FailedToLoadWorld => res!(INTERNAL_SERVER_ERROR, text),
     FailedToSaveWorld => res!(INTERNAL_SERVER_ERROR, text),

@@ -12,8 +12,9 @@
     "docs": "cargo doc -p nil-* --open --no-deps --lib --all-features",
     "eslint": "eslint . --config eslint.config.js",
     "format": "prettier . --write && cargo fmt --all",
+    "miri": "pwsh scripts/test.ps1 -Miri",
     "preview": "pwsh scripts/build-bin.ps1 -Preview",
-    "test": "cargo test --tests",
+    "test": "pwsh scripts/test.ps1",
     "type-check": "pnpm run -r --bail type-check",
     "wasm": "pwsh scripts/build-wasm.ps1"
   },

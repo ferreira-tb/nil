@@ -10,7 +10,7 @@ pub fn impl_unit(ast: &DeriveInput) -> TokenStream {
   let stream = quote! {
     mod __impl_unit {
       use super::#name;
-      use crate::unit::{Unit, UnitBox, UnitId, UnitKind, UnitStats};
+      use crate::military::unit::{Unit, UnitBox, UnitId, UnitKind, UnitStats};
 
       impl #name {
         pub fn new_boxed() -> UnitBox {

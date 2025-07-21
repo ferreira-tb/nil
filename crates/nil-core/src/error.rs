@@ -1,7 +1,7 @@
 // Copyright (C) Call of Nil contributors
 // SPDX-License-Identifier: AGPL-3.0-only
 
-use crate::continent::Coord;
+use crate::continent::{ContinentIndex, Coord};
 use crate::infrastructure::building::{BuildingId, BuildingLevel, MineId, StorageId};
 use crate::npc::bot::BotId;
 use crate::npc::precursor::PrecursorId;
@@ -35,9 +35,6 @@ pub enum Error {
   #[error("Cheating is not allowed in this world")]
   CheatingNotAllowed,
 
-  #[error("Coord out of bounds: {0}")]
-  CoordOutOfBounds(Coord),
-
   #[error("Failed to execute script")]
   FailedToExecuteScript(#[from] mlua::Error),
 
@@ -51,7 +48,7 @@ pub enum Error {
   Forbidden,
 
   #[error("Index out of bounds: {0}")]
-  IndexOutOfBounds(usize),
+  IndexOutOfBounds(ContinentIndex),
 
   #[error("Insufficient resources")]
   InsufficientResources,

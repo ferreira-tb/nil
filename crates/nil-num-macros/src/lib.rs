@@ -11,3 +11,9 @@ pub fn derive_big_int_u64(input: TokenStream) -> TokenStream {
   let ast = syn::parse::<DeriveInput>(input).unwrap();
   big_int::impl_big_int_u64(&ast)
 }
+
+#[proc_macro_derive(BigIntUsize)]
+pub fn derive_big_int_usize(input: TokenStream) -> TokenStream {
+  let ast = syn::parse::<DeriveInput>(input).unwrap();
+  big_int::impl_big_int_usize(&ast)
+}

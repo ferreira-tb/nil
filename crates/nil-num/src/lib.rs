@@ -5,4 +5,4 @@ pub mod growth;
 pub mod ops;
 pub mod roman;
 
-pub use nil_num_macros::BigIntU64;
+pub use nil_num_macros::{BigIntU64, BigIntUsize};

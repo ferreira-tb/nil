@@ -14,7 +14,7 @@ impl World {
       .continent
       .enumerate_fields()
       .filter(|(_, field)| field.is_empty())
-      .filter_map(|(idx, _)| self.continent.coord(idx).ok())
+      .filter_map(|(idx, _)| idx.to_coord(size).ok())
       .filter(|coord| !pm.is_within_territory(*coord, size))
       .choose_stable(&mut rand::rng())
       .ok_or(Error::WorldIsFull)?;

@@ -9,8 +9,10 @@ pub mod pikeman;
 pub mod prelude;
 pub mod swordsman;
 
+use crate::error::Result;
 use derive_more::{Deref, Into};
-use serde::{Deserialize, Serialize};
+use serde::{Deserialize, Deserializer, Serialize, Serializer};
+use std::fmt;
 use std::ops::{Div, Mul, MulAssign};
 use strum::EnumIter;
 
@@ -33,6 +35,67 @@ pub enum UnitId {
   Swordsman,
 }
 
+#[derive(Deref)]
+pub struct UnitBox(Box<dyn Unit>);
+
+impl UnitBox {
+  #[inline]
+  pub fn new(unit: Box<dyn Unit>) -> Self {
+    Self(unit)
+  }
+
+  #[inline]
+  pub fn as_dyn(&self) -> &dyn Unit {
+    &*self.0
+  }
+}
+
+impl Clone for UnitBox {
+  fn clone(&self) -> Self {
+    Self::from(self.0.id())
+  }
+}
+
+impl fmt::Debug for UnitBox {
+  fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+    f.debug_tuple("UnitBox")
+      .field(&self.0.id())
+      .finish()
+  }
+}
+
+impl From<UnitId> for UnitBox {
+  fn from(id: UnitId) -> Self {
+    use prelude::*;
+    match id {
+      UnitId::Archer => Archer::new_boxed(),
+      UnitId::Axeman => Axeman::new_boxed(),
+      UnitId::HeavyCavalry => HeavyCavalry::new_boxed(),
+      UnitId::LightCavalry => LightCavalry::new_boxed(),
+      UnitId::Pikeman => Pikeman::new_boxed(),
+      UnitId::Swordsman => Swordsman::new_boxed(),
+    }
+  }
+}
+
+impl Serialize for UnitBox {
+  fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+  where
+    S: Serializer,
+  {
+    self.id().serialize(serializer)
+  }
+}
+
+impl<'de> Deserialize<'de> for UnitBox {
+  fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+  where
+    D: Deserializer<'de>,
+  {
+    Ok(Self::from(UnitId::deserialize(deserializer)?))
+  }
+}
+
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum UnitKind {
   Infantry,
@@ -42,11 +105,11 @@ pub enum UnitKind {
 
 #[derive(Clone, Copy, Debug)]
 pub struct UnitStats {
-  pub attack: Power,
-  pub infantry_defense: Power,
-  pub cavalry_defense: Power,
-  pub ranged_defense: Power,
-  pub ranged_debuff: RangedDebuff,
+  pub(crate) attack: Power,
+  pub(crate) infantry_defense: Power,
+  pub(crate) cavalry_defense: Power,
+  pub(crate) ranged_defense: Power,
+  pub(crate) ranged_debuff: RangedDebuff,
   pub speed: Speed,
   pub haul: Haul,
 }
@@ -160,96 +223,5 @@ impl Haul {
   #[inline]
   pub const fn new(value: u16) -> Self {
     Self(value)
-  }
-}
-
-/// Um grupo de unidades iguais.
-pub struct Squad {
-  unit: UnitBox,
-  amount: u32,
-}
-
-impl Squad {
-  pub fn new(id: UnitId, amount: u32) -> Self {
-    use prelude::*;
-    let unit = match id {
-      UnitId::Archer => Archer::new_boxed(),
-      UnitId::Axeman => Axeman::new_boxed(),
-      UnitId::HeavyCavalry => HeavyCavalry::new_boxed(),
-      UnitId::LightCavalry => LightCavalry::new_boxed(),
-      UnitId::Pikeman => Pikeman::new_boxed(),
-      UnitId::Swordsman => Swordsman::new_boxed(),
-    };
-
-    Self { unit, amount }
-  }
-
-  #[inline]
-  pub fn unit(&self) -> &dyn Unit {
-    &*self.unit.0
-  }
-
-  #[inline]
-  pub fn kind(&self) -> UnitKind {
-    self.unit.0.kind()
-  }
-
-  #[inline]
-  pub fn amount(&self) -> u32 {
-    self.amount
-  }
-
-  pub fn attack(&self) -> SquadAttack {
-    let attack = self.unit.0.stats().attack;
-    let total = f64::from(attack * self.amount);
-    SquadAttack::new(total)
-  }
-
-  pub fn defense(&self) -> SquadDefense {
-    let general = self.unit.0.stats().infantry_defense;
-    let cavalry = self.unit.0.stats().cavalry_defense;
-    let ranged = self.unit.0.stats().ranged_defense;
-
-    let general_total = f64::from(general * self.amount);
-    let cavalry_total = f64::from(cavalry * self.amount);
-    let ranged_total = f64::from(ranged * self.amount);
-
-    SquadDefense {
-      infantry: general_total,
-      cavalry: cavalry_total,
-      ranged: ranged_total,
-    }
-  }
-}
-
-#[derive(Clone, Copy, Debug, Deref, Into)]
-pub struct SquadAttack(f64);
-
-impl SquadAttack {
-  #[inline]
-  pub const fn new(value: f64) -> Self {
-    Self(value.max(0.0))
-  }
-}
-
-impl From<f64> for SquadAttack {
-  fn from(value: f64) -> Self {
-    Self::new(value)
-  }
-}
-
-pub struct SquadDefense {
-  pub infantry: f64,
-  pub cavalry: f64,
-  pub ranged: f64,
-}
-
-#[derive(Deref)]
-pub struct UnitBox(Box<dyn Unit>);
-
-impl UnitBox {
-  #[inline]
-  pub fn new(unit: Box<dyn Unit>) -> Self {
-    Self(unit)
   }
 }

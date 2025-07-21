@@ -2,8 +2,9 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 
 use super::Battle;
-use crate::unit::UnitId::*;
-use crate::unit::{Squad, UnitId};
+use crate::military::squad::Squad;
+use crate::military::unit::UnitId;
+use crate::military::unit::UnitId::*;
 
 #[test]
 fn offensive_power() {
