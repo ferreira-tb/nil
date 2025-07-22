@@ -24,7 +24,7 @@ use std::{cmp, fmt};
 use strum::{Display, EnumIter};
 use subenum::subenum;
 
-pub trait Building {
+pub trait Building: Send + Sync {
   fn id(&self) -> BuildingId;
 
   /// Checks whether the building is enabled.

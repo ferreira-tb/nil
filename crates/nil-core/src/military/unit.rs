@@ -13,10 +13,10 @@ use crate::error::Result;
 use derive_more::{Deref, Into};
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
 use std::fmt;
-use std::ops::{Div, Mul, MulAssign};
+use std::ops::{Div, Mul};
 use strum::EnumIter;
 
-pub trait Unit {
+pub trait Unit: Send + Sync {
   fn id(&self) -> UnitId;
   fn kind(&self) -> UnitKind;
   fn stats(&self) -> UnitStats;
@@ -96,7 +96,8 @@ impl<'de> Deserialize<'de> for UnitBox {
   }
 }
 
-#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Deserialize, Serialize)]
+#[serde(rename_all = "kebab-case")]
 pub enum UnitKind {
   Infantry,
   Cavalry,
@@ -183,25 +184,19 @@ impl RangedDebuff {
   }
 }
 
-impl Mul for RangedDebuff {
-  type Output = RangedDebuff;
-
-  fn mul(self, rhs: RangedDebuff) -> Self::Output {
-    Self(self.0 * rhs.0)
-  }
-}
-
-impl MulAssign for RangedDebuff {
-  fn mul_assign(&mut self, rhs: Self) {
-    *self = *self * rhs;
-  }
-}
-
 impl Mul<f64> for RangedDebuff {
   type Output = f64;
 
   fn mul(self, rhs: f64) -> Self::Output {
     self.0 * rhs
+  }
+}
+
+impl Mul<u32> for RangedDebuff {
+  type Output = f64;
+
+  fn mul(self, rhs: u32) -> Self::Output {
+    self.0 * f64::from(rhs)
   }
 }
 

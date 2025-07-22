@@ -18,6 +18,7 @@ use crate::continent::{Continent, Coord};
 use crate::error::{Error, Result};
 use crate::event::Emitter;
 use crate::infrastructure::{Infrastructure, InfrastructureStats};
+use crate::military::Military;
 use crate::npc::bot::BotManager;
 use crate::npc::precursor::PrecursorManager;
 use crate::player::{Player, PlayerId, PlayerManager};
@@ -37,6 +38,7 @@ pub struct World {
   player_manager: PlayerManager,
   bot_manager: BotManager,
   precursor_manager: PrecursorManager,
+  military: Military,
   config: WorldConfig,
   stats: WorldStats,
   chat: Chat,
@@ -52,6 +54,7 @@ impl World {
     let config = WorldConfig::from(options);
     let continent = Continent::new(options.size.get());
     let precursor_manager = PrecursorManager::new(continent.size());
+    let military = Military::new(continent.size());
 
     let mut world = Self {
       round: Round::default(),
@@ -59,6 +62,7 @@ impl World {
       player_manager: PlayerManager::default(),
       bot_manager: BotManager::default(),
       precursor_manager,
+      military,
       config,
       stats: WorldStats::new(),
       chat: Chat::default(),
@@ -81,6 +85,7 @@ impl World {
       player_manager: savedata.player_manager,
       bot_manager: savedata.bot_manager,
       precursor_manager: savedata.precursor_manager,
+      military: savedata.military,
       config: savedata.config,
       stats: savedata.stats,
       chat: savedata.chat,

@@ -6,6 +6,7 @@ mod b;
 
 use crate::continent::{ContinentSize, Coord};
 use crate::ethic::Ethics;
+use crate::military::army::ArmyPersonnel;
 use crate::resources::Resources;
 use serde::{Deserialize, Serialize};
 use strum::Display;
@@ -83,4 +84,20 @@ pub fn initial_territory_radius(size: ContinentSize) -> u8 {
 #[inline]
 pub fn initial_village_amount(size: ContinentSize) -> u8 {
   size.get().div_ceil(10).saturating_mul(2)
+}
+
+pub fn initial_offensive_personnel() -> ArmyPersonnel {
+  ArmyPersonnel::builder()
+    .axeman(5000)
+    .light_cavalry(2500)
+    .build()
+}
+
+pub fn initial_defensive_personnel() -> ArmyPersonnel {
+  ArmyPersonnel::builder()
+    .archer(3000)
+    .pikeman(5000)
+    .swordsman(5000)
+    .heavy_cavalry(1000)
+    .build()
 }

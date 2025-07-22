@@ -1,16 +1,163 @@
 // Copyright (C) Call of Nil contributors
 // SPDX-License-Identifier: AGPL-3.0-only
 
-use crate::military::squad::Squad;
+use crate::military::squad::{Squad, SquadSize};
 use crate::military::unit::UnitId;
+use crate::npc::bot::BotId;
+use crate::npc::precursor::PrecursorId;
+use crate::player::PlayerId;
+use bon::Builder;
 use serde::{Deserialize, Serialize};
-use std::collections::HashMap;
+use std::ops::{Add, AddAssign, Sub, SubAssign};
 use strum::EnumIs;
 
-#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+#[derive(Builder, Clone, Debug, Deserialize, Serialize)]
 pub struct Army {
-  squads: HashMap<UnitId, Squad>,
+  #[builder(default)]
+  personnel: ArmyPersonnel,
+
+  #[builder(default)]
   state: ArmyState,
+
+  #[builder(into)]
+  owner: ArmyOwner,
+}
+
+impl Army {
+  #[inline]
+  pub fn personnel(&self) -> &ArmyPersonnel {
+    &self.personnel
+  }
+
+  #[inline]
+  pub fn state(&self) -> &ArmyState {
+    &self.state
+  }
+
+  #[inline]
+  pub fn owner(&self) -> &ArmyOwner {
+    &self.owner
+  }
+
+  #[inline]
+  pub fn is_idle(&self) -> bool {
+    self.state.is_idle()
+  }
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct ArmyPersonnel {
+  archer: Squad,
+  axeman: Squad,
+  heavy_cavalry: Squad,
+  light_cavalry: Squad,
+  pikeman: Squad,
+  swordsman: Squad,
+}
+
+#[bon::bon]
+impl ArmyPersonnel {
+  #[builder]
+  pub fn new(
+    #[builder(default, into)] archer: SquadSize,
+    #[builder(default, into)] axeman: SquadSize,
+    #[builder(default, into)] heavy_cavalry: SquadSize,
+    #[builder(default, into)] light_cavalry: SquadSize,
+    #[builder(default, into)] pikeman: SquadSize,
+    #[builder(default, into)] swordsman: SquadSize,
+  ) -> Self {
+    use UnitId::*;
+    Self {
+      archer: Squad::new(Archer, archer),
+      axeman: Squad::new(Axeman, axeman),
+      heavy_cavalry: Squad::new(HeavyCavalry, heavy_cavalry),
+      light_cavalry: Squad::new(LightCavalry, light_cavalry),
+      pikeman: Squad::new(Pikeman, pikeman),
+      swordsman: Squad::new(Swordsman, swordsman),
+    }
+  }
+}
+
+impl Default for ArmyPersonnel {
+  fn default() -> Self {
+    Self::builder().build()
+  }
+}
+
+impl Add for ArmyPersonnel {
+  type Output = ArmyPersonnel;
+
+  fn add(mut self, rhs: Self) -> Self::Output {
+    self += rhs;
+    self
+  }
+}
+
+impl Add<Squad> for ArmyPersonnel {
+  type Output = ArmyPersonnel;
+
+  fn add(mut self, rhs: Squad) -> Self::Output {
+    self += rhs;
+    self
+  }
+}
+
+impl AddAssign for ArmyPersonnel {
+  fn add_assign(&mut self, rhs: Self) {
+    self.archer += rhs.archer;
+    self.axeman += rhs.axeman;
+    self.heavy_cavalry += rhs.heavy_cavalry;
+    self.light_cavalry += rhs.light_cavalry;
+    self.pikeman += rhs.pikeman;
+    self.swordsman += rhs.swordsman;
+  }
+}
+
+impl AddAssign<Squad> for ArmyPersonnel {
+  fn add_assign(&mut self, rhs: Squad) {
+    match rhs.id() {
+      UnitId::Archer => self.archer += rhs,
+      UnitId::Axeman => self.axeman += rhs,
+      UnitId::HeavyCavalry => self.heavy_cavalry += rhs,
+      UnitId::LightCavalry => self.light_cavalry += rhs,
+      UnitId::Pikeman => self.pikeman += rhs,
+      UnitId::Swordsman => self.swordsman += rhs,
+    }
+  }
+}
+
+impl Sub for ArmyPersonnel {
+  type Output = ArmyPersonnel;
+
+  fn sub(mut self, rhs: Self) -> Self::Output {
+    self -= rhs;
+    self
+  }
+}
+
+impl SubAssign for ArmyPersonnel {
+  fn sub_assign(&mut self, rhs: Self) {
+    self.archer -= rhs.archer;
+    self.axeman -= rhs.axeman;
+    self.heavy_cavalry -= rhs.heavy_cavalry;
+    self.light_cavalry -= rhs.light_cavalry;
+    self.pikeman -= rhs.pikeman;
+    self.swordsman -= rhs.swordsman;
+  }
+}
+
+impl SubAssign<Squad> for ArmyPersonnel {
+  fn sub_assign(&mut self, rhs: Squad) {
+    match rhs.id() {
+      UnitId::Archer => self.archer -= rhs,
+      UnitId::Axeman => self.axeman -= rhs,
+      UnitId::HeavyCavalry => self.heavy_cavalry -= rhs,
+      UnitId::LightCavalry => self.light_cavalry -= rhs,
+      UnitId::Pikeman => self.pikeman -= rhs,
+      UnitId::Swordsman => self.swordsman -= rhs,
+    }
+  }
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize, EnumIs)]
@@ -18,4 +165,37 @@ pub struct Army {
 pub enum ArmyState {
   #[default]
   Idle,
+}
+
+#[expect(variant_size_differences)]
+#[derive(Clone, Debug, PartialEq, Eq, Deserialize, Serialize)]
+#[serde(tag = "kind", rename_all = "kebab-case")]
+pub enum ArmyOwner {
+  Bot { id: BotId },
+  Player { id: PlayerId },
+  Precursor { id: PrecursorId },
+}
+
+impl From<BotId> for ArmyOwner {
+  fn from(id: BotId) -> Self {
+    Self::Bot { id }
+  }
+}
+
+impl From<PlayerId> for ArmyOwner {
+  fn from(id: PlayerId) -> Self {
+    Self::Player { id }
+  }
+}
+
+impl From<&PlayerId> for ArmyOwner {
+  fn from(id: &PlayerId) -> Self {
+    Self::Player { id: id.clone() }
+  }
+}
+
+impl From<PrecursorId> for ArmyOwner {
+  fn from(id: PrecursorId) -> Self {
+    Self::Precursor { id }
+  }
 }

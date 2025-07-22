@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 
 use super::Battle;
-use crate::military::squad::Squad;
+use crate::military::squad::{Squad, SquadSize};
 use crate::military::unit::UnitId;
 use crate::military::unit::UnitId::*;
 
@@ -146,5 +146,5 @@ fn ranged_attack_no_debuff() {
 }
 
 fn s(id: UnitId, amount: u32) -> Squad {
-  Squad::new(id, amount)
+  Squad::new(id, SquadSize::new(amount))
 }
