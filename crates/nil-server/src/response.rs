@@ -45,7 +45,7 @@ pub(crate) fn from_core_err(err: CoreError) -> Response {
   match err {
     BotNotFound(_) => res!(NOT_FOUND, text),
     BuildingStatsNotFound(_) => res!(NOT_FOUND, text),
-    BuildingStatsNotFoundForLevel(_, _) => res!(NOT_FOUND, text),
+    BuildingStatsNotFoundForLevel(..) => res!(NOT_FOUND, text),
     CannotDecreaseBuildingLevel(_) => res!(BAD_REQUEST, text),
     CannotIncreaseBuildingLevel(_) => res!(BAD_REQUEST, text),
     CheatingNotAllowed => res!(BAD_REQUEST, text),
@@ -56,7 +56,7 @@ pub(crate) fn from_core_err(err: CoreError) -> Response {
     IndexOutOfBounds(_) => res!(BAD_REQUEST, text),
     InsufficientResources => res!(BAD_REQUEST, text),
     MineStatsNotFound(_) => res!(NOT_FOUND, text),
-    MineStatsNotFoundForLevel(_, _) => res!(NOT_FOUND, text),
+    MineStatsNotFoundForLevel(..) => res!(NOT_FOUND, text),
     NoPlayer => res!(BAD_REQUEST, text),
     PlayerAlreadySpawned(_) => res!(CONFLICT, text),
     PlayerIsNotPending(_) => res!(BAD_REQUEST, text),
@@ -67,7 +67,7 @@ pub(crate) fn from_core_err(err: CoreError) -> Response {
     RoundNotStarted => res!(BAD_REQUEST, text),
     ScriptNotFound(_) => res!(NOT_FOUND, text),
     StorageStatsNotFound(_) => res!(NOT_FOUND, text),
-    StorageStatsNotFoundForLevel(_, _) => res!(NOT_FOUND, text),
+    StorageStatsNotFoundForLevel(..) => res!(NOT_FOUND, text),
     VillageNotFound(_) => res!(NOT_FOUND, text),
     WorldIsFull => res!(INTERNAL_SERVER_ERROR, text),
   }

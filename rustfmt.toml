@@ -1,4 +1,5 @@
 chain_width = 45
+condense_wildcard_suffixes = true
 edition = "2024"
 fn_call_width = 60
 force_multiline_blocks = true
@@ -7,7 +8,9 @@ imports_granularity = "Module"
 imports_layout = "HorizontalVertical"
 max_width = 100
 newline_style = "Unix"
-single_line_let_else_max_width = 80
+single_line_if_else_max_width = 70
+single_line_let_else_max_width = 90
+struct_lit_single_line = true
 struct_lit_width = 36
 tab_spaces = 2
 use_field_init_shorthand = true
