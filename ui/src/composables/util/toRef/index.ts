@@ -4,9 +4,9 @@
 import { type Ref, toRef } from 'vue';
 import type { Option } from '@tb-dev/utils';
 import type { MaybeNilRef } from '@tb-dev/vue';
-import type { CoordImpl } from '@/core/model/continent/coord';
 import type { PlayerImpl } from '@/core/model/player';
 import type { VillageImpl } from '@/core/model/village';
+import type { CoordImpl } from '@/core/model/continent/coord';
 
 export function toCoordRef(coord?: MaybeNilRef<CoordImpl>) {
   return (coord ? toRef(coord) : NIL.village.refs().coord) as Ref<Option<CoordImpl>>;

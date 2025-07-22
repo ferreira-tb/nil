@@ -10,6 +10,7 @@ use axum::middleware::Next;
 use axum::response::Response;
 use derive_more::Deref;
 use nil_core::player::PlayerId;
+use percent_encoding::percent_decode;
 
 #[derive(Clone, Debug, Deref)]
 pub struct CurrentPlayer(pub(crate) PlayerId);
@@ -18,9 +19,12 @@ impl TryFrom<&HeaderValue> for CurrentPlayer {
   type Error = anyhow::Error;
 
   fn try_from(value: &HeaderValue) -> AnyResult<Self> {
-    let bytes = value.as_bytes().to_vec();
-    let id = String::from_utf8(bytes)?;
-    Ok(Self(PlayerId::from(id)))
+    let bytes = value.as_bytes();
+    let id = percent_decode(bytes)
+      .decode_utf8()
+      .map(PlayerId::from)?;
+
+    Ok(Self(id))
   }
 }
 

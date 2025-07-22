@@ -2,9 +2,9 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 
 use crate::bail_cheat_not_allowed;
-use crate::error::{Error, Result};
+use crate::error::Result;
 use crate::player::PlayerId;
-use crate::resource::prelude::*;
+use crate::resources::prelude::*;
 use crate::world::World;
 
 impl World {

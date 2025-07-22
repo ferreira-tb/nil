@@ -1,16 +1,51 @@
 // Copyright (C) Call of Nil contributors
 // SPDX-License-Identifier: AGPL-3.0-only
 
-mod manager;
-
-use crate::infrastructure::storage::StorageCapacity;
-use crate::resource::Resources;
+use crate::error::{Error, Result};
+use crate::resources::Resources;
 use derive_more::{Display, From};
 use serde::{Deserialize, Serialize};
+use std::borrow::Cow;
+use std::collections::HashMap;
 use std::ops::Deref;
 use std::sync::Arc;
 
-pub use manager::PlayerManager;
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct PlayerManager(HashMap<PlayerId, Player>);
+
+impl PlayerManager {
+  pub fn player(&self, id: &PlayerId) -> Result<&Player> {
+    self
+      .0
+      .get(id)
+      .ok_or_else(|| Error::PlayerNotFound(id.clone()))
+  }
+
+  pub(crate) fn player_mut(&mut self, id: &PlayerId) -> Result<&mut Player> {
+    self
+      .0
+      .get_mut(id)
+      .ok_or_else(|| Error::PlayerNotFound(id.clone()))
+  }
+
+  pub fn players(&self) -> impl Iterator<Item = &Player> {
+    self.0.values()
+  }
+
+  pub(crate) fn players_mut(&mut self) -> impl Iterator<Item = &mut Player> {
+    self.0.values_mut()
+  }
+
+  #[inline]
+  pub fn has(&self, id: &PlayerId) -> bool {
+    self.0.contains_key(id)
+  }
+
+  pub(crate) fn spawn(&mut self, player: Player) {
+    debug_assert!(!self.0.contains_key(&player.id));
+    self.0.insert(player.id(), player);
+  }
+}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
@@ -64,7 +99,7 @@ impl Player {
 }
 
 #[derive(Debug, Display, From, PartialEq, Eq, Hash, Deserialize, Serialize)]
-#[from(String, &str, Arc<str>, Box<str>)]
+#[from(String, &str, Arc<str>, Box<str>, Cow<'_, str>)]
 pub struct PlayerId(Arc<str>);
 
 impl Clone for PlayerId {
@@ -98,11 +133,4 @@ pub enum PlayerStatus {
 #[serde(rename_all = "camelCase")]
 pub struct PlayerOptions {
   pub id: PlayerId,
-}
-
-#[derive(Clone, Debug, Default, Deserialize, Serialize)]
-#[serde(rename_all = "camelCase")]
-pub struct PlayerStorageCapacity {
-  pub silo: StorageCapacity,
-  pub warehouse: StorageCapacity,
 }

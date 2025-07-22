@@ -4,7 +4,7 @@
 import type { Option } from '@tb-dev/utils';
 import type { MaybeNilRef } from '@tb-dev/vue';
 import { computed, type Ref, toRef } from 'vue';
-import type { MineImpl } from '@/core/model/building/abstract';
+import type { MineImpl } from '@/core/model/infrastructure/building/abstract';
 import { useBuildingLevel } from '@/composables/infrastructure/useBuildingLevel';
 
 export function useMineProduction(mine: MaybeNilRef<MineImpl>) {

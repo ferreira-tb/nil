@@ -2,8 +2,9 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 
 use super::Battle;
-use crate::unit::UnitId::*;
-use crate::unit::{Squad, UnitId};
+use crate::military::squad::{Squad, SquadSize};
+use crate::military::unit::UnitId;
+use crate::military::unit::UnitId::*;
 
 #[test]
 fn offensive_power() {
@@ -89,7 +90,7 @@ fn winner_losses_mixed() {
 }
 
 #[test]
-fn overall_test() {
+fn overall() {
   let battle = Battle::builder()
     .attacker([s(LightCavalry, 3000), s(Axeman, 6000)])
     .defender([s(Pikeman, 8000), s(Swordsman, 8000)])
@@ -123,7 +124,7 @@ fn overall_test() {
 }
 
 #[test]
-fn ranged_attack_debuff_test() {
+fn ranged_attack_debuff() {
   let battle = Battle::builder()
     .attacker([s(Archer, 3005), s(Axeman, 7000)])
     .defender([s(Pikeman, 8000), s(Swordsman, 8000)])
@@ -134,7 +135,7 @@ fn ranged_attack_debuff_test() {
 }
 
 #[test]
-fn ranged_attack_no_debuff_test() {
+fn ranged_attack_no_debuff() {
   let battle = Battle::builder()
     .attacker([s(Archer, 3000), s(Axeman, 7000)])
     .defender([s(Pikeman, 8000), s(Swordsman, 8000)])
@@ -145,5 +146,5 @@ fn ranged_attack_no_debuff_test() {
 }
 
 fn s(id: UnitId, amount: u32) -> Squad {
-  Squad::new(id, amount)
+  Squad::new(id, SquadSize::new(amount))
 }

@@ -19,21 +19,19 @@ impl VillageOwner {
   /// Returns the id of the bot to whom the village belongs, if any.
   #[inline]
   pub fn bot(&self) -> Option<BotId> {
-    if let Self::Bot { id } = self {
-      Some(*id)
-    } else {
-      None
-    }
+    if let Self::Bot { id } = self { Some(*id) } else { None }
   }
 
   /// Returns the id of the player to whom the village belongs, if any.
   #[inline]
   pub fn player(&self) -> Option<&PlayerId> {
-    if let Self::Player { id } = self {
-      Some(id)
-    } else {
-      None
-    }
+    if let Self::Player { id } = self { Some(id) } else { None }
+  }
+
+  /// Returns the id of the precursor to whom the village belongs, if any.
+  #[inline]
+  pub fn precursor(&self) -> Option<PrecursorId> {
+    if let Self::Precursor { id } = self { Some(*id) } else { None }
   }
 }
 

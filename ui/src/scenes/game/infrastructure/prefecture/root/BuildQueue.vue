@@ -6,9 +6,9 @@ import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import type { MaybePromise } from '@tb-dev/utils';
 import { ChevronDownIcon, ChevronUpIcon } from 'lucide-vue-next';
-import type { PrefectureImpl } from '@/core/model/building/prefecture';
 import enUS from '@/locale/en-US/scenes/game/infrastructure/prefecture.json';
 import ptBR from '@/locale/pt-BR/scenes/game/infrastructure/prefecture.json';
+import type { PrefectureImpl } from '@/core/model/infrastructure/building/prefecture';
 import {
   Button,
   cn,
@@ -58,7 +58,7 @@ const tableClass = computed(() => {
 
     <TableBody>
       <template v-for="order of prefecture.buildQueue" :key="order.id">
-        <TableRow v-if="order.status.kind === 'pending'">
+        <TableRow v-if="order.state.kind === 'pending'">
           <TableCell>
             <div class="flex items-center justify-start gap-2">
               <ChevronUpIcon
@@ -78,7 +78,7 @@ const tableClass = computed(() => {
           </TableCell>
           <TableCell>
             <div class="flex items-center justify-start">
-              <Workforce :amount="order.status.workforce" />
+              <Workforce :amount="order.state.workforce" />
             </div>
           </TableCell>
           <TableCell>

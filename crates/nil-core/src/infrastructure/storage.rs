@@ -153,3 +153,10 @@ impl From<f64> for StorageCapacity {
     Self::new(value as u32)
   }
 }
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct OverallStorageCapacity {
+  pub silo: StorageCapacity,
+  pub warehouse: StorageCapacity,
+}

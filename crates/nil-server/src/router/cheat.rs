@@ -2,11 +2,19 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 
 mod infrastructure;
-mod resource;
+mod npc;
+mod resources;
 mod village;
 
 pub use infrastructure::{set_building_level, set_max_infrastructure};
-pub use resource::{
+pub use npc::{
+  get_bot_resources,
+  get_bot_storage_capacity,
+  get_precursor_resources,
+  get_precursor_storage_capacity,
+  spawn_bot,
+};
+pub use resources::{
   set_food,
   set_iron,
   set_max_food,

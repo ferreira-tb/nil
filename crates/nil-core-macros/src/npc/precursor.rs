@@ -13,7 +13,7 @@ pub fn impl_precursor(ast: &DeriveInput) -> TokenStream {
       use crate::continent::Coord;
       use crate::ethic::Ethics;
       use crate::npc::precursor::{Precursor, PrecursorId};
-      use crate::resource::Resources;
+      use crate::resources::Resources;
 
       impl Precursor for #name {
         fn id(&self) -> PrecursorId {

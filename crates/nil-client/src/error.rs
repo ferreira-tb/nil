@@ -22,6 +22,8 @@ pub enum Error {
   Reqwest(#[from] reqwest::Error),
   #[error(transparent)]
   Unknown(#[from] anyhow::Error),
+  #[error(transparent)]
+  Url(#[from] url::ParseError),
 }
 
 impl Serialize for Error {

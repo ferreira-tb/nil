@@ -5,7 +5,7 @@ use super::{BuildingId, BuildingLevel, MineId};
 use crate::check_total_resource_ratio;
 use crate::infrastructure::mine::MineProduction;
 use crate::infrastructure::requirements::InfrastructureRequirements;
-use crate::resource::{Cost, MaintenanceRatio, ResourceRatio, Workforce};
+use crate::resources::{Cost, MaintenanceRatio, ResourceRatio, Workforce};
 use nil_core_macros::{Building, Mine};
 use serde::{Deserialize, Serialize};
 

@@ -24,7 +24,7 @@ const isPlayerTurn = usePlayerTurn();
 <template>
   <div class="flex items-center justify-center gap-4">
     <div
-      v-if="player && round?.phase.kind === 'player'"
+      v-if="player && round?.state.kind === 'waiting'"
       class="flex flex-col items-center justify-center"
     >
       <span class="text-sm font-semibold">
@@ -35,11 +35,11 @@ const isPlayerTurn = usePlayerTurn();
       </span>
     </div>
 
-    <Button v-if="isHost && round?.phase.kind === 'idle'" size="sm" @click="onStartRound">
+    <Button v-if="isHost && round?.state.kind === 'idle'" size="sm" @click="onStartRound">
       {{ t('start') }}
     </Button>
     <Button
-      v-else-if="round?.phase.kind === 'player'"
+      v-else-if="round?.state.kind === 'waiting'"
       size="sm"
       :disabled="!isPlayerTurn"
       @click="onEndTurn"

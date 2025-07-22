@@ -8,12 +8,15 @@ param(
 $ErrorActionPreference = 'Stop'
 $PSNativeCommandUseErrorActionPreference = $true
 
-$TestCmd = 'cargo test'
+$TestCmd = if ($Miri) { 'cargo miri test' } else { 'cargo test' }
 
 if ($Miri) {
-  $TestCmd = 'cargo miri test --workspace --exclude nil-continent'
+  $Exclude = @('nil', 'nil-continent')
+  foreach ($Crate in $Exclude) {
+    $TestCmd += " --exclude $Crate"
+  }
 }
 
-$TestCmd += ' --tests'
+$TestCmd += ' --workspace --tests'
 
 Invoke-Expression $TestCmd

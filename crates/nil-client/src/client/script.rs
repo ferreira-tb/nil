@@ -6,25 +6,14 @@ use crate::error::Result;
 use nil_core::script::{Script, ScriptId, Stdio};
 
 impl Client {
-  /// POST `/script`
-  pub async fn get_script(&self, id: ScriptId) -> Result<Script> {
-    self.http.post_json("script", id).await
-  }
-
-  /// POST `/script/add`
-  pub async fn add_scripts(&self, scripts: Vec<Script>) -> Result<Vec<ScriptId>> {
-    self
-      .http
-      .post_json("script/add", scripts)
-      .await
-  }
-
-  /// POST `/script/all`
+  /// GET `/script`
   pub async fn get_scripts(&self) -> Result<Vec<Script>> {
-    self
-      .http
-      .post_json("script/all", &self.player)
-      .await
+    self.http.get_json("script").await
+  }
+
+  /// POST `/script`
+  pub async fn add_scripts(&self, scripts: Vec<Script>) -> Result<Vec<ScriptId>> {
+    self.http.post_json("script", scripts).await
   }
 
   /// POST `/script/chunk`
@@ -35,21 +24,32 @@ impl Client {
       .await
   }
 
-  /// POST `/script/execute`
-  pub async fn execute_script(&self, id: ScriptId) -> Result<Stdio> {
-    self
-      .http
-      .post_json("script/execute", id)
-      .await
-  }
-
-  /// POST `/script/remove`
-  pub async fn remove_script(&self, id: ScriptId) -> Result<()> {
-    self.http.post("script/remove", id).await
-  }
-
   /// POST `/script/update`
   pub async fn update_script(&self, script: Script) -> Result<()> {
     self.http.post("script/update", script).await
+  }
+
+  /// GET `/script/{id}`
+  pub async fn get_script(&self, id: ScriptId) -> Result<Script> {
+    self
+      .http
+      .get_json(&format!("script/{id}"))
+      .await
+  }
+
+  /// GET `/script/{id}/execute`
+  pub async fn execute_script(&self, id: ScriptId) -> Result<Stdio> {
+    self
+      .http
+      .get_json(&format!("script/{id}/execute"))
+      .await
+  }
+
+  /// GET `/script/{id}/remove`
+  pub async fn remove_script(&self, id: ScriptId) -> Result<()> {
+    self
+      .http
+      .get(&format!("script/{id}/remove"))
+      .await
   }
 }

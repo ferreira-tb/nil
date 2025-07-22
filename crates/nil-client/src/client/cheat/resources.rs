@@ -4,7 +4,7 @@
 use crate::client::Client;
 use crate::error::Result;
 
-use nil_core::resource::prelude::*;
+use nil_core::resources::prelude::*;
 
 impl Client {
   /// GET `/cheat/resources`

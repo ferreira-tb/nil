@@ -12,3 +12,8 @@ type StorageStatsTable = {
   readonly id: StorageId;
   readonly table: ReadonlyMap<BuildingLevel, StorageStats>;
 };
+
+interface OverallStorageCapacity {
+  readonly silo: number;
+  readonly warehouse: number;
+}

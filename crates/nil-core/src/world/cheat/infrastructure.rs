@@ -3,7 +3,7 @@
 
 use crate::bail_cheat_not_allowed;
 use crate::continent::Coord;
-use crate::error::{Error, Result};
+use crate::error::Result;
 use crate::infrastructure::building::{BuildingId, BuildingLevel};
 use crate::world::World;
 use strum::IntoEnumIterator;

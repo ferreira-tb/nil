@@ -3,23 +3,23 @@
 
 import * as commands from '@/commands';
 import type { PartialNullish } from '@tb-dev/utils';
-import { ResourcesImpl } from '@/core/model/resource';
+import { ResourcesImpl } from '@/core/model/resources';
 import { CoordImpl } from '@/core/model/continent/coord';
-import { PlayerStorageCapacityImpl } from './storage-capacity';
+import { OverallStorageCapacityImpl } from '@/core/model/infrastructure/storage-capacity';
 
 export class PlayerImpl implements Player {
   public readonly id: string;
   public readonly status: PlayerStatus;
   public readonly coords: readonly CoordImpl[];
   public readonly resources: ResourcesImpl;
-  public readonly capacity: PlayerStorageCapacityImpl;
+  public readonly capacity: OverallStorageCapacityImpl;
 
   private constructor(args: {
     id: string;
     status: PlayerStatus;
     coords: readonly CoordImpl[];
     resources: ResourcesImpl;
-    capacity: PlayerStorageCapacityImpl;
+    capacity: OverallStorageCapacityImpl;
   }) {
     this.id = args.id;
     this.status = args.status;
@@ -56,7 +56,7 @@ export class PlayerImpl implements Player {
       resources: ResourcesImpl.create(player.resources),
       status: player.status,
       coords: coords.map((it) => CoordImpl.create(it)),
-      capacity: PlayerStorageCapacityImpl.create(capacity),
+      capacity: OverallStorageCapacityImpl.create(capacity),
     });
   }
 }

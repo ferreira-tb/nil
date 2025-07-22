@@ -1,7 +1,7 @@
 // Copyright (C) Call of Nil contributors
 // SPDX-License-Identifier: AGPL-3.0-only
 
-use crate::continent::{Continent, Coord};
+use crate::continent::{Continent, ContinentSize, Coord};
 
 #[test]
 fn field() {
@@ -11,29 +11,35 @@ fn field() {
 }
 
 #[test]
-fn default_continent_is_empty() {
-  each_coord(100, |continent, coord| {
-    let field = continent.field(coord).unwrap();
-    assert!(field.is_empty());
-  });
-}
-
-#[test]
 fn center() {
-  let mut continent = Continent::new(50);
-  assert_eq!(continent.center(), Coord::splat(25));
-
-  continent = Continent::new(100);
+  let mut continent = Continent::new(100);
   assert_eq!(continent.center(), Coord::splat(50));
 
   continent = Continent::new(200);
   assert_eq!(continent.center(), Coord::splat(100));
 }
 
+#[test]
+fn coord_splat() {
+  let coord = Coord::splat(100);
+  assert_eq!(coord.x(), coord.y());
+}
+
+#[test]
+fn is_within_continent() {
+  let size = ContinentSize::new(100);
+  assert!(Coord::splat(0).is_within_continent(size));
+  assert!(Coord::splat(25).is_within_continent(size));
+  assert!(Coord::splat(50).is_within_continent(size));
+  assert!(Coord::splat(99).is_within_continent(size));
+  assert!(!Coord::splat(100).is_within_continent(size));
+}
+
 fn each_coord(size: u8, f: impl Fn(&mut Continent, Coord)) {
+  assert!(size >= ContinentSize::MIN.get());
   let mut continent = Continent::new(size);
-  (0..100).into_iter().for_each(|x| {
-    (0..100).into_iter().for_each(|y| {
+  (0..size).into_iter().for_each(|x| {
+    (0..size).into_iter().for_each(|y| {
       f(&mut continent, Coord::new(x, y));
     });
   })

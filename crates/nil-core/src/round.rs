@@ -4,6 +4,7 @@
 use crate::error::{Error, Result};
 use crate::player::PlayerId;
 use derive_more::Deref;
+use nil_util::iter::IterExt;
 use serde::{Deserialize, Serialize};
 use std::collections::HashSet;
 use std::num::NonZeroU32;
@@ -13,7 +14,7 @@ use strum::EnumIs;
 #[serde(rename_all = "camelCase")]
 pub struct Round {
   id: RoundId,
-  phase: Phase,
+  state: RoundState,
 }
 
 impl Round {
@@ -21,64 +22,81 @@ impl Round {
   where
     I: IntoIterator<Item = PlayerId>,
   {
-    if !self.is_idle() {
-      return Err(Error::RoundAlreadyStarted);
+    if let RoundState::Idle = &self.state {
+      self.wait(players);
+      Ok(())
+    } else {
+      Err(Error::RoundAlreadyStarted)
     }
-
-    self.phase = Phase::Player {
-      pending: players.into_iter().collect(),
-    };
-
-    Ok(())
   }
 
   pub(crate) fn next<I>(&mut self, players: I) -> Result<()>
   where
     I: IntoIterator<Item = PlayerId>,
   {
-    if self.is_idle() {
-      return Err(Error::RoundNotStarted);
-    } else if self.has_pending_players() {
-      return Err(Error::RoundHasPendingPlayers);
+    match &self.state {
+      RoundState::Idle => Err(Error::RoundNotStarted),
+      RoundState::Waiting { .. } => Err(Error::RoundHasPendingPlayers),
+      RoundState::Done => {
+        self.id = self.id.next();
+        self.wait(players);
+        Ok(())
+      }
     }
+  }
 
-    self.id = self.id.next();
-    self.phase = Phase::Player {
-      pending: players.into_iter().collect(),
+  fn wait(&mut self, players: impl IntoIterator<Item = PlayerId>) {
+    let players = players.into_iter().collect_set();
+    if players.is_empty() {
+      self.state = RoundState::Done;
+    } else {
+      self.state = RoundState::Waiting { players };
+    }
+  }
+
+  pub(crate) fn end_turn(&mut self, player: &PlayerId) -> bool {
+    let RoundState::Waiting { players } = &mut self.state else {
+      return false;
     };
 
-    Ok(())
+    let removed = players.remove(player);
+    if players.is_empty() {
+      self.state = RoundState::Done;
+    }
+
+    removed
   }
 
   #[inline]
-  pub fn phase(&self) -> &Phase {
-    &self.phase
-  }
-
-  pub(crate) fn phase_mut(&mut self) -> &mut Phase {
-    &mut self.phase
+  pub const fn is_idle(&self) -> bool {
+    self.state.is_idle()
   }
 
   #[inline]
-  pub fn is_idle(&self) -> bool {
-    self.phase.is_idle()
+  pub const fn is_waiting(&self) -> bool {
+    self.state.is_waiting()
   }
 
-  /// Determines whether the player is pending in the current round.
+  /// Determines if the round is waiting for a player to complete their turn.
   #[inline]
-  pub fn is_player_pending(&self, player: &PlayerId) -> bool {
-    self
-      .phase
-      .pending_players()
-      .is_some_and(|it| it.contains(player))
+  pub fn is_waiting_player(&self, player: &PlayerId) -> bool {
+    if let RoundState::Waiting { players } = &self.state {
+      players.contains(player)
+    } else {
+      false
+    }
   }
 
   #[inline]
-  pub fn has_pending_players(&self) -> bool {
-    self
-      .phase
-      .pending_players()
-      .is_some_and(|it| !it.is_empty())
+  pub const fn is_done(&self) -> bool {
+    self.state.is_done()
+  }
+
+  /// Clones the round, setting its state to idle. This is useful for saving the game.
+  pub(crate) fn to_idle(&self) -> Self {
+    let mut round = self.clone();
+    round.state = RoundState::Idle;
+    round
   }
 }
 
@@ -101,37 +119,14 @@ impl Default for RoundId {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize, EnumIs)]
 #[serde(tag = "kind", rename_all = "kebab-case")]
-pub enum Phase {
+enum RoundState {
   /// The game hasn't started yet.
   #[default]
   Idle,
 
   /// There are players who haven't finished their turn yet.
-  Player { pending: HashSet<PlayerId> },
-}
+  Waiting { players: HashSet<PlayerId> },
 
-impl Phase {
-  fn pending_players(&self) -> Option<&HashSet<PlayerId>> {
-    if let Phase::Player { pending } = self {
-      Some(pending)
-    } else {
-      None
-    }
-  }
-
-  fn pending_players_mut(&mut self) -> Option<&mut HashSet<PlayerId>> {
-    if let Phase::Player { pending } = self {
-      Some(pending)
-    } else {
-      None
-    }
-  }
-
-  pub(crate) fn end_turn(&mut self, player: &PlayerId) -> bool {
-    if let Some(pending) = self.pending_players_mut() {
-      pending.remove(player)
-    } else {
-      false
-    }
-  }
+  /// The round is finished.
+  Done,
 }

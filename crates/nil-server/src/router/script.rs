@@ -6,10 +6,9 @@ use crate::middleware::CurrentPlayer;
 use crate::response::from_core_err;
 use crate::state::App;
 use crate::{bail_not_player, res};
-use axum::extract::{Extension, Json, State};
+use axum::extract::{Extension, Json, Path, State};
 use axum::response::Response;
 use futures::{FutureExt, TryFutureExt};
-use nil_core::player::PlayerId;
 use nil_core::script::{Script, ScriptId, Stdio};
 
 pub async fn add(
@@ -36,7 +35,7 @@ pub async fn add(
 pub async fn execute(
   State(app): State<App>,
   Extension(player): Extension<CurrentPlayer>,
-  Json(id): Json<ScriptId>,
+  Path(id): Path<ScriptId>,
 ) -> Response {
   let result: CoreResult<Stdio> = try {
     let mut world = app.world.write().await;
@@ -66,7 +65,7 @@ pub async fn execute_chunk(
 pub async fn get(
   State(app): State<App>,
   Extension(player): Extension<CurrentPlayer>,
-  Json(id): Json<ScriptId>,
+  Path(id): Path<ScriptId>,
 ) -> Response {
   let result: CoreResult<Script> = try {
     let world = app.world.read().await;
@@ -80,9 +79,12 @@ pub async fn get(
     .unwrap_or_else(from_core_err)
 }
 
-pub async fn get_all(State(app): State<App>, Json(id): Json<PlayerId>) -> Response {
+pub async fn get_all(
+  State(app): State<App>,
+  Extension(player): Extension<CurrentPlayer>,
+) -> Response {
   app
-    .scripting(|s| s.get_owned_by(&id))
+    .scripting(|s| s.get_owned_by(&player))
     .map(|scripts| res!(OK, Json(scripts)))
     .await
 }
@@ -90,7 +92,7 @@ pub async fn get_all(State(app): State<App>, Json(id): Json<PlayerId>) -> Respon
 pub async fn remove(
   State(app): State<App>,
   Extension(player): Extension<CurrentPlayer>,
-  Json(id): Json<ScriptId>,
+  Path(id): Path<ScriptId>,
 ) -> Response {
   let result: CoreResult<()> = try {
     let mut world = app.world.write().await;

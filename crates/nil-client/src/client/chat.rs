@@ -11,11 +11,8 @@ impl Client {
     self.http.get_json("chat").await
   }
 
-  /// POST `/chat/push`
+  /// POST `/chat`
   pub async fn push_chat_message(&self, message: ChatMessagePlayer) -> Result<ChatMessageId> {
-    self
-      .http
-      .post_json("chat/push", message)
-      .await
+    self.http.post_json("chat", message).await
   }
 }

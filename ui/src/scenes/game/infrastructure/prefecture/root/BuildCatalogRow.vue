@@ -5,13 +5,13 @@
 import { useI18n } from 'vue-i18n';
 import { computed, nextTick } from 'vue';
 import type { Option } from '@tb-dev/utils';
-import type { ResourcesImpl } from '@/core/model/resource';
+import type { ResourcesImpl } from '@/core/model/resources';
 import BuildCatalogBuilding from './BuildCatalogBuilding.vue';
-import type { BuildingImpl } from '@/core/model/building/abstract';
 import { Button, TableCell, TableRow } from '@tb-dev/vue-components';
-import type { PrefectureImpl } from '@/core/model/building/prefecture';
 import enUS from '@/locale/en-US/scenes/game/infrastructure/prefecture.json';
 import ptBR from '@/locale/pt-BR/scenes/game/infrastructure/prefecture.json';
+import type { BuildingImpl } from '@/core/model/infrastructure/building/abstract';
+import type { PrefectureImpl } from '@/core/model/infrastructure/building/prefecture';
 import { useResolvedBuildingLevel } from '@/composables/infrastructure/useResolvedBuildingLevel';
 
 const props = defineProps<{

@@ -1,16 +1,48 @@
 // Copyright (C) Call of Nil contributors
 // SPDX-License-Identifier: AGPL-3.0-only
 
-mod manager;
-
+use crate::error::{Error, Result};
 use crate::ethic::Ethics;
-use crate::resource::Resources;
+use crate::resources::Resources;
 use derive_more::Display;
 use serde::{Deserialize, Serialize};
+use std::collections::HashMap;
 use std::ops::Deref;
 use std::sync::Arc;
 
-pub use manager::BotManager;
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct BotManager {
+  current_id: BotId,
+  map: HashMap<BotId, Bot>,
+}
+
+impl BotManager {
+  pub fn bot(&self, id: BotId) -> Result<&Bot> {
+    self
+      .map
+      .get(&id)
+      .ok_or(Error::BotNotFound(id))
+  }
+
+  pub(crate) fn bot_mut(&mut self, id: BotId) -> Result<&mut Bot> {
+    self
+      .map
+      .get_mut(&id)
+      .ok_or(Error::BotNotFound(id))
+  }
+
+  pub(crate) fn spawn(&mut self) -> (BotId, BotName) {
+    self.current_id = self.current_id.next();
+    let entry = self
+      .map
+      .entry(self.current_id)
+      .insert_entry(Bot::new(self.current_id));
+
+    let bot = entry.get();
+
+    (bot.id, bot.name.clone())
+  }
+}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
@@ -41,6 +73,10 @@ impl Bot {
   #[inline]
   pub fn resources(&self) -> &Resources {
     &self.resources
+  }
+
+  pub(crate) fn resources_mut(&mut self) -> &mut Resources {
+    &mut self.resources
   }
 }
 

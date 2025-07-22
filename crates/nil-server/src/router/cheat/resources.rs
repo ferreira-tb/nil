@@ -8,7 +8,7 @@ use crate::state::App;
 use axum::extract::{Extension, Json, State};
 use axum::response::Response;
 use futures::TryFutureExt;
-use nil_core::resource::prelude::*;
+use nil_core::resources::prelude::*;
 
 pub async fn set_food(
   State(app): State<App>,

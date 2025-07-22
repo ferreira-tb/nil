@@ -19,7 +19,7 @@ pub fn impl_building(ast: &DeriveInput) -> TokenStream {
         BuildingLevel,
         BuildingStatsTable,
       };
-      use crate::resource::{
+      use crate::resources::{
         Cost,
         Maintenance,
         MaintenanceRatio,
@@ -92,6 +92,14 @@ pub fn impl_building(ast: &DeriveInput) -> TokenStream {
 
         fn set_level(&mut self, level: BuildingLevel) {
           self.level = level.clamp(Self::MIN_LEVEL, Self::MAX_LEVEL);
+        }
+
+        fn set_min_level(&mut self) {
+          self.level = Self::MIN_LEVEL;
+        }
+
+        fn set_max_level(&mut self) {
+          self.level = Self::MAX_LEVEL;
         }
 
         fn increase_level(&mut self) {

@@ -3,18 +3,22 @@
 
 interface Round {
   readonly id: RoundId;
-  readonly phase: RoundPhase;
+  readonly state: RoundState;
 }
 
 type RoundId = number;
 
-type RoundPhase = RoundPhaseIdle | RoundPhasePlayer;
+type RoundState = RoundStateIdle | RoundStateWaiting | RoundStateDone;
 
-interface RoundPhaseIdle {
+interface RoundStateIdle {
   readonly kind: 'idle';
 }
 
-interface RoundPhasePlayer {
-  readonly kind: 'player';
-  readonly pending: readonly PlayerId[];
+interface RoundStateWaiting {
+  readonly kind: 'waiting';
+  readonly players: readonly PlayerId[];
+}
+
+interface RoundStateDone {
+  readonly kind: 'done';
 }

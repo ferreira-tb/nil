@@ -14,7 +14,7 @@ pub mod warehouse;
 
 use crate::error::{Error, Result};
 use crate::infrastructure::requirements::InfrastructureRequirements;
-use crate::resource::prelude::*;
+use crate::resources::prelude::*;
 use derive_more::{Deref, Into};
 use nil_num::growth::growth;
 use serde::{Deserialize, Serialize};
@@ -24,7 +24,7 @@ use std::{cmp, fmt};
 use strum::{Display, EnumIter};
 use subenum::subenum;
 
-pub trait Building {
+pub trait Building: Send + Sync {
   fn id(&self) -> BuildingId;
 
   /// Checks whether the building is enabled.
@@ -40,6 +40,10 @@ pub trait Building {
   fn max_level(&self) -> BuildingLevel;
   /// Sets the building's level while ensuring it remains within the level limit.
   fn set_level(&mut self, level: BuildingLevel);
+  /// Sets the building to its **minimum** level.
+  fn set_min_level(&mut self);
+  /// Sets the building to its **maximum** level.
+  fn set_max_level(&mut self);
   /// Increases the building level by one, if possible.
   fn increase_level(&mut self);
   /// Increases the level of the building by a certain amount, if possible.

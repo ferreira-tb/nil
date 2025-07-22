@@ -5,13 +5,13 @@ use crate::middleware::CurrentPlayer;
 use crate::res;
 use crate::response::from_core_err;
 use crate::state::App;
-use axum::extract::{Extension, Json, State};
+use axum::extract::{Extension, Json, Path, State};
 use axum::response::Response;
 use futures::{FutureExt, TryFutureExt};
 use itertools::Itertools;
 use nil_core::player::{Player, PlayerId, PlayerOptions, PlayerStatus};
 
-pub async fn exists(State(app): State<App>, Json(id): Json<PlayerId>) -> Response {
+pub async fn exists(State(app): State<App>, Path(id): Path<PlayerId>) -> Response {
   app
     .world(|world| world.has_player(&id))
     .map(|yes| res!(OK, Json(yes)))
@@ -33,7 +33,7 @@ pub async fn get_all(State(app): State<App>) -> Response {
     .await
 }
 
-pub async fn get_coords(State(app): State<App>, Json(id): Json<PlayerId>) -> Response {
+pub async fn get_coords(State(app): State<App>, Path(id): Path<PlayerId>) -> Response {
   app
     .continent(|k| {
       k.player_coords_by(|player| player == &id)
@@ -48,13 +48,13 @@ pub async fn get_maintenance(
   Extension(player): Extension<CurrentPlayer>,
 ) -> Response {
   app
-    .world(|world| world.get_player_maintenance(&player.0))
+    .world(|world| world.get_player_maintenance(&player))
     .map_ok(|maintenance| res!(OK, Json(maintenance)))
     .unwrap_or_else(from_core_err)
     .await
 }
 
-pub async fn get_status(State(app): State<App>, Json(id): Json<PlayerId>) -> Response {
+pub async fn get_status(State(app): State<App>, Path(id): Path<PlayerId>) -> Response {
   app
     .player_manager(|pm| pm.player(&id).map(Player::status))
     .map_ok(|status| res!(OK, Json(status)))
@@ -67,7 +67,7 @@ pub async fn get_storage_capacity(
   Extension(player): Extension<CurrentPlayer>,
 ) -> Response {
   app
-    .world(|world| world.get_player_storage_capacity(&player.0))
+    .world(|world| world.get_player_storage_capacity(&player))
     .map_ok(|capacity| res!(OK, Json(capacity)))
     .unwrap_or_else(from_core_err)
     .await
@@ -79,7 +79,7 @@ pub async fn set_status(
   Json(status): Json<PlayerStatus>,
 ) -> Response {
   app
-    .world_mut(|world| world.set_player_status(&player.0, status))
+    .world_mut(|world| world.set_player_status(&player, status))
     .map_ok(|()| res!(OK))
     .unwrap_or_else(from_core_err)
     .await

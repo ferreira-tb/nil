@@ -4,7 +4,7 @@
 use super::{BuildingId, BuildingLevel};
 use crate::check_total_resource_ratio;
 use crate::infrastructure::requirements::InfrastructureRequirements;
-use crate::resource::{Cost, MaintenanceRatio, ResourceRatio, Workforce};
+use crate::resources::{Cost, MaintenanceRatio, ResourceRatio, Workforce};
 use derive_more::Deref;
 use nil_core_macros::Building;
 use nil_num::growth::growth;

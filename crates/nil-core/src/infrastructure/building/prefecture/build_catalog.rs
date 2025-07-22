@@ -6,7 +6,7 @@ use crate::infrastructure::building::prefecture::PrefectureBuildOrderKind;
 use crate::infrastructure::building::{BuildingId, BuildingLevel, BuildingStatsTable};
 use crate::infrastructure::requirements::InfrastructureRequirements;
 use crate::infrastructure::{Infrastructure, InfrastructureStats};
-use crate::resource::{Maintenance, Resources, Workforce};
+use crate::resources::{Maintenance, Resources, Workforce};
 use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -51,13 +51,13 @@ impl PrefectureBuildCatalog {
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(tag = "kind", rename_all = "kebab-case")]
 pub enum PrefectureBuildCatalogEntry {
-  /// O edifício pode ser construído.
+  /// Building is available to be built.
   Available {
     recipe: Box<PrefectureBuildCatalogRecipe>,
   },
-  /// Edifício já está no nível máximo.
+  /// Building is already at its maximum level.
   Maxed,
-  /// Aldeia não atende aos requerimentos para a construção.
+  /// Village does not meet the requirements for construction.
   Unmet {
     requirements: InfrastructureRequirements,
   },

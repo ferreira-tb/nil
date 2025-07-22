@@ -76,11 +76,20 @@ function copyServerAddr() {
             <SidebarMenu>
               <SidebarMenuItem>
                 <SidebarMenuButton as-child>
+                  <RouterLink :to="{ name: 'continent' satisfies Scene }">
+                    {{ t('continent') }}
+                  </RouterLink>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+
+              <SidebarMenuItem>
+                <SidebarMenuButton as-child>
                   <RouterLink :to="{ name: 'script' satisfies GameScene }">
                     {{ t('script', 2) }}
                   </RouterLink>
                 </SidebarMenuButton>
               </SidebarMenuItem>
+
               <SidebarMenuItem>
                 <SidebarMenuButton as-child>
                   <RouterLink :to="{ name: 'settings' satisfies Scene }">
@@ -99,7 +108,7 @@ function copyServerAddr() {
         ref="sidebarFooterEl"
         class="grid grid-cols-2 items-center justify-center gap-4 px-6 pb-4"
       >
-        <Button size="sm" :disabled="!isHost || round?.phase.kind === 'idle'" @click="onSave">
+        <Button size="sm" :disabled="!isHost || round?.state.kind === 'idle'" @click="onSave">
           <span>{{ t('save') }}</span>
         </Button>
         <Button variant="destructive" size="sm" @click="onLeave">

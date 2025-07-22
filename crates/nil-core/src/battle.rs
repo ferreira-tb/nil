@@ -5,7 +5,8 @@
 mod tests;
 
 use crate::infrastructure::building::wall::WallStats;
-use crate::unit::{Squad, UnitKind};
+use crate::military::squad::Squad;
+use crate::military::unit::UnitKind;
 use bon::Builder;
 
 #[derive(Builder)]
@@ -149,6 +150,7 @@ impl WinnerLosses {
       BattleWinner::Attacker => offensive_power.total,
       BattleWinner::Defender => defesive_power.total,
     };
+
     let loser_power = match winner {
       BattleWinner::Attacker => defesive_power.total,
       BattleWinner::Defender => offensive_power.total,
@@ -211,17 +213,11 @@ impl UnitsByKind {
     let mut units_amount = 0;
 
     for squad in squads {
-      let amount = squad.amount();
+      let amount = *squad.size();
       match squad.kind() {
-        UnitKind::Infantry => {
-          infantry += amount;
-        }
-        UnitKind::Cavalry => {
-          cavalry += amount;
-        }
-        UnitKind::Ranged => {
-          ranged += amount;
-        }
+        UnitKind::Infantry => infantry += amount,
+        UnitKind::Cavalry => cavalry += amount,
+        UnitKind::Ranged => ranged += amount,
       }
 
       units_amount += amount;
@@ -240,8 +236,9 @@ fn sum_ranged_debuff(squads: &[Squad]) -> f64 {
   let mut ranged_debuff = 0.0;
   for squad in squads {
     if squad.kind() == UnitKind::Ranged {
-      let unit = squad.unit();
-      ranged_debuff += unit.stats().ranged_debuff * f64::from(squad.amount());
+      let size = *squad.size();
+      let stats = squad.unit().stats();
+      ranged_debuff += stats.ranged_debuff * size;
     }
   }
   ranged_debuff

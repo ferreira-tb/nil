@@ -1,19 +1,52 @@
 // Copyright (C) Call of Nil contributors
 // SPDX-License-Identifier: AGPL-3.0-only
 
-use crate::bail_not_owned_by;
 use crate::world::script::WorldUserData;
 use mlua::{LuaSerdeExt, UserDataMethods, Value};
 
 #[expect(clippy::too_many_lines)]
 pub(super) fn add_methods<'a, M: UserDataMethods<WorldUserData<'a>>>(methods: &mut M) {
+  methods.add_method("cheat_get_bot_resources", |lua, this, id: Value| {
+    let id = lua.from_value(id)?;
+    this
+      .world
+      .cheat_get_bot_resources(id)
+      .map(|id| lua.to_value(&id))?
+  });
+
+  methods.add_method("cheat_get_bot_storage_capacity", |lua, this, id: Value| {
+    let id = lua.from_value(id)?;
+    this
+      .world
+      .cheat_get_bot_storage_capacity(id)
+      .map(|id| lua.to_value(&id))?
+  });
+
+  methods.add_method("cheat_get_precursor_resources", |lua, this, id: Value| {
+    let id = lua.from_value(id)?;
+    this
+      .world
+      .cheat_get_precursor_resources(id)
+      .map(|id| lua.to_value(&id))?
+  });
+
+  methods.add_method(
+    "cheat_get_precursor_storage_capacity",
+    |lua, this, id: Value| {
+      let id = lua.from_value(id)?;
+      this
+        .world
+        .cheat_get_precursor_storage_capacity(id)
+        .map(|id| lua.to_value(&id))?
+    },
+  );
+
   methods.add_method_mut(
     "cheat_set_building_level",
     |lua, this, (coord, id, level): (Value, Value, Value)| {
       let coord = lua.from_value(coord)?;
       let id = lua.from_value(id)?;
       let level = lua.from_value(level)?;
-      bail_not_owned_by!(this, coord);
       this
         .world
         .cheat_set_building_level(coord, id, level)
@@ -46,7 +79,6 @@ pub(super) fn add_methods<'a, M: UserDataMethods<WorldUserData<'a>>>(methods: &m
 
   methods.add_method_mut("cheat_set_max_infrastructure", |lua, this, coord: Value| {
     let coord = lua.from_value(coord)?;
-    bail_not_owned_by!(this, coord);
     this
       .world
       .cheat_set_max_infrastructure(coord)
@@ -108,7 +140,6 @@ pub(super) fn add_methods<'a, M: UserDataMethods<WorldUserData<'a>>>(methods: &m
     |lua, this, (coord, stability): (Value, Value)| {
       let coord = lua.from_value(coord)?;
       let stability = lua.from_value(stability)?;
-      bail_not_owned_by!(this, coord);
       this
         .world
         .cheat_set_stability(coord, stability)
@@ -130,5 +161,12 @@ pub(super) fn add_methods<'a, M: UserDataMethods<WorldUserData<'a>>>(methods: &m
       .world
       .cheat_set_wood(this.player.clone(), wood)
       .map_err(Into::into)
+  });
+
+  methods.add_method_mut("cheat_spawn_bot", |lua, this, ()| {
+    this
+      .world
+      .cheat_spawn_bot()
+      .map(|id| lua.to_value(&id))?
   });
 }
