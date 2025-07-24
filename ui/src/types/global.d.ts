@@ -10,8 +10,8 @@ import type { ChatEntity } from '@/core/entity/chat';
 import type { RoundEntity } from '@/core/entity/round';
 import type { WorldEntity } from '@/core/entity/world';
 import type { PlayerEntity } from '@/core/entity/player';
-import type { MaybePromise, Option } from '@tb-dev/utils';
 import type { VillageEntity } from '@/core/entity/village';
+import type { MilitaryEntity } from '@/core/entity/military';
 
 declare global {
   var __APP__: App;
@@ -24,7 +24,11 @@ declare global {
       readonly use: (typeof ChatEntity)['use'];
     };
 
-    readonly military: unknown;
+    readonly military: {
+      readonly refs: (typeof MilitaryEntity)['refs'];
+      readonly update: (typeof MilitaryEntity)['update'];
+      readonly use: (typeof MilitaryEntity)['use'];
+    };
 
     /** Current player. */
     readonly player: {

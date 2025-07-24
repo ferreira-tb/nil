@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 
 import { invoke } from '@tauri-apps/api/core';
+import type { RawMilitary } from '@/core/model/military';
 
 export function getPlayer(id: PlayerId) {
   return invoke<Player>('get_player', { id });
@@ -13,6 +14,10 @@ export async function getPlayerCoords(id: PlayerId) {
 
 export async function getPlayerMaintenance() {
   return invoke<number>('get_player_maintenance');
+}
+
+export async function getPlayerMilitary() {
+  return invoke<RawMilitary>('get_player_military');
 }
 
 export async function getPlayerStatus(id: PlayerId) {

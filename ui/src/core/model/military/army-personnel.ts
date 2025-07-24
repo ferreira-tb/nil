@@ -20,7 +20,33 @@ export class ArmyPersonnelImpl implements ArmyPersonnel {
     this.swordsman = SquadImpl.create(personnel.swordsman);
   }
 
+  public size() {
+    return ArmyPersonnelImpl.size(this);
+  }
+
+  public isEmpty() {
+    return (
+      this.archer.isEmpty() &&
+      this.axeman.isEmpty() &&
+      this.heavyCavalry.isEmpty() &&
+      this.lightCavalry.isEmpty() &&
+      this.pikeman.isEmpty() &&
+      this.swordsman.isEmpty()
+    );
+  }
+
   public static create(personnel: ArmyPersonnel) {
     return new ArmyPersonnelImpl(personnel);
+  }
+
+  public static size(personnel: ArmyPersonnel): ArmyPersonnelSize {
+    return {
+      archer: personnel.archer.size,
+      axeman: personnel.axeman.size,
+      heavyCavalry: personnel.heavyCavalry.size,
+      lightCavalry: personnel.lightCavalry.size,
+      pikeman: personnel.pikeman.size,
+      swordsman: personnel.swordsman.size,
+    };
   }
 }

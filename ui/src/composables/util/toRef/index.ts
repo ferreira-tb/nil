@@ -11,6 +11,10 @@ export function toCoordRef(coord?: MaybeNilRef<CoordImpl>) {
   return (coord ? toRef(coord) : NIL.village.refs().coord) as Ref<Option<CoordImpl>>;
 }
 
+export function toContinentKeyRef(key?: MaybeNilRef<ContinentKey>) {
+  return (key ? toRef(key) : NIL.village.refs().coord) as Ref<Option<ContinentKey>>;
+}
+
 export function toPlayerRef(player?: MaybeNilRef<PlayerImpl>) {
   return (player ? toRef(player) : NIL.player.refs().player) as Ref<Option<PlayerImpl>>;
 }

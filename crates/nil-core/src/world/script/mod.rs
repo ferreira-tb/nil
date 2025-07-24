@@ -53,10 +53,12 @@ impl<'a> WorldUserData<'a> {
           if let Some(stdio) = stdio.upgrade() {
             for value in values {
               let value = value.to_string()?;
-              stdio.borrow_mut().push_stdout(&value);
+              if let Ok(mut stdio) = stdio.try_borrow_mut() {
+                stdio.push_stdout(&value);
+              }
 
               #[cfg(debug_assertions)]
-              tracing::info!(lua_print = %value);
+              tracing::info!(print = %value);
             }
           }
 

@@ -13,5 +13,5 @@ export function getFields(coords: Coord[]) {
 }
 
 export function getContinentSize() {
-  return invoke<number>('get_continent_size');
+  return invoke<ContinentSize>('get_continent_size');
 }

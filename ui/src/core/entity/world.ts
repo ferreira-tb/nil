@@ -2,21 +2,23 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 
 import { Entity } from './abstract';
-import type { ShallowRef } from 'vue';
 import { asyncRef } from '@tb-dev/vue';
-import { getWorldConfig, getWorldStats } from '@/commands';
+import { readonly, type Ref, type ShallowRef } from 'vue';
 import type { WorldConfigImpl } from '@/core/model/world-config';
 import type { WorldStatsImpl } from '@/core/model/stats/world-stats';
+import { getContinentSize, getWorldConfig, getWorldStats } from '@/commands';
 
 export class WorldEntity extends Entity {
   private readonly config: ShallowRef<Option<WorldConfigImpl>>;
   private readonly stats: ShallowRef<Option<WorldStatsImpl>>;
+  private readonly continentSize: Ref<number>;
 
   constructor() {
     super();
 
     this.config = asyncRef(null, getWorldConfig).state;
     this.stats = asyncRef(null, getWorldStats).state;
+    this.continentSize = asyncRef(0, getContinentSize).state;
   }
 
   public static use() {
@@ -28,6 +30,7 @@ export class WorldEntity extends Entity {
     return {
       config: instance.config as Readonly<typeof instance.config>,
       stats: instance.stats as Readonly<typeof instance.stats>,
+      continentSize: readonly(instance.continentSize),
     } as const;
   }
 

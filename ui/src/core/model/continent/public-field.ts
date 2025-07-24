@@ -77,16 +77,16 @@ export class PublicFieldImpl {
     return this.#flags & Flags.Village;
   }
 
-  public isOutside(size: number) {
-    return this.coord.isOutside(size);
+  public isOutside() {
+    return this.coord.isOutside();
   }
 
-  public isXOutside(size: number) {
-    return this.coord.isXOutside(size);
+  public isXOutside() {
+    return this.coord.isXOutside();
   }
 
-  public isYOutside(size: number) {
-    return this.coord.isYOutside(size);
+  public isYOutside() {
+    return this.coord.isYOutside();
   }
 
   get id() {
@@ -113,7 +113,7 @@ export class PublicFieldImpl {
     return new PublicFieldImpl(coord);
   }
 
-  public static createBulkInitializer(continentSize: number) {
+  public static createBulkInitializer() {
     const isInitializing = new Set<string>();
     tryOnScopeDispose(() => isInitializing.clear());
 
@@ -123,7 +123,7 @@ export class PublicFieldImpl {
         if (
           field.flags === Flags.Uninit &&
           !isInitializing.has(field.id) &&
-          !field.coord.isOutside(continentSize)
+          !field.coord.isOutside()
         ) {
           coords.push(field.coord);
           isInitializing.add(field.id);

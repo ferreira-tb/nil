@@ -219,11 +219,7 @@ pub enum PrefectureBuildOrderState {
 
 impl PrefectureBuildOrderState {
   fn pending_workforce(&mut self) -> Option<&mut Workforce> {
-    if let Self::Pending { workforce } = self {
-      Some(workforce)
-    } else {
-      None
-    }
+    if let Self::Pending { workforce } = self { Some(workforce) } else { None }
   }
 }
 
