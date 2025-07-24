@@ -4,6 +4,7 @@
 use super::World;
 use crate::error::{Error, Result};
 use crate::infrastructure::storage::OverallStorageCapacity;
+use crate::military::Military;
 use crate::player::{Player, PlayerId, PlayerStatus};
 use crate::resources::Maintenance;
 use crate::village::Village;
@@ -16,6 +17,14 @@ impl World {
       .try_fold(Maintenance::default(), |acc, village| {
         Ok(acc + village.maintenance(&self.stats.infrastructure)?)
       })
+  }
+
+  pub fn get_player_military(&self, player: &PlayerId) -> Military {
+    let coords = self
+      .continent
+      .player_coords_by(|id| id == player);
+
+    self.military.intersection(coords)
   }
 
   pub fn get_player_storage_capacity(&self, player: &PlayerId) -> Result<OverallStorageCapacity> {

@@ -8,7 +8,8 @@ export class CoordImpl implements Coord {
   public readonly y: number;
 
   #id: Option<string>;
-  #outside: Option<boolean>;
+  #xOutside: Option<boolean>;
+  #yOutside: Option<boolean>;
 
   private constructor(coord: Coord) {
     this.x = coord.x;
@@ -19,20 +20,26 @@ export class CoordImpl implements Coord {
     return this.x === other.x && this.y === other.y;
   }
 
-  public isOutside(size: number) {
-    if (typeof this.#outside !== 'boolean') {
-      this.#outside = this.isXOutside(size) || this.isYOutside(size);
+  public isOutside() {
+    return this.isXOutside() || this.isYOutside();
+  }
+
+  public isXOutside() {
+    if (typeof this.#xOutside !== 'boolean') {
+      const size = NIL.world.refs().continentSize.value;
+      this.#xOutside = this.x < 0 || this.x >= size;
     }
 
-    return this.#outside;
+    return this.#xOutside;
   }
 
-  public isXOutside(size: number) {
-    return this.x < 0 || this.x >= size;
-  }
+  public isYOutside() {
+    if (typeof this.#yOutside !== 'boolean') {
+      const size = NIL.world.refs().continentSize.value;
+      this.#yOutside = this.y < 0 || this.y >= size;
+    }
 
-  public isYOutside(size: number) {
-    return this.y < 0 || this.y >= size;
+    return this.#yOutside;
   }
 
   public format() {
@@ -48,6 +55,10 @@ export class CoordImpl implements Coord {
     return CoordImpl.intl.format(this.y);
   }
 
+  public toIndex() {
+    return CoordImpl.toIndex(this);
+  }
+
   public toJSON() {
     return { x: this.x, y: this.y };
   }
@@ -58,6 +69,18 @@ export class CoordImpl implements Coord {
 
   public static create(coord: Coord) {
     return new CoordImpl(coord);
+  }
+
+  public static fromIndex(index: ContinentIndex) {
+    const size = NIL.world.refs().continentSize.value;
+    const x = index % size;
+    const y = index / size;
+    return CoordImpl.create({ x, y });
+  }
+
+  public static toIndex(coord: Coord) {
+    const size = NIL.world.refs().continentSize.value;
+    return coord.y * size + coord.x;
   }
 
   private static readonly intl = new Intl.NumberFormat('default', {

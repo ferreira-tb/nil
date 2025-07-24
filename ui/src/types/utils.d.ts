@@ -9,3 +9,6 @@ type MaybePromise<T> = import('@tb-dev/utils').MaybePromise<T>;
 
 /** Something may be nullish. */
 type Option<T> = import('@tb-dev/utils').Option<T>;
+
+/** Constructs a type where all properties of `T` may be written. */
+type Writable<T> = import('@tb-dev/utils').Writable<T>;

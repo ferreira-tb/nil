@@ -18,3 +18,7 @@ interface Coord {
   readonly x: number;
   readonly y: number;
 }
+
+type ContinentKey = Coord | ContinentIndex;
+type ContinentIndex = number;
+type ContinentSize = number;

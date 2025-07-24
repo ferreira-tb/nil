@@ -21,6 +21,8 @@ export function initEntities() {
     });
   }
 
+  Entity.dispose();
+
   WorldEntity.init();
   ChatEntity.init();
   RoundEntity.init();

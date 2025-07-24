@@ -16,6 +16,11 @@ export class ArmyImpl implements Army {
     this.owner = army.owner;
   }
 
+  public isIdle() {
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+    return this.state === 'idle';
+  }
+
   public static create(army: Army) {
     return new ArmyImpl(army);
   }

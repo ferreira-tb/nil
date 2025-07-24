@@ -3,6 +3,8 @@
 
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n';
+import type { ArmyPersonnelImpl } from '@/core/model/military/army-personnel';
+import { useArmyPersonnelSize } from '@/composables/military/useArmyPersonnelSize';
 import {
   Card,
   CardContent,
@@ -14,7 +16,11 @@ import {
   TableRow,
 } from '@tb-dev/vue-components';
 
+const props = defineProps<{ personnel: ArmyPersonnelImpl }>();
+
 const { t } = useI18n();
+
+const size = useArmyPersonnelSize(() => props.personnel);
 </script>
 
 <template>
@@ -28,14 +34,40 @@ const { t } = useI18n();
     <CardContent class="px-2 py-0">
       <Table>
         <TableBody>
-          <TableRow>
-            <TableCell>{{ `8000 ${t('pikeman', 8000)}` }}</TableCell>
+          <TableRow v-if="size.pikeman > 0">
+            <TableCell>
+              {{ `${size.pikeman} ${t('pikeman', size.pikeman)}` }}
+            </TableCell>
           </TableRow>
-          <TableRow>
-            <TableCell>{{ `8000 ${t('archer', 8000)}` }}</TableCell>
+
+          <TableRow v-if="size.swordsman > 0">
+            <TableCell>
+              {{ `${size.swordsman} ${t('swordsman', size.swordsman)}` }}
+            </TableCell>
           </TableRow>
-          <TableRow>
-            <TableCell>{{ `1000 ${t('heavy-cavalry', 1000)}` }}</TableCell>
+
+          <TableRow v-if="size.axeman > 0">
+            <TableCell>
+              {{ `${size.axeman} ${t('axeman', size.axeman)}` }}
+            </TableCell>
+          </TableRow>
+
+          <TableRow v-if="size.archer > 0">
+            <TableCell>
+              {{ `${size.archer} ${t('archer', size.archer)}` }}
+            </TableCell>
+          </TableRow>
+
+          <TableRow v-if="size.lightCavalry > 0">
+            <TableCell>
+              {{ `${size.lightCavalry} ${t('light-cavalry', size.lightCavalry)}` }}
+            </TableCell>
+          </TableRow>
+
+          <TableRow v-if="size.heavyCavalry > 0">
+            <TableCell>
+              {{ `${size.heavyCavalry} ${t('heavy-cavalry', size.heavyCavalry)}` }}
+            </TableCell>
           </TableRow>
         </TableBody>
       </Table>

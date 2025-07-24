@@ -261,26 +261,6 @@ impl Add for BuildingLevel {
   }
 }
 
-impl AddAssign for BuildingLevel {
-  fn add_assign(&mut self, rhs: Self) {
-    *self = *self + rhs;
-  }
-}
-
-impl Sub for BuildingLevel {
-  type Output = Self;
-
-  fn sub(self, rhs: Self) -> Self {
-    Self(self.0.saturating_sub(rhs.0))
-  }
-}
-
-impl SubAssign for BuildingLevel {
-  fn sub_assign(&mut self, rhs: Self) {
-    *self = *self - rhs;
-  }
-}
-
 impl Add<u8> for BuildingLevel {
   type Output = Self;
 
@@ -297,6 +277,12 @@ impl Add<i8> for BuildingLevel {
   }
 }
 
+impl AddAssign for BuildingLevel {
+  fn add_assign(&mut self, rhs: Self) {
+    *self = *self + rhs;
+  }
+}
+
 impl AddAssign<u8> for BuildingLevel {
   fn add_assign(&mut self, rhs: u8) {
     *self = *self + rhs;
@@ -306,6 +292,14 @@ impl AddAssign<u8> for BuildingLevel {
 impl AddAssign<i8> for BuildingLevel {
   fn add_assign(&mut self, rhs: i8) {
     *self = *self + rhs;
+  }
+}
+
+impl Sub for BuildingLevel {
+  type Output = Self;
+
+  fn sub(self, rhs: Self) -> Self {
+    Self(self.0.saturating_sub(rhs.0))
   }
 }
 
@@ -322,6 +316,12 @@ impl Sub<i8> for BuildingLevel {
 
   fn sub(self, rhs: i8) -> Self {
     Self(self.0.saturating_sub_signed(rhs))
+  }
+}
+
+impl SubAssign for BuildingLevel {
+  fn sub_assign(&mut self, rhs: Self) {
+    *self = *self - rhs;
   }
 }
 

@@ -5,6 +5,7 @@ use crate::error::Result;
 use crate::manager::ManagerExt;
 use nil_core::continent::Coord;
 use nil_core::infrastructure::storage::OverallStorageCapacity;
+use nil_core::military::Military;
 use nil_core::player::{Player, PlayerId, PlayerOptions, PlayerStatus};
 use nil_core::resources::Maintenance;
 use tauri::AppHandle;
@@ -29,6 +30,14 @@ pub async fn get_player_coords(app: AppHandle, id: PlayerId) -> Result<Vec<Coord
 pub async fn get_player_maintenance(app: AppHandle) -> Result<Maintenance> {
   app
     .client(async |cl| cl.get_player_maintenance().await)
+    .await?
+    .map_err(Into::into)
+}
+
+#[tauri::command]
+pub async fn get_player_military(app: AppHandle) -> Result<Military> {
+  app
+    .client(async |cl| cl.get_player_military().await)
     .await?
     .map_err(Into::into)
 }

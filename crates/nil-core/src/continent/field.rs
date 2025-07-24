@@ -16,20 +16,13 @@ pub enum Field {
 }
 
 impl Field {
-  pub(super) fn village(&self) -> Option<&Village> {
-    if let Self::Village { village } = self {
-      Some(village)
-    } else {
-      None
-    }
+  #[inline]
+  pub fn village(&self) -> Option<&Village> {
+    if let Self::Village { village } = self { Some(village) } else { None }
   }
 
   pub(super) fn village_mut(&mut self) -> Option<&mut Village> {
-    if let Self::Village { village } = self {
-      Some(village)
-    } else {
-      None
-    }
+    if let Self::Village { village } = self { Some(village) } else { None }
   }
 }
 

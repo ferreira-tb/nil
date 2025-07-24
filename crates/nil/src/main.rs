@@ -81,6 +81,7 @@ fn main() {
       command::player::get_player,
       command::player::get_player_coords,
       command::player::get_player_maintenance,
+      command::player::get_player_military,
       command::player::get_player_status,
       command::player::get_player_storage_capacity,
       command::player::get_players,

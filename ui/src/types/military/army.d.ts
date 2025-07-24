@@ -37,3 +37,11 @@ interface ArmyOwnerPrecursor {
   readonly kind: 'precursor';
   readonly id: PrecursorId;
 }
+
+type WritableArmyPersonnel = {
+  [unit in keyof Writable<ArmyPersonnel>]: Writable<Squad>;
+};
+
+type ArmyPersonnelSize = {
+  [unit in keyof ArmyPersonnel]: number;
+};

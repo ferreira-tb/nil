@@ -54,6 +54,16 @@ pub async fn get_maintenance(
     .await
 }
 
+pub async fn get_military(
+  State(app): State<App>,
+  Extension(player): Extension<CurrentPlayer>,
+) -> Response {
+  app
+    .world(|world| world.get_player_military(&player))
+    .map(|military| res!(OK, Json(military)))
+    .await
+}
+
 pub async fn get_status(State(app): State<App>, Path(id): Path<PlayerId>) -> Response {
   app
     .player_manager(|pm| pm.player(&id).map(Player::status))

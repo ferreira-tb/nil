@@ -6,7 +6,6 @@ import Field from './Field.vue';
 import { useRoute } from 'vue-router';
 import type { Option } from '@tb-dev/utils';
 import { useElementSize } from '@tb-dev/vue';
-import { getContinentSize } from '@/commands';
 import { onKeyDown, until } from '@vueuse/core';
 import { ListenerSet } from '@/lib/listener-set';
 import { CoordImpl } from '@/core/model/continent/coord';
@@ -31,11 +30,11 @@ const route = useRoute();
 const { coord: currentCoord } = NIL.village.refs();
 
 const continent = new Continent();
-const size = await getContinentSize();
+const { continentSize } = NIL.world.refs();
 
 const fields = shallowRef<PublicFieldImpl[]>([]);
 const cache = new Map<string, PublicFieldImpl>();
-const bulkInit = PublicFieldImpl.createBulkInitializer(size);
+const bulkInit = PublicFieldImpl.createBulkInitializer();
 const triggerFields = () => triggerRef(fields);
 
 const containerEl = useTemplateRef('container');
@@ -48,7 +47,7 @@ const cols = computed(() => {
   const values: [number, Option<number>][] = [];
   for (let col = 0; col < gridCols.value; col++) {
     const field = fields.value.at(col);
-    if (field && !field.isXOutside(size)) {
+    if (field && !field.isXOutside()) {
       values.push([col, field.x]);
     } else {
       values.push([col, null]);
@@ -62,7 +61,7 @@ const rows = computed(() => {
   const values: [number, Option<number>][] = [];
   for (let row = 0; row < gridRows.value; row++) {
     const field = fields.value.at(row * gridCols.value);
-    if (field && !field.isYOutside(size)) {
+    if (field && !field.isYOutside()) {
       values.push([row, field.y]);
     } else {
       values.push([row, null]);
@@ -171,13 +170,13 @@ function move(dir: 'up' | 'down' | 'left' | 'right') {
     if (e.shiftKey) delta = 10;
     if (e.ctrlKey && e.shiftKey) delta = 25;
 
-    if (dir === 'up' && y + delta <= size) {
+    if (dir === 'up' && y + delta <= continentSize.value) {
       y += delta;
     } else if (dir === 'down' && y - delta >= 0) {
       y -= delta;
     } else if (dir === 'left' && x - delta >= 0) {
       x -= delta;
-    } else if (dir === 'right' && x + delta <= size) {
+    } else if (dir === 'right' && x + delta <= continentSize.value) {
       x += delta;
     }
 
@@ -197,12 +196,7 @@ function move(dir: 'up' | 'down' | 'left' | 'right') {
           class="bg-card absolute inset-0 bottom-[50px] left-[50px] z-10 overflow-hidden"
         >
           <div id="continent-grid">
-            <Field
-              v-for="field of fields"
-              :key="`${field.id}-${field.flags}`"
-              :field
-              :continent-size="size"
-            />
+            <Field v-for="field of fields" :key="`${field.id}-${field.flags}`" :field />
           </div>
         </div>
 
