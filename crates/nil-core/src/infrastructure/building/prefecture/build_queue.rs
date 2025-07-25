@@ -20,10 +20,10 @@ pub struct PrefectureBuildQueue {
 impl PrefectureBuildQueue {
   pub(crate) fn build(
     &mut self,
+    request: &PrefectureBuildOrderRequest,
     table: &BuildingStatsTable,
     current_level: BuildingLevel,
     current_resources: Option<&Resources>,
-    request: &PrefectureBuildOrderRequest,
   ) -> Result<&PrefectureBuildOrder> {
     let id = table.id();
     let mut target_level = self
@@ -161,7 +161,7 @@ impl PrefectureBuildOrder {
   }
 
   fn update(&mut self, workforce: &mut Workforce) -> bool {
-    if let Some(pending) = self.state.pending_workforce() {
+    if let Some(pending) = self.state.workforce_mut() {
       if *pending > 0 {
         let previous = *pending;
         *pending -= *workforce;
@@ -218,7 +218,7 @@ pub enum PrefectureBuildOrderState {
 }
 
 impl PrefectureBuildOrderState {
-  fn pending_workforce(&mut self) -> Option<&mut Workforce> {
+  fn workforce_mut(&mut self) -> Option<&mut Workforce> {
     if let Self::Pending { workforce } = self { Some(workforce) } else { None }
   }
 }

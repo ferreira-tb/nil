@@ -132,6 +132,27 @@ pub struct UnitChunk {
   workforce: Workforce,
 }
 
+impl UnitChunk {
+  pub fn resources(&self) -> Resources {
+    Resources {
+      food: Food::MIN,
+      iron: Iron::from((self.cost * self.iron_ratio).round()),
+      stone: Stone::from((self.cost * self.stone_ratio).round()),
+      wood: Wood::from((self.cost * self.wood_ratio).round()),
+    }
+  }
+
+  #[inline]
+  pub fn maintenance(&self) -> Maintenance {
+    Maintenance::from((self.cost * self.maintenance_ratio).round())
+  }
+
+  #[inline]
+  pub fn workforce(&self) -> Workforce {
+    self.workforce
+  }
+}
+
 #[derive(Clone, Copy, Debug, Deref, From, Into, Deserialize, Serialize)]
 pub struct UnitChunkSize(u8);
 

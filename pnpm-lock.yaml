@@ -98,8 +98,8 @@ importers:
         specifier: ^4.1.0
         version: 4.1.0
       es-toolkit:
-        specifier: ^1.39.7
-        version: 1.39.7
+        specifier: ^1.39.8
+        version: 1.39.8
       lucide-vue-next:
         specifier: ^0.525.0
         version: 0.525.0(vue@3.5.18(typescript@5.8.3))
@@ -1281,8 +1281,8 @@ packages:
   error-stack-parser-es@0.1.5:
     resolution: {integrity: sha512-xHku1X40RO+fO8yJ8Wh2f2rZWVjqyhb1zgq1yZ8aZRQkv6OOKhKWRUaht3eSCUbAOBaKIgM+ykwFLE+QUxgGeg==}
 
-  es-toolkit@1.39.7:
-    resolution: {integrity: sha512-ek/wWryKouBrZIjkwW2BFf91CWOIMvoy2AE5YYgUrfWsJQM2Su1LoLtrw8uusEpN9RfqLlV/0FVNjT0WMv8Bxw==}
+  es-toolkit@1.39.8:
+    resolution: {integrity: sha512-A8QO9TfF+rltS8BXpdu8OS+rpGgEdnRhqIVxO/ZmNvnXBYgOdSsxukT55ELyP94gZIntWJ+Li9QRrT2u1Kitpg==}
 
   esbuild@0.25.6:
     resolution: {integrity: sha512-GVuzuUwtdsghE3ocJ9Bs8PNoF13HNQ5TXbEi2AhvVb8xU1Iwt9Fos9FEamfoee+u/TOsn7GUWc04lz46n2bbTg==}
@@ -2996,7 +2996,7 @@ snapshots:
     dependencies:
       '@tb-dev/utils': 7.0.8
       '@vueuse/core': 13.5.0(vue@3.5.18(typescript@5.8.3))
-      es-toolkit: 1.39.7
+      es-toolkit: 1.39.8
       vue: 3.5.18(typescript@5.8.3)
     transitivePeerDependencies:
       - typescript
@@ -3529,7 +3529,7 @@ snapshots:
 
   error-stack-parser-es@0.1.5: {}
 
-  es-toolkit@1.39.7: {}
+  es-toolkit@1.39.8: {}
 
   esbuild@0.25.6:
     optionalDependencies:

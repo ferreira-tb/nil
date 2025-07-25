@@ -1,6 +1,9 @@
 // Copyright (C) Call of Nil contributors
 // SPDX-License-Identifier: AGPL-3.0-only
 
+mod recruit_catalog;
+mod recruit_queue;
+
 use super::{BuildingId, BuildingLevel};
 use crate::check_total_resource_ratio;
 use crate::infrastructure::requirements::InfrastructureRequirements;
@@ -8,11 +11,25 @@ use crate::resources::{Cost, MaintenanceRatio, ResourceRatio, Workforce};
 use nil_core_macros::Building;
 use serde::{Deserialize, Serialize};
 
+pub use recruit_catalog::{
+  AcademyRecruitCatalog,
+  AcademyRecruitCatalogEntry,
+  AcademyRecruitCatalogRecipe,
+};
+pub use recruit_queue::{
+  AcademyRecruitOrder,
+  AcademyRecruitOrderId,
+  AcademyRecruitOrderRequest,
+  AcademyRecruitOrderState,
+  AcademyRecruitQueue,
+};
+
 #[derive(Building, Clone, Debug, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Academy {
   level: BuildingLevel,
   enabled: bool,
+  recruit_queue: AcademyRecruitQueue,
 }
 
 impl Academy {
@@ -43,6 +60,7 @@ impl Default for Academy {
     Self {
       level: BuildingLevel::ZERO,
       enabled: true,
+      recruit_queue: AcademyRecruitQueue::default(),
     }
   }
 }

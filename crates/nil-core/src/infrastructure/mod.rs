@@ -243,15 +243,15 @@ impl Infrastructure {
 
   pub(crate) fn add_prefecture_build_order(
     &mut self,
+    request: &PrefectureBuildOrderRequest,
     table: &BuildingStatsTable,
     current_resources: Option<&Resources>,
-    request: &PrefectureBuildOrderRequest,
   ) -> Result<&PrefectureBuildOrder> {
     let level = self.building(request.building).level();
     self
       .prefecture
       .build_queue_mut()
-      .build(table, level, current_resources, request)
+      .build(request, table, level, current_resources)
   }
 
   pub(crate) fn cancel_prefecture_build_order(&mut self) -> Option<PrefectureBuildOrder> {

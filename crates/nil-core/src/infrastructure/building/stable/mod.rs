@@ -1,6 +1,9 @@
 // Copyright (C) Call of Nil contributors
 // SPDX-License-Identifier: AGPL-3.0-only
 
+mod recruit_catalog;
+mod recruit_queue;
+
 use super::{BuildingId, BuildingLevel};
 use crate::check_total_resource_ratio;
 use crate::infrastructure::requirements::InfrastructureRequirements;
