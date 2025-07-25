@@ -226,8 +226,8 @@ function move(dir: 'up' | 'down' | 'left' | 'right') {
 <style scoped>
 #continent-grid {
   display: grid;
-  grid-template-rows: v-bind('`repeat(${gridRows}, 50px)`');
-  grid-template-columns: v-bind('`repeat(${gridCols}, 50px)`');
+  grid-template-rows: v-bind("`repeat(${gridRows}, 50px)`");
+  grid-template-columns: v-bind("`repeat(${gridCols}, 50px)`");
 }
 
 #container-fill {
@@ -252,14 +252,14 @@ function move(dir: 'up' | 'down' | 'left' | 'right') {
 #rule-horizontal {
   bottom: 0;
   left: 50px;
-  grid-template-columns: v-bind('`repeat(${gridCols}, 50px)`');
+  grid-template-columns: v-bind("`repeat(${gridCols}, 50px)`");
   height: 50px;
 }
 
 #rule-vertical {
   top: 0;
   bottom: 50px;
-  grid-template-rows: v-bind('`repeat(${gridRows}, 50px)`');
+  grid-template-rows: v-bind("`repeat(${gridRows}, 50px)`");
   width: 50px;
 }
 </style>
