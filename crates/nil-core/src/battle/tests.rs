@@ -3,14 +3,18 @@
 
 use super::Battle;
 use crate::military::squad::{Squad, SquadSize};
-use crate::military::unit::UnitId;
+use crate::military::unit::{heavy_cavalry, UnitId};
 use crate::military::unit::UnitId::*;
+use crate::infrastructure::InfrastructureStats;
+use std::sync::LazyLock;
+
+static STATS: LazyLock<InfrastructureStats> = LazyLock::new(InfrastructureStats::default);
 
 #[test]
 fn offensive_power() {
+  let attacker = [s(Axeman, 100), s(Swordsman, 50)];
   let battle = Battle::builder()
-    .attacker([s(Pikeman, 100), s(Swordsman, 50)])
-    .defender([])
+    .attacker(&attacker)
     .build();
 
   let power = battle.offensive_power();
@@ -20,9 +24,9 @@ fn offensive_power() {
 
 #[test]
 fn offensive_power_cavalry() {
+  let attacker = [s(HeavyCavalry, 100)];
   let battle = Battle::builder()
-    .attacker([s(HeavyCavalry, 100)])
-    .defender([])
+    .attacker(&attacker)
     .build();
 
   let power = battle.offensive_power();
@@ -32,9 +36,9 @@ fn offensive_power_cavalry() {
 
 #[test]
 fn offensive_power_mixed() {
+  let attacker = [s(HeavyCavalry, 100), s(Pikeman, 500)];
   let battle = Battle::builder()
-    .attacker([s(HeavyCavalry, 100), s(Pikeman, 500)])
-    .defender([])
+    .attacker(&attacker)
     .build();
 
   let power = battle.offensive_power();
@@ -46,9 +50,11 @@ fn offensive_power_mixed() {
 
 #[test]
 fn defensive_power() {
+  let attacker = [s(Axeman, 100), s(Swordsman, 50)];
+  let defender = [s(Pikeman, 100), s(Swordsman, 50)];
   let battle = Battle::builder()
-    .attacker([s(Axeman, 100), s(Swordsman, 50)])
-    .defender([s(Pikeman, 100), s(Swordsman, 50)])
+    .attacker(&attacker)
+    .defender(&defender)
     .build();
 
   let power = battle.defensive_power();
@@ -57,9 +63,11 @@ fn defensive_power() {
 
 #[test]
 fn defensive_power_mixed() {
+  let attacker = [s(HeavyCavalry, 100), s(Pikeman, 500)];
+  let defender = [s(Pikeman, 100)]; 
   let battle = Battle::builder()
-    .attacker([s(HeavyCavalry, 100), s(Pikeman, 500)])
-    .defender([s(Pikeman, 100)])
+    .attacker(&attacker)
+    .defender(&defender)
     .build();
 
   let power = battle.defensive_power();
@@ -68,9 +76,11 @@ fn defensive_power_mixed() {
 
 #[test]
 fn winner_losses() {
+  let attacker = [s(Axeman, 100), s(Swordsman, 50)];
+  let defender = [s(Pikeman, 100)];
   let battle = Battle::builder()
-    .attacker([s(Axeman, 100), s(Swordsman, 50)])
-    .defender([s(Pikeman, 100)])
+    .attacker(&attacker)
+    .defender(&defender)
     .build();
 
   let losses = battle.winner_losses();
@@ -80,9 +90,11 @@ fn winner_losses() {
 
 #[test]
 fn winner_losses_mixed() {
+  let attacker = [s(HeavyCavalry, 100), s(Pikeman, 500)];
+  let defender = [s(Pikeman, 100)];
   let battle = Battle::builder()
-    .attacker([s(HeavyCavalry, 100), s(Pikeman, 500)])
-    .defender([s(Pikeman, 100)])
+    .attacker(&attacker)
+    .defender(&defender)
     .build();
 
   let losses = battle.winner_losses();
@@ -91,9 +103,11 @@ fn winner_losses_mixed() {
 
 #[test]
 fn overall() {
+  let attacker = [s(LightCavalry, 3000), s(Axeman, 6000)];
+  let defender = [s(Pikeman, 8000), s(Swordsman, 8000)];
   let battle = Battle::builder()
-    .attacker([s(LightCavalry, 3000), s(Axeman, 6000)])
-    .defender([s(Pikeman, 8000), s(Swordsman, 8000)])
+    .attacker(&attacker)
+    .defender(&defender)
     .build();
 
   let attack_power = battle.offensive_power();
@@ -105,9 +119,11 @@ fn overall() {
   assert!((winner_losses.total_loss - 6272.674503).abs() <= 0.001);
   assert!((winner_losses.infantry - 4181.783).abs() <= 0.001);
 
+  let attacker = [s(LightCavalry, 3000), s(Axeman, 3000), s(Archer, 2000)];
+  let defender = [s(Pikeman, 8000), s(Swordsman, 8000)];
   let battle = Battle::builder()
-    .attacker([s(LightCavalry, 3000), s(Axeman, 3000), s(Archer, 2000)])
-    .defender([s(Pikeman, 8000), s(Swordsman, 8000)])
+    .attacker(&attacker)
+    .defender(&defender)
     .build();
 
   let attack_power = battle.offensive_power();
@@ -125,9 +141,11 @@ fn overall() {
 
 #[test]
 fn ranged_attack_debuff() {
+  let attacker = [s(Archer, 3005), s(Axeman, 7000)];
+  let defender = [s(Pikeman, 8000), s(Swordsman, 8000)];
   let battle = Battle::builder()
-    .attacker([s(Archer, 3005), s(Axeman, 7000)])
-    .defender([s(Pikeman, 8000), s(Swordsman, 8000)])
+    .attacker(&attacker)
+    .defender(&defender)
     .build();
 
   let attack_power = battle.offensive_power();
@@ -136,9 +154,11 @@ fn ranged_attack_debuff() {
 
 #[test]
 fn ranged_attack_no_debuff() {
+  let attacker = [s(Archer, 3000), s(Axeman, 7000)];
+  let defender = [s(Pikeman, 8000), s(Swordsman, 8000)];
   let battle = Battle::builder()
-    .attacker([s(Archer, 3000), s(Axeman, 7000)])
-    .defender([s(Pikeman, 8000), s(Swordsman, 8000)])
+    .attacker(&attacker)
+    .defender(&defender)
     .build();
 
   let attack_power = battle.offensive_power();

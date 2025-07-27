@@ -311,6 +311,10 @@ impl InfrastructureStats {
       .get(&id)
       .ok_or(Error::StorageStatsNotFound(id))
   }
+
+  pub fn wall(&self) -> &WallStatsTable {
+    &self.wall
+  }
 }
 
 impl Default for InfrastructureStats {

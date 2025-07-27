@@ -10,21 +10,21 @@ use crate::military::unit::UnitKind;
 use bon::Builder;
 
 #[derive(Builder)]
-pub struct Battle {
-  #[builder(default, into)]
-  attacker: Vec<Squad>,
-  #[builder(default, into)]
-  defender: Vec<Squad>,
-  wall: Option<WallStats>,
+pub struct Battle<'a> {
+  #[builder(default)]
+  attacker: &'a [Squad],
+  #[builder(default)]
+  defender: &'a [Squad],
+  wall: Option<&'a WallStats>,
 }
 
-impl Battle {
+impl<'a> Battle<'a> {
   pub fn offensive_power(&self) -> OffensivePower {
     OffensivePower::new(&self.attacker)
   }
 
   pub fn defensive_power(&self) -> DefensivePower {
-    DefensivePower::new(&self.defender, self.offensive_power(), &self.wall)
+    DefensivePower::new(&self.defender, self.offensive_power(), self.wall)
   }
 
   pub fn winner_losses(&self) -> WinnerLosses {
@@ -97,7 +97,7 @@ impl DefensivePower {
   pub fn new(
     squads: &[Squad],
     offensive_power: OffensivePower,
-    defending_wall: &Option<WallStats>,
+    defending_wall: Option<&WallStats>,
   ) -> Self {
     let units_by_kind = UnitsByKind::new(squads);
     let mut infantry = 0.0;
