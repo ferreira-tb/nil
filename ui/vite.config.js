@@ -1,3 +1,4 @@
+import { env } from 'node:process';
 import { defineConfig } from 'vite';
 import wasm from 'vite-plugin-wasm';
 import vue from '@vitejs/plugin-vue';
@@ -19,10 +20,11 @@ export default defineConfig({
     emptyOutDir: true,
     minify: true,
     target: 'esnext',
+    sourcemap: Boolean(env.TAURI_ENV_DEBUG),
   },
   server: {
     port: 1420,
     strictPort: true,
-    host: process.env.TAURI_DEV_HOST || false,
+    host: env.TAURI_DEV_HOST || false,
   },
 });
