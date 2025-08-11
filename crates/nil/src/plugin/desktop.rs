@@ -1,28 +1,10 @@
 // Copyright (C) Call of Nil contributors
 // SPDX-License-Identifier: AGPL-3.0-only
 
-use crate::manager::ManagerExt;
-use crate::window::WindowExt;
+use crate::window::desktop::WindowExt;
 use anyhow::Result;
-use tauri::async_runtime::block_on;
-use tauri::plugin::{Builder, TauriPlugin};
-use tauri::{AppHandle, RunEvent, Wry};
-
-pub fn on_exit() -> TauriPlugin<Wry> {
-  let task = async |app: &AppHandle| {
-    let nil = app.nil();
-    nil.stop_client().await;
-    nil.stop_server().await;
-  };
-
-  Builder::new("on-exit")
-    .on_event(move |app, event| {
-      if let RunEvent::Exit = event {
-        block_on(task(app));
-      }
-    })
-    .build()
-}
+use tauri::Wry;
+use tauri::plugin::TauriPlugin;
 
 pub fn prevent_default() -> TauriPlugin<Wry> {
   #[cfg(windows)]

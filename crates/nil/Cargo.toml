@@ -10,6 +10,10 @@ homepage.workspace = true
 repository.workspace = true
 authors.workspace = true
 
+[lib]
+name = "nil_lib"
+crate-type = ["cdylib", "rlib", "staticlib"]
+
 [lints]
 workspace = true
 
