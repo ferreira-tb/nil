@@ -1,7 +1,0 @@
-/*
-!src
-!build.gradle.kts
-
-/src/main/assets/tauri.conf.json
-/src/main/java/tsukilabs/nil/generated
-/src/main/jniLibs/**/*.so
