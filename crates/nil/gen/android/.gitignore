@@ -1,13 +1,2 @@
-.cxx
-.externalNativeBuild
-.idea
-.gradle
-.kotlin
-.tauri
-build
-captures
-
-*.iml
-key.properties
-local.properties
-tauri.settings.gradle
+*
+!app
