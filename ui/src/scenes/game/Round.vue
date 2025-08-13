@@ -35,7 +35,11 @@ const isPlayerTurn = usePlayerTurn();
       </span>
     </div>
 
-    <Button v-if="isHost && round?.state.kind === 'idle'" size="sm" @click="onStartRound">
+    <Button
+      v-if="isHost && round?.state.kind === 'idle'"
+      size="sm"
+      @click="onStartRound"
+    >
       {{ t('start') }}
     </Button>
     <Button

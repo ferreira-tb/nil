@@ -8,6 +8,7 @@ param(
   [Alias('P')]
   [switch]$Preview,
 
+  [Alias('S')]
   [switch]$SkipWasm
 )
 

@@ -15,7 +15,7 @@ const { village } = NIL.village.refs();
 </script>
 
 <template>
-  <header class="flex items-center justify-between">
+  <header class="flex items-center justify-between overflow-hidden">
     <div class="max-w-3/5 flex items-center gap-2">
       <SidebarTrigger />
       <Button v-if="village" variant="ghost" class="py-2 text-base lg:text-lg">

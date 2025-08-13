@@ -5,9 +5,9 @@
 import { useI18n } from 'vue-i18n';
 import { exitGame } from '@/core/game';
 import { Button } from '@tb-dev/vue-components';
-import { breakpointsTailwind, useBreakpoints } from '@vueuse/core';
+import { useBreakpoints } from '@/composables/util/useBreakpoints';
 
-const { sm } = useBreakpoints(breakpointsTailwind);
+const { sm } = useBreakpoints();
 
 const { t } = useI18n();
 </script>
