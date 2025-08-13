@@ -25,12 +25,15 @@ else {
   'cargo tauri build'
 }
 
-if ($Preview) {
-  $BuildCmd += ' --no-bundle -- --profile preview'
+if (-not $Android) {
+  if ($Preview) {
+    $BuildCmd += ' --no-bundle -- --profile preview'
+  }
+  else {
+    # We should stop using the `release-bin` profile once `wasm-pack` is updated.
+    $BuildCmd += ' -- --profile release-bin'
+  }
 }
-elseif (-not $Android) {
-  # We should stop using the `release-bin` profile once `wasm-pack` is updated.
-  $BuildCmd += ' -- --profile release-bin'
-}
+
 
 Invoke-Expression $BuildCmd
