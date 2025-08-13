@@ -5,7 +5,8 @@
 import Chat from '@/components/chat/Chat.vue';
 import { useToggle, whenever } from '@vueuse/core';
 import ChatIcon from '@/components/chat/ChatIcon.vue';
-import { Popover, PopoverContent, PopoverTrigger } from '@tb-dev/vue-components';
+import { useBreakpoints } from '@/composables/util/useBreakpoints';
+import { Dialog, DialogContent, DialogTrigger, Popover, PopoverContent, PopoverTrigger } from '@tb-dev/vue-components';
 
 const { player } = NIL.player.refs();
 
@@ -13,6 +14,8 @@ const [isChatOpen, toggleChat] = useToggle(false);
 const closeChat = () => void toggleChat(false);
 
 const [hasUnread, toggleUnread] = useToggle(false);
+
+const { sm } = useBreakpoints();
 
 whenever(isChatOpen, () => void toggleUnread(false));
 
@@ -24,7 +27,7 @@ function onChatUpdated({ message }: ChatUpdatedPayload) {
 </script>
 
 <template>
-  <Popover v-model:open="isChatOpen">
+  <Popover v-if="sm" v-model:open="isChatOpen">
     <PopoverTrigger as-child>
       <ChatIcon :has-unread />
     </PopoverTrigger>
@@ -34,6 +37,7 @@ function onChatUpdated({ message }: ChatUpdatedPayload) {
       :align-offset="-15"
       side="top"
       :side-offset="10"
+      disable-outside-pointer-events
       class="w-96 max-w-[90vw] h-[500px] max-h-[75vh]"
       @pointer-down-outside="closeChat"
     >
@@ -43,4 +47,20 @@ function onChatUpdated({ message }: ChatUpdatedPayload) {
       />
     </PopoverContent>
   </Popover>
+
+  <Dialog v-else v-model:open="isChatOpen">
+    <DialogTrigger as-child>
+      <ChatIcon :has-unread />
+    </DialogTrigger>
+
+    <DialogContent
+      class="w-96 max-w-[90vw] h-[500px] max-h-[75vh] px-2"
+      @pointer-down-outside="closeChat"
+    >
+      <Chat
+        class="w-full h-[470px] max-h-[calc(75vh-30px)]"
+        @chat-updated="onChatUpdated"
+      />
+    </DialogContent>
+  </Dialog>
 </template>

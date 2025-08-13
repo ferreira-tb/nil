@@ -5,7 +5,7 @@
 import Units from './Units.vue';
 import Buildings from './Buildings.vue';
 import Production from './Production.vue';
-import { breakpointsTailwind, useBreakpoints } from '@vueuse/core';
+import { useBreakpoints } from '@/composables/util/useBreakpoints';
 import { useIdleArmiesAt } from '@/composables/military/useIdleArmiesAt';
 import { foldArmyPersonnel } from '@/composables/military/foldArmyPersonnel';
 
@@ -14,7 +14,7 @@ const { coord, village } = NIL.village.refs();
 const armies = useIdleArmiesAt(coord);
 const personnel = foldArmyPersonnel(armies);
 
-const { sm } = useBreakpoints(breakpointsTailwind);
+const { sm } = useBreakpoints();
 </script>
 
 <template>
@@ -22,7 +22,7 @@ const { sm } = useBreakpoints(breakpointsTailwind);
     <div
       v-if="village"
       class="flex size-full gap-4"
-      :class="sm ? 'flex-row' : 'flex-col pb-12'"
+      :class="sm ? 'flex-row' : 'flex-col'"
     >
       <Buildings :village class="h-min w-full" />
       <div v-if="sm" class="flex flex-col size-full max-w-80 gap-4">
@@ -32,6 +32,8 @@ const { sm } = useBreakpoints(breakpointsTailwind);
       <template v-else>
         <Production class="h-min w-full" />
         <Units v-if="!personnel.isEmpty()" :personnel class="h-min w-full" />
+
+        <div class="min-h-12 w-full"></div>
       </template>
     </div>
   </div>

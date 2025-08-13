@@ -5,6 +5,7 @@ param(
   [Alias('A')]
   [switch]$Android,
 
+  [Alias('S')]
   [switch]$SkipWasm
 )
 

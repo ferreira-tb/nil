@@ -41,7 +41,7 @@ label:has(input[type="radio"]) {
 }
 
 .card-layout [data-slot="card"] {
-  @apply min-w-[calc(100%-50px)] sm:min-w-80 p-2;
+  @apply min-w-[calc(100%-20px)] sm:min-w-80 p-2;
 }
 
 .card-layout [data-slot="card-header"] {
