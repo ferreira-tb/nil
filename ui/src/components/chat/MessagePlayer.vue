@@ -19,7 +19,7 @@ const datetime = computed(() => {
   <div class="flex w-full flex-col gap-1 overflow-hidden">
     <div class="text-muted-foreground flex items-center justify-between gap-4 text-xs">
       <span class="ellipsis">{{ message.author.id }}</span>
-      <span class="hidden lg:block">{{ datetime }}</span>
+      <span class="hidden md:block">{{ datetime }}</span>
     </div>
     <div class="text-pretty break-normal wrap-anywhere whitespace-normal select-text">
       <span>{{ message.content }}</span>

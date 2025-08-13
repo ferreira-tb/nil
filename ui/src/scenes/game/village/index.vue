@@ -19,7 +19,11 @@ const { sm } = useBreakpoints(breakpointsTailwind);
 
 <template>
   <div class="game-layout">
-    <div v-if="village" class="flex size-full gap-4" :class="sm ? 'flex-row' : 'flex-col'">
+    <div
+      v-if="village"
+      class="flex size-full gap-4"
+      :class="sm ? 'flex-row' : 'flex-col pb-12'"
+    >
       <Buildings :village class="h-min w-full" />
       <div v-if="sm" class="flex flex-col size-full max-w-80 gap-4">
         <Production class="h-min w-full" />
