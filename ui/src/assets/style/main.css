@@ -31,7 +31,3 @@ label:has(input[type="radio"]) {
 [data-sonner-toast] [data-description] {
   @apply text-foreground!;
 }
-
-.ellipsis {
-  @apply inline-block overflow-hidden text-ellipsis whitespace-nowrap;
-}

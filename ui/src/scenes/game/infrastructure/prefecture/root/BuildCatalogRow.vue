@@ -97,7 +97,7 @@ async function makeOrder(kind: PrefectureBuildOrderKind) {
       </div>
     </TableCell>
     <TableCell class="min-w-30">
-      <div class="grid max-w-fit grid-cols-2 items-center justify-start gap-4 lg:grid-cols-3">
+      <div class="grid max-w-fit grid-cols-3 items-center justify-start gap-4">
         <Button
           variant="default"
           size="sm"
@@ -120,7 +120,7 @@ async function makeOrder(kind: PrefectureBuildOrderKind) {
           variant="destructive"
           size="sm"
           :disabled="!canDemolish"
-          class="hidden max-w-24 lg:inline-flex"
+          class="max-w-24"
           @click="() => makeOrder('demolition')"
         >
           <span>{{ t('demolish') }}</span>
