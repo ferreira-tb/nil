@@ -43,6 +43,13 @@
   --font-nil: "Syne Mono";
 }
 
+@utility ellipsis {
+  display: inline-block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;

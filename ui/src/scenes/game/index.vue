@@ -55,7 +55,7 @@ function save() {
 
 <template>
   <SidebarProvider v-model:open="isSidebarOpen">
-    <Sidebar :is-host :toggle-sidebar @save="save" @leave="leaveGame" />
+    <Sidebar :is-host @save="save" @leave="leaveGame" />
 
     <div class="bg-background/40 absolute inset-0 overflow-hidden">
       <Header

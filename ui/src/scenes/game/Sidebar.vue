@@ -3,9 +3,9 @@
 
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n';
-import { useTemplateRef } from 'vue';
 import { asyncRef } from '@tb-dev/vue';
 import * as commands from '@/commands';
+import { nextTick, useTemplateRef } from 'vue';
 import { onBeforeRouteUpdate } from 'vue-router';
 import { writeText } from '@tauri-apps/plugin-clipboard-manager';
 import { type OnClickOutsideProps, vOnClickOutside } from '@vueuse/components';
@@ -20,16 +20,18 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  useSidebar,
 } from '@tb-dev/vue-components';
 
-const props = defineProps<{
+defineProps<{
   isHost: boolean;
-  toggleSidebar: (value?: boolean) => boolean;
   onSave: () => MaybePromise<void>;
   onLeave: () => MaybePromise<void>;
 }>();
 
 const { t } = useI18n();
+
+const sidebar = useSidebar();
 
 const { config } = NIL.world.refs();
 const { round } = NIL.round.refs();
@@ -41,9 +43,17 @@ const onClickOutsideOptions: OnClickOutsideProps['options'] = {
   ignore: [sidebarFooter],
 };
 
-const closeSidebar = () => void props.toggleSidebar(false);
-
 onBeforeRouteUpdate(closeSidebar);
+
+async function closeSidebar() {
+  await nextTick();
+  if (sidebar.isMobile.value) {
+    sidebar.setOpenMobile(false);
+  }
+  else {
+    sidebar.setOpen(false);
+  }
+}
 
 function copyServerAddr() {
   if (serverAddr.value) {
