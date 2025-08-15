@@ -1,14 +1,9 @@
 .gradle
 build
 buildSrc
-gradle
 
-gradle.properties
-gradlew
-gradlew.bat
 keystore.properties
 local.properties
-settings.gradle
 tauri.settings.gradle
 
 app/proguard-rules.pro

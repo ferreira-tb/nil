@@ -5,9 +5,19 @@
 import { useI18n } from 'vue-i18n';
 import { useToggle } from '@vueuse/core';
 import ScriptDialog from './ScriptDialog.vue';
+import { shareText } from 'tauri-plugin-mobile';
 import ActionTooltip from './ActionTooltip.vue';
 import { useBreakpoints } from '@/composables/util/useBreakpoints';
-import { FileDownIcon, FileUpIcon, GlobeIcon, MenuIcon, PlayIcon, SaveIcon, Trash2Icon } from 'lucide-vue-next';
+import {
+  FileDownIcon,
+  FileUpIcon,
+  GlobeIcon,
+  MenuIcon,
+  PlayIcon,
+  SaveIcon,
+  Share2Icon,
+  Trash2Icon,
+} from 'lucide-vue-next';
 import {
   Button,
   DropdownMenu,
@@ -17,7 +27,7 @@ import {
   DropdownMenuTrigger,
 } from '@tb-dev/vue-components';
 
-defineProps<{
+const props = defineProps<{
   scripts: readonly Script[];
   current: Option<Script>;
   loading: boolean;
@@ -36,10 +46,21 @@ const { lg } = useBreakpoints();
 const [isScriptDialogOpen, toggleScriptDialog] = useToggle(false);
 
 const desktop = window.__DESKTOP__;
+const mobile = window.__MOBILE__;
+
+async function share() {
+  if (mobile && props.current?.code) {
+    await shareText({
+      title: props.current.name,
+      text: props.current.code,
+      mimeType: 'text/plain',
+    });
+  }
+}
 </script>
 
 <template>
-  <div v-if="lg" class="grid gap-2" :class="desktop ? 'grid-cols-6' : 'grid-cols-4'">
+  <div v-if="lg" class="grid gap-2" :class="desktop ? 'grid-cols-6' : 'grid-cols-5'">
     <ActionTooltip :label="t('execute')">
       <Button variant="ghost" size="icon" :disabled="loading || !current?.id" @click="onExecute">
         <PlayIcon />
@@ -67,6 +88,12 @@ const desktop = window.__DESKTOP__;
     <ActionTooltip v-if="desktop" :label="t('export')">
       <Button variant="ghost" size="icon" :disabled="loading || !current" @click="onExport">
         <FileUpIcon />
+      </Button>
+    </ActionTooltip>
+
+    <ActionTooltip v-if="mobile" :label="t('share')">
+      <Button variant="ghost" size="icon" :disabled="loading || !current?.code" @click="share">
+        <Share2Icon />
       </Button>
     </ActionTooltip>
 
@@ -106,7 +133,10 @@ const desktop = window.__DESKTOP__;
             {{ t('create') }}
           </DropdownMenuItem>
 
-          <DropdownMenuItem :disabled="loading || isScriptDialogOpen" @click="toggleScriptDialog">
+          <DropdownMenuItem
+            :disabled="loading || isScriptDialogOpen || scripts.length === 0"
+            @click="toggleScriptDialog"
+          >
             {{ t('select') }}
           </DropdownMenuItem>
 
@@ -128,6 +158,10 @@ const desktop = window.__DESKTOP__;
 
           <DropdownMenuItem v-if="desktop" :disabled="loading || !current" @click="onExport">
             {{ t('export') }}
+          </DropdownMenuItem>
+
+          <DropdownMenuItem v-if="mobile" :disabled="loading || !current?.code" @click="share">
+            {{ t('share') }}
           </DropdownMenuItem>
 
           <DropdownMenuItem :disabled="loading">

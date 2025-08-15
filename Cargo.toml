@@ -3,7 +3,7 @@ resolver = "3"
 members = ["crates/*"]
 
 [workspace.package]
-version = "0.1.6"
+version = "0.1.9"
 edition = "2024"
 rust-version = "1.91"
 license-file = "./LICENSE"
@@ -38,6 +38,7 @@ nil-num.path = "./crates/nil-num"
 nil-num-macros.path = "./crates/nil-num-macros"
 nil-server.path = "./crates/nil-server"
 nil-util.path = "./crates/nil-util"
+tauri-plugin-mobile.path = "./crates/tauri-plugin-mobile"
 
 anyhow = "1.0"
 bon = "3.7"
@@ -115,6 +116,14 @@ features = ["derive"]
 [workspace.dependencies.syn]
 version = "2.0"
 features = ["derive"]
+
+[workspace.dependencies.tauri]
+version = "2.7"
+features = ["rustls-tls"]
+
+[workspace.dependencies.tauri-plugin]
+version = "2.3"
+features = ["build"]
 
 [workspace.dependencies.tauri-plugin-prevent-default]
 version = "3"
