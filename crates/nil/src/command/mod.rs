@@ -1,6 +1,8 @@
 // Copyright (C) Call of Nil contributors
 // SPDX-License-Identifier: AGPL-3.0-only
 
+#![allow(clippy::needless_pass_by_value)]
+
 pub mod chat;
 pub mod cheat;
 pub mod client;

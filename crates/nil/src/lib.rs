@@ -31,6 +31,7 @@ pub fn run() {
     .plugin(tauri_plugin_dialog::init())
     .plugin(tauri_plugin_persisted_scope::init())
     .plugin(tauri_plugin_process::init())
+    .plugin(tauri_plugin_mobile::init())
     .setup(|app| setup(app.app_handle()))
     .invoke_handler(tauri::generate_handler![
       command::create_tray_icon,
