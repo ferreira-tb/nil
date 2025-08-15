@@ -7,6 +7,6 @@ use crate::model::*;
 use tauri::{AppHandle, command};
 
 #[command]
-pub(crate) async fn get_android_version(app: AppHandle) -> Result<Option<AndroidVersion>> {
-  app.mobile().get_android_version()
+pub(crate) async fn share_text(app: AppHandle, request: ShareTextRequest) -> Result<()> {
+  app.mobile().share_text(request)
 }

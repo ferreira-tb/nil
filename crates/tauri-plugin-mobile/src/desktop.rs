@@ -17,7 +17,7 @@ impl Mobile {
     Ok(Self)
   }
 
-  pub fn get_android_version(&self) -> Result<Option<AndroidVersion>> {
-    Ok(None)
+  pub fn share_text(&self, _: ShareTextRequest) -> Result<()> {
+    Ok(())
   }
 }

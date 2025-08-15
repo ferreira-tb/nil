@@ -34,6 +34,6 @@ pub fn init() -> TauriPlugin<Wry> {
       app.manage(Mobile::new(api)?);
       Ok(())
     })
-    .invoke_handler(tauri::generate_handler![command::get_android_version])
+    .invoke_handler(tauri::generate_handler![command::share_text])
     .build()
 }

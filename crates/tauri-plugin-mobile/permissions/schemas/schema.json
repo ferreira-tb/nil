@@ -295,22 +295,22 @@
       "type": "string",
       "oneOf": [
         {
-          "description": "Enables the get_android_version command without any pre-configured scope.",
+          "description": "Enables the share_text command without any pre-configured scope.",
           "type": "string",
-          "const": "allow-get-android-version",
-          "markdownDescription": "Enables the get_android_version command without any pre-configured scope."
+          "const": "allow-share-text",
+          "markdownDescription": "Enables the share_text command without any pre-configured scope."
         },
         {
-          "description": "Denies the get_android_version command without any pre-configured scope.",
+          "description": "Denies the share_text command without any pre-configured scope.",
           "type": "string",
-          "const": "deny-get-android-version",
-          "markdownDescription": "Denies the get_android_version command without any pre-configured scope."
+          "const": "deny-share-text",
+          "markdownDescription": "Denies the share_text command without any pre-configured scope."
         },
         {
-          "description": "Default permissions for the plugin\n#### This default permission set includes:\n\n- `allow-get-android-version`",
+          "description": "Default permissions for the plugin\n#### This default permission set includes:\n\n- `allow-share-text`",
           "type": "string",
           "const": "default",
-          "markdownDescription": "Default permissions for the plugin\n#### This default permission set includes:\n\n- `allow-get-android-version`"
+          "markdownDescription": "Default permissions for the plugin\n#### This default permission set includes:\n\n- `allow-share-text`"
         }
       ]
     }

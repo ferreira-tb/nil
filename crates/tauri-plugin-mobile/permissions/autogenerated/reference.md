@@ -4,7 +4,7 @@ Default permissions for the plugin
 
 #### This default permission set includes the following:
 
-- `allow-get-android-version`
+- `allow-share-text`
 
 ## Permission Table
 
@@ -18,12 +18,12 @@ Default permissions for the plugin
 <tr>
 <td>
 
-`mobile:allow-get-android-version`
+`mobile:allow-share-text`
 
 </td>
 <td>
 
-Enables the get_android_version command without any pre-configured scope.
+Enables the share_text command without any pre-configured scope.
 
 </td>
 </tr>
@@ -31,12 +31,12 @@ Enables the get_android_version command without any pre-configured scope.
 <tr>
 <td>
 
-`mobile:deny-get-android-version`
+`mobile:deny-share-text`
 
 </td>
 <td>
 
-Denies the get_android_version command without any pre-configured scope.
+Denies the share_text command without any pre-configured scope.
 
 </td>
 </tr>

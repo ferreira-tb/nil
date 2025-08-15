@@ -20,10 +20,10 @@ impl Mobile {
       .map_err(Into::into)
   }
 
-  pub fn get_android_version(&self) -> Result<Option<AndroidVersion>> {
+  pub fn share_text(&self, request: ShareTextRequest) -> Result<()> {
     self
       .0
-      .run_mobile_plugin("getAndroidVersion", ())
+      .run_mobile_plugin("shareText", request)
       .map_err(Into::into)
   }
 }
