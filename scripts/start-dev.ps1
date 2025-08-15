@@ -5,6 +5,9 @@ param(
   [Alias('A')]
   [switch]$Android,
 
+  [Alias('D')]
+  [string]$Device = '',
+
   [Alias('S')]
   [switch]$SkipWasm
 )
@@ -17,7 +20,7 @@ if (-not $SkipWasm) {
 }
 
 if ($Android) {
-  cargo tauri android dev
+  Invoke-Expression "cargo tauri android dev `"$($Device.Trim())`"".Trim()
 }
 else {
   cargo tauri dev

@@ -38,9 +38,10 @@ const { round } = NIL.round.refs();
 
 const { state: serverAddr } = asyncRef(null, commands.getServerAddr);
 
+const sidebarHeader = useTemplateRef('sidebarHeaderEl');
 const sidebarFooter = useTemplateRef('sidebarFooterEl');
 const onClickOutsideOptions: OnClickOutsideProps['options'] = {
-  ignore: [sidebarFooter],
+  ignore: [sidebarHeader, sidebarFooter],
 };
 
 onBeforeRouteUpdate(closeSidebar);
@@ -66,7 +67,7 @@ function copyServerAddr() {
 <template>
   <Sidebar class="z-[var(--game-sidebar-z-index)]">
     <SidebarHeader>
-      <div class="flex flex-col items-center overflow-hidden">
+      <div ref="sidebarHeaderEl" class="flex flex-col items-center overflow-hidden">
         <h1 v-if="config" class="font-nil text-lg break-all text-center">
           {{ config.name }}
         </h1>
@@ -117,7 +118,7 @@ function copyServerAddr() {
     <SidebarFooter>
       <div
         ref="sidebarFooterEl"
-        class="grid grid-cols-2 items-center justify-center gap-4 px-6 pb-4"
+        class="grid grid-cols-2 items-center justify-center gap-4 px-6"
       >
         <Button size="sm" :disabled="!isHost || round?.state.kind === 'idle'" @click="onSave">
           <span>{{ t('save') }}</span>

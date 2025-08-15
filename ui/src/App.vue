@@ -47,7 +47,7 @@ function setLocale(value: Locale) {
 <template>
   <main class="fixed inset-0 select-none">
     <Sonner />
-    <div class="absolute inset-0 overflow-hidden">
+    <div class="relative size-full overflow-hidden">
       <RouterView #default="{ Component }">
         <template v-if="Component">
           <component :is="Component" />
@@ -56,3 +56,9 @@ function setLocale(value: Locale) {
     </div>
   </main>
 </template>
+
+<style scoped>
+main {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+</style>
