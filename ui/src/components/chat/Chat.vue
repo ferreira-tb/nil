@@ -48,7 +48,6 @@ async function send() {
 
 async function scroll() {
   await nextTick();
-  await content.value?.waitChild('.chat-message', 500);
   content.value?.parentElement?.parentElement?.scrollTo({
     top: Number.MAX_SAFE_INTEGER,
     behavior: 'auto',

@@ -36,31 +36,31 @@ function onCopy() {
     <div class="grid max-w-fit grid-cols-5 gap-2">
       <ActionTooltip :label="t('execute')">
         <Button variant="ghost" size="icon" :disabled="isReadonly || loading" @click="onExecute">
-          <PlayIcon />
+          <PlayIcon stroke-width="1.5" />
         </Button>
       </ActionTooltip>
 
       <ActionTooltip :label="t('save')">
         <Button variant="ghost" size="icon" :disabled="loading" @click="onSave">
-          <SaveIcon />
+          <SaveIcon stroke-width="1.5" />
         </Button>
       </ActionTooltip>
 
       <ActionTooltip :label="t('copy')">
         <Button variant="ghost" size="icon" :disabled="!contents" @click="onCopy">
-          <CopyIcon />
+          <CopyIcon stroke-width="1.5" />
         </Button>
       </ActionTooltip>
 
       <ActionTooltip :label="t('download')">
         <Button variant="ghost" size="icon" :disabled="loading" @click="onDowload">
-          <DownloadIcon />
+          <DownloadIcon stroke-width="1.5" />
         </Button>
       </ActionTooltip>
 
       <ActionTooltip :label="t('reload')">
         <Button variant="ghost" size="icon" :disabled="loading" @click="onReload">
-          <RefreshCwIcon />
+          <RefreshCwIcon stroke-width="1.5" />
         </Button>
       </ActionTooltip>
     </div>

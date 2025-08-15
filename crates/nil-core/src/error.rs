@@ -35,7 +35,7 @@ pub enum Error {
   #[error("Cheating is not allowed in this world")]
   CheatingNotAllowed,
 
-  #[error("Failed to execute script")]
+  #[error("Failed to execute script: {0}")]
   FailedToExecuteScript(#[from] mlua::Error),
 
   #[error("Failed to load world")]
