@@ -1,7 +1,6 @@
 // Copyright (C) Call of Nil contributors
 // SPDX-License-Identifier: AGPL-3.0-only
 
-import type { Option } from '@tb-dev/utils';
 import * as monaco from 'monaco-editor-core';
 import { shikiToMonaco } from '@shikijs/monaco';
 import { createOnigurumaEngine } from 'shiki/engine/oniguruma';
@@ -47,10 +46,13 @@ export async function createEditor(element: HTMLElement) {
 
     shikiToMonaco(highlighter, monaco);
 
+    const desktop = globalThis.__DESKTOP__;
     cache.editor = monaco.editor.create(element, {
       language: 'lua',
       theme: 'vesper',
       value: '',
+      contextmenu: desktop,
+      lineNumbers: desktop ? 'on' : 'off',
       minimap: { enabled: false },
     });
   }
