@@ -56,7 +56,7 @@ impl AcademyRecruitQueue {
     })
   }
 
-  /// Cancels the last recruit order in the queue.
+  /// Cancels a recruit order.
   #[must_use]
   pub(crate) fn cancel(&mut self, id: AcademyRecruitOrderId) -> Option<AcademyRecruitOrder> {
     let position = self

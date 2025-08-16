@@ -56,7 +56,7 @@ impl StableRecruitQueue {
     })
   }
 
-  /// Cancels the last recruit order in the queue.
+  /// Cancels a recruit order.
   #[must_use]
   pub(crate) fn cancel(&mut self, id: StableRecruitOrderId) -> Option<StableRecruitOrder> {
     let position = self
