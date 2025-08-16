@@ -2720,6 +2720,7 @@ dependencies = [
  "nil-util",
  "num-traits",
  "rand 0.9.2",
+ "regex",
  "remain",
  "serde",
  "strum",
