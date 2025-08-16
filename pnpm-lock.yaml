@@ -47,7 +47,7 @@ importers:
 
   crates/nil-continent/pkg: {}
 
-  crates/tauri-plugin-mobile:
+  crates/plugin-mobile:
     devDependencies:
       '@tauri-apps/api':
         specifier: ^2.7.0
@@ -126,7 +126,7 @@ importers:
         version: 3.9.2
       tauri-plugin-mobile:
         specifier: workspace:*
-        version: link:../crates/tauri-plugin-mobile
+        version: link:../crates/plugin-mobile
       tw-animate-css:
         specifier: ^1.3.6
         version: 1.3.6
