@@ -6,8 +6,8 @@ import { useI18n } from 'vue-i18n';
 import { handleError } from '@/lib/error';
 import { onKeyDown, useMutex } from '@tb-dev/vue';
 import { Button, Input } from '@tb-dev/vue-components';
+import { ChatCommand } from '@/core/model/chat/chat-command';
 import { computed, nextTick, ref, useTemplateRef } from 'vue';
-import { ChatMessageDraft } from '@/core/model/chat/chat-message-draft';
 
 const props = defineProps<{
   onSend?: () => MaybePromise<void>;
@@ -18,22 +18,24 @@ const { t } = useI18n();
 const chatInput = useTemplateRef('chatInputEl');
 const chatInputInner = computed(() => chatInput.value?.$el);
 
-const draft = ref(new ChatMessageDraft());
+const draft = ref<Option<string>>();
 const { locked, ...mutex } = useMutex();
 
 onKeyDown('Enter', send, { target: chatInputInner });
 
 async function send() {
-  if (draft.value.text) {
+  if (draft.value) {
     try {
       await mutex.acquire();
-      await draft.value.send();
+      const command = new ChatCommand(draft.value);
+      await command.execute();
       await props.onSend?.();
     }
     catch (err) {
       handleError(err);
     }
     finally {
+      draft.value = null;
       mutex.release();
       await nextTick();
       chatInputInner.value?.focus();
@@ -47,13 +49,13 @@ async function send() {
     <!-- Do not add a trim modifier here. -->
     <Input
       ref="chatInputEl"
-      v-model="draft.text"
+      v-model="draft"
       type="text"
       :disabled="locked"
       :maxlength="5000"
       spellcheck="false"
     />
-    <Button :disabled="!draft.text || locked" @click="send">
+    <Button :disabled="!draft || locked" @click="send">
       {{ t('send') }}
     </Button>
   </div>
