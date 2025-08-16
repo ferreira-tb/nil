@@ -2,6 +2,8 @@
 <!-- SPDX-License-Identifier: AGPL-3.0-only -->
 
 <script setup lang="ts">
+import { watchEffect } from 'vue';
+import { useRoute } from 'vue-router';
 import Chat from '@/components/chat/Chat.vue';
 import { ListenerSet } from '@/lib/listener-set';
 import { useToggle, whenever } from '@vueuse/core';
@@ -13,10 +15,9 @@ import { Popover, PopoverContent, PopoverTrigger } from '@tb-dev/vue-components'
 const { player } = NIL.player.refs();
 
 const [isChatOpen, toggleChat] = useToggle(false);
-const closeChat = () => void toggleChat(false);
-
 const [hasUnread, toggleUnread] = useToggle(false);
 
+const route = useRoute();
 const { sm } = useBreakpoints();
 
 const listener = new ListenerSet();
@@ -24,8 +25,18 @@ listener.event.onChatUpdated(onChatUpdated);
 
 whenever(isChatOpen, () => void toggleUnread(false));
 
+watchEffect(() => {
+  if (route.name === ('chat' satisfies GameScene)) {
+    hasUnread.value = false;
+  }
+});
+
 function onChatUpdated({ message }: ChatUpdatedPayload) {
-  if (!isChatOpen.value && message.author.id !== player.value?.id) {
+  if (
+    !isChatOpen.value &&
+    route.name !== ('chat' satisfies GameScene) &&
+    message.author.id !== player.value?.id
+  ) {
     hasUnread.value = true;
   }
 }
@@ -44,7 +55,7 @@ function onChatUpdated({ message }: ChatUpdatedPayload) {
       :side-offset="10"
       disable-outside-pointer-events
       class="w-96 2xl:w-120 max-w-[90vw] h-[500px] max-h-[75vh]"
-      @pointer-down-outside="closeChat"
+      @pointer-down-outside="() => void toggleChat(false)"
     >
       <Chat class="w-full h-[470px] max-h-[calc(75vh-30px)]">
         <template #input="{ scroll }">
