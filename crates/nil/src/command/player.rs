@@ -6,7 +6,7 @@ use crate::manager::ManagerExt;
 use nil_core::continent::Coord;
 use nil_core::infrastructure::storage::OverallStorageCapacity;
 use nil_core::military::Military;
-use nil_core::player::{Player, PlayerId, PlayerOptions, PlayerStatus};
+use nil_core::player::{Player, PlayerId, PlayerOptions, PlayerStatus, PublicPlayer};
 use nil_core::resources::Maintenance;
 use tauri::AppHandle;
 
@@ -62,6 +62,22 @@ pub async fn get_player_storage_capacity(app: AppHandle) -> Result<OverallStorag
 pub async fn get_players(app: AppHandle) -> Result<Vec<Player>> {
   app
     .client(async |cl| cl.get_players().await)
+    .await?
+    .map_err(Into::into)
+}
+
+#[tauri::command]
+pub async fn get_public_player(app: AppHandle, id: PlayerId) -> Result<PublicPlayer> {
+  app
+    .client(async |cl| cl.get_public_player(id).await)
+    .await?
+    .map_err(Into::into)
+}
+
+#[tauri::command]
+pub async fn get_public_players(app: AppHandle) -> Result<Vec<PublicPlayer>> {
+  app
+    .client(async |cl| cl.get_public_players().await)
     .await?
     .map_err(Into::into)
 }

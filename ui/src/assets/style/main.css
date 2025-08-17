@@ -47,7 +47,7 @@ label:has(input[type="radio"]) {
   @apply border-0!;
 }
 
-[data-slot="dialog-content"] {
+[data-slot="dialog-content"]:not(:has([data-slot="command"])) {
   @apply px-2;
 
   width: 400px;

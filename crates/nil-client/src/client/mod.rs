@@ -5,6 +5,7 @@ mod chat;
 mod cheat;
 mod continent;
 mod infrastructure;
+mod npc;
 mod player;
 mod round;
 mod script;

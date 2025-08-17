@@ -134,3 +134,19 @@ pub enum PlayerStatus {
 pub struct PlayerOptions {
   pub id: PlayerId,
 }
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct PublicPlayer {
+  id: PlayerId,
+  status: PlayerStatus,
+}
+
+impl From<&Player> for PublicPlayer {
+  fn from(player: &Player) -> Self {
+    Self {
+      id: player.id.clone(),
+      status: player.status,
+    }
+  }
+}

@@ -29,7 +29,7 @@ impl World {
       self
         .player_mut(&id)?
         .resources_mut()
-        .add_if_within_capacity(&resources, &capacity);
+        .add_within_capacity(&resources, &capacity);
     }
 
     Ok(())
@@ -53,7 +53,7 @@ impl World {
         .bot_manager
         .bot_mut(id)?
         .resources_mut()
-        .add_if_within_capacity(&resources, &capacity);
+        .add_within_capacity(&resources, &capacity);
     }
 
     Ok(())
@@ -77,7 +77,7 @@ impl World {
         .precursor_manager
         .precursor_mut(id)
         .resources_mut()
-        .add_if_within_capacity(&resources, &capacity);
+        .add_within_capacity(&resources, &capacity);
     }
 
     Ok(())

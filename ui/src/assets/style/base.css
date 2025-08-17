@@ -60,6 +60,26 @@
   padding-left: calc(var(--safe-left) + calc(var(--spacing, 0.25rem) * --value(integer)));
 }
 
+@utility px-safe {
+  padding-right: var(--safe-right);
+  padding-left: var(--safe-left);
+}
+
+@utility px-safe-* {
+  padding-right: calc(var(--safe-right) + calc(var(--spacing, 0.25rem) * --value(integer)));
+  padding-left: calc(var(--safe-left) + calc(var(--spacing, 0.25rem) * --value(integer)));
+}
+
+@utility py-safe {
+  padding-top: var(--safe-top);
+  padding-bottom: var(--safe-bottom);
+}
+
+@utility py-safe-* {
+  padding-top: calc(var(--safe-top) + calc(var(--spacing, 0.25rem) * --value(integer)));
+  padding-bottom: calc(var(--safe-bottom) + calc(var(--spacing, 0.25rem) * --value(integer)));
+}
+
 @utility pt-safe {
   padding-top: var(--safe-top);
 }

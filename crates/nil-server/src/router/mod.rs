@@ -5,6 +5,7 @@ mod chat;
 mod cheat;
 mod continent;
 mod infrastructure;
+mod npc;
 mod player;
 mod round;
 mod script;
@@ -73,15 +74,19 @@ pub(crate) fn create() -> Router<App> {
     .route("/infrastructure/stable/recruit/catalog", post(stable::get_recruit_catalog))
     .route("/infrastructure/toggle", post(infrastructure::toggle))
     .route("/leave", get(leave))
+    .route("/npc/bot/{id}/public", get(npc::bot::get_public))
+    .route("/npc/precursor/{id}/public", get(npc::precursor::get_public))
     .route("/player", get(player::get_all))
     .route("/player", post(player::get))
     .route("/player/capacity", get(player::get_storage_capacity))
     .route("/player/maintenance", get(player::get_maintenance))
     .route("/player/military", get(player::get_military))
+    .route("/player/public", get(player::get_all_public))
     .route("/player/spawn", post(player::spawn))
     .route("/player/status", post(player::set_status))
     .route("/player/{id}/coord", get(player::get_coords))
     .route("/player/{id}/exists", get(player::exists))
+    .route("/player/{id}/public", get(player::get_public))
     .route("/player/{id}/status", get(player::get_status))
     .route("/round", get(round::get))
     .route("/round/start", get(round::start))

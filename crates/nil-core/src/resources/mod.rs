@@ -103,17 +103,13 @@ impl Resources {
     Self { wood, ..self.clone() }
   }
 
-  pub fn add_if_within_capacity(
-    &mut self,
-    diff: &ResourcesDiff,
-    capacity: &OverallStorageCapacity,
-  ) {
+  pub fn add_within_capacity(&mut self, diff: &ResourcesDiff, capacity: &OverallStorageCapacity) {
     macro_rules! add {
-      ($($res:ident => $storage:ident),+ $(,)?) => {
+      ($($resource:ident => $storage:ident),+ $(,)?) => {
         $(
-          self
-            .$res
-            .add_if_within_capacity(diff.$res, capacity.$storage);
+          let resource = diff.$resource;
+          let storage = capacity.$storage;
+          self.$resource.add_within_capacity(resource, storage);
         )+
       };
     }
@@ -291,7 +287,7 @@ macro_rules! decl_resource {
           self.0.checked_sub(rhs.0).map(Self::new)
         }
 
-        pub fn add_if_within_capacity(&mut self, diff: $diff, capacity: StorageCapacity) {
+        pub fn add_within_capacity(&mut self, diff: $diff, capacity: StorageCapacity) {
           if diff < 0i32 {
             *self += diff;
           } else if self.0 < *capacity {
