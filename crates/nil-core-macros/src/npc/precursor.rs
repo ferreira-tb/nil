@@ -12,8 +12,14 @@ pub fn impl_precursor(ast: &DeriveInput) -> TokenStream {
       use super::#name;
       use crate::continent::Coord;
       use crate::ethic::Ethics;
-      use crate::npc::precursor::{Precursor, PrecursorId};
+      use crate::npc::precursor::{Precursor, PrecursorBox, PrecursorId};
       use crate::resources::Resources;
+
+      impl #name {
+        pub fn boxed(&self) -> PrecursorBox {
+          PrecursorBox::from(self.clone())
+        }
+      }
 
       impl Precursor for #name {
         fn id(&self) -> PrecursorId {

@@ -118,3 +118,16 @@ impl From<BotName> for String {
     String::from(value.0.as_ref())
   }
 }
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct PublicBot {
+  id: BotId,
+  name: BotName,
+}
+
+impl From<&Bot> for PublicBot {
+  fn from(bot: &Bot) -> Self {
+    Self { id: bot.id, name: bot.name.clone() }
+  }
+}

@@ -14,6 +14,16 @@ interface Village extends PublicVillage {
 
 type VillageOwner = VillageOwnerBot | VillageOwnerPlayer | VillageOwnerPrecursor;
 
+type VillageOwnerId =
+  | VillageOwnerBot['id']
+  | VillageOwnerPlayer['id']
+  | VillageOwnerPrecursor['id'];
+
+type VillageOwnerKind =
+  | VillageOwnerBot['kind']
+  | VillageOwnerPlayer['kind']
+  | VillageOwnerPrecursor['kind'];
+
 interface VillageOwnerBot {
   readonly kind: 'bot';
   readonly id: BotId;

@@ -176,6 +176,16 @@ impl World {
   pub fn scripting_mut(&mut self) -> &mut Scripting {
     &mut self.scripting
   }
+
+  #[inline]
+  pub fn bot_manager(&self) -> &BotManager {
+    &self.bot_manager
+  }
+
+  #[inline]
+  pub fn precursor_manager(&self) -> &PrecursorManager {
+    &self.precursor_manager
+  }
 }
 
 impl TryFrom<&WorldOptions> for World {

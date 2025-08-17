@@ -16,6 +16,10 @@ export class PublicVillageImpl implements PublicVillage {
   }
 
   public static create(village: PublicVillage) {
+    if (village instanceof PublicVillageImpl) {
+      return village;
+    }
+
     return new PublicVillageImpl(village);
   }
 

@@ -32,6 +32,14 @@ export function getPlayers() {
   return invoke<readonly Player[]>('get_players');
 }
 
+export function getPublicPlayer(id: PlayerId) {
+  return invoke<PublicPlayer>('get_public_player', { id });
+}
+
+export function getPublicPlayers() {
+  return invoke<readonly PublicPlayer[]>('get_public_players');
+}
+
 export function playerExists(id: PlayerId) {
   return invoke<boolean>('player_exists', { id });
 }

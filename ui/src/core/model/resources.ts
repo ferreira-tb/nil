@@ -96,6 +96,10 @@ export class ResourcesImpl implements Resources {
   }
 
   public static create(resources?: PartialNullish<Resources>) {
+    if (resources instanceof ResourcesImpl) {
+      return resources;
+    }
+
     return new ResourcesImpl({
       food: resources?.food ?? 0,
       iron: resources?.iron ?? 0,

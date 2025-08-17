@@ -75,14 +75,15 @@ export class CoordImpl implements Coord {
   }
 
   public static create(coord: Coord) {
+    if (coord instanceof CoordImpl) {
+      return coord;
+    }
+
     return new CoordImpl(coord);
   }
 
   public static fromKey(key: ContinentKey) {
-    if (key instanceof CoordImpl) {
-      return key;
-    }
-    else if (typeof key === 'number') {
+    if (typeof key === 'number') {
       return CoordImpl.fromIndex(key);
     }
 

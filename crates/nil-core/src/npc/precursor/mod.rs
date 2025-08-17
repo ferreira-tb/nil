@@ -8,13 +8,14 @@ use crate::continent::{ContinentSize, Coord, Distance};
 use crate::ethic::Ethics;
 use crate::military::army::ArmyPersonnel;
 use crate::resources::Resources;
+use derive_more::Deref;
 use serde::{Deserialize, Serialize};
 use strum::Display;
 
 pub use crate::npc::precursor::a::A;
 pub use crate::npc::precursor::b::B;
 
-pub trait Precursor {
+pub trait Precursor: Send + Sync {
   fn id(&self) -> PrecursorId;
   fn ethics(&self) -> &Ethics;
   fn origin(&self) -> Coord;
@@ -34,7 +35,7 @@ impl PrecursorManager {
     Self { a: A::new(size), b: B::new(size) }
   }
 
-  pub(crate) fn precursor(&self, id: PrecursorId) -> &dyn Precursor {
+  pub fn precursor(&self, id: PrecursorId) -> &dyn Precursor {
     match id {
       PrecursorId::A => &self.a,
       PrecursorId::B => &self.b,
@@ -66,6 +67,30 @@ impl PrecursorManager {
   }
 }
 
+#[derive(Deref)]
+pub struct PrecursorBox(Box<dyn Precursor>);
+
+impl PrecursorBox {
+  #[inline]
+  pub fn new(precursor: Box<dyn Precursor>) -> Self {
+    Self(precursor)
+  }
+
+  #[inline]
+  pub fn as_dyn(&self) -> &dyn Precursor {
+    &*self.0
+  }
+}
+
+impl<T> From<T> for PrecursorBox
+where
+  T: Precursor + 'static,
+{
+  fn from(value: T) -> Self {
+    Self::new(Box::new(value))
+  }
+}
+
 #[derive(Clone, Copy, Debug, Display, PartialEq, Eq, Hash, Deserialize, Serialize)]
 pub enum PrecursorId {
   #[serde(rename = "A")]
@@ -74,6 +99,37 @@ pub enum PrecursorId {
   #[serde(rename = "B")]
   #[strum(serialize = "B")]
   B,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct PublicPrecursor {
+  id: PrecursorId,
+  origin: Coord,
+}
+
+impl PublicPrecursor {
+  pub fn new(precursor: &dyn Precursor) -> Self {
+    Self {
+      id: precursor.id(),
+      origin: precursor.origin(),
+    }
+  }
+}
+
+impl<T: Precursor> From<&T> for PublicPrecursor {
+  fn from(precursor: &T) -> Self {
+    Self {
+      id: precursor.id(),
+      origin: precursor.origin(),
+    }
+  }
+}
+
+impl From<&dyn Precursor> for PublicPrecursor {
+  fn from(precursor: &dyn Precursor) -> Self {
+    Self::new(precursor)
+  }
 }
 
 #[inline]

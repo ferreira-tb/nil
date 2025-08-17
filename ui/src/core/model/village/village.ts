@@ -67,6 +67,10 @@ export class VillageImpl extends PublicVillageImpl implements Village {
   }
 
   public static override create(village: Village) {
+    if (village instanceof VillageImpl) {
+      return village;
+    }
+
     return new VillageImpl(village);
   }
 
