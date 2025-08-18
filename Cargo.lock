@@ -1830,19 +1830,21 @@ checksum = "df3b46402a9d5adb4c86a0cf463f42e19994e3ee891101b1841f30a545cb49a9"
 
 [[package]]
 name = "hyper"
-version = "1.6.0"
+version = "1.7.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "cc2b571658e38e0c01b1fdca3bbbe93c00d3d71693ff2770043f8c29bc7d6f80"
+checksum = "eb3aa54a13a0dfe7fbe3a59e0c76093041720fdc77b110cc0fc260fafb4dc51e"
 dependencies = [
+ "atomic-waker",
  "bytes",
  "futures-channel",
- "futures-util",
+ "futures-core",
  "http",
  "http-body",
  "httparse",
  "httpdate",
  "itoa",
  "pin-project-lite",
+ "pin-utils",
  "smallvec",
  "tokio",
  "want",
@@ -2639,7 +2641,7 @@ checksum = "650eef8c711430f1a879fdd01d4745a7deea475becfb90269c06775983bbf086"
 
 [[package]]
 name = "nil"
-version = "0.1.24"
+version = "0.1.25"
 dependencies = [
  "anyhow",
  "futures",
@@ -2671,7 +2673,7 @@ dependencies = [
 
 [[package]]
 name = "nil-client"
-version = "0.1.24"
+version = "0.1.25"
 dependencies = [
  "anyhow",
  "bon",
@@ -2695,7 +2697,7 @@ dependencies = [
 
 [[package]]
 name = "nil-continent"
-version = "0.1.24"
+version = "0.1.25"
 dependencies = [
  "js-sys",
  "wasm-bindgen",
@@ -2704,7 +2706,7 @@ dependencies = [
 
 [[package]]
 name = "nil-core"
-version = "0.1.24"
+version = "0.1.25"
 dependencies = [
  "anyhow",
  "bon",
@@ -2733,7 +2735,7 @@ dependencies = [
 
 [[package]]
 name = "nil-core-macros"
-version = "0.1.24"
+version = "0.1.25"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -2742,7 +2744,7 @@ dependencies = [
 
 [[package]]
 name = "nil-namegen"
-version = "0.1.24"
+version = "0.1.25"
 dependencies = [
  "itertools",
  "rand 0.9.2",
@@ -2751,7 +2753,7 @@ dependencies = [
 
 [[package]]
 name = "nil-num"
-version = "0.1.24"
+version = "0.1.25"
 dependencies = [
  "bon",
  "derive_more 2.0.1",
@@ -2762,7 +2764,7 @@ dependencies = [
 
 [[package]]
 name = "nil-num-macros"
-version = "0.1.24"
+version = "0.1.25"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -2771,7 +2773,7 @@ dependencies = [
 
 [[package]]
 name = "nil-server"
-version = "0.1.24"
+version = "0.1.25"
 dependencies = [
  "anyhow",
  "axum",
@@ -2790,7 +2792,7 @@ dependencies = [
 
 [[package]]
 name = "nil-util"
-version = "0.1.24"
+version = "0.1.25"
 dependencies = [
  "anyhow",
  "bon",
@@ -4588,11 +4590,12 @@ dependencies = [
 
 [[package]]
 name = "tao"
-version = "0.34.1"
+version = "0.34.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b65dc99ae111a3255027d1eca24a3833bb3267d4556a6defddb455f3ca4f5b6c"
+checksum = "4daa814018fecdfb977b59a094df4bd43b42e8e21f88fddfc05807e6f46efaaf"
 dependencies = [
  "bitflags 2.9.2",
+ "block2 0.6.1",
  "core-foundation",
  "core-graphics",
  "crossbeam-channel",
@@ -4831,7 +4834,7 @@ dependencies = [
 
 [[package]]
 name = "tauri-plugin-mobile"
-version = "0.1.24"
+version = "0.1.25"
 dependencies = [
  "serde",
  "tauri",
