@@ -3,15 +3,15 @@
 
 use crate::client::Client;
 use crate::error::Result;
+use nil_core::city::Stability;
 use nil_core::continent::Coord;
-use nil_core::village::Stability;
 
 impl Client {
-  /// POST `/cheat/village/stability`
+  /// POST `/cheat/city/stability`
   pub async fn cheat_set_stability(&self, coord: Coord, stability: Stability) -> Result<()> {
     self
       .http
-      .post("cheat/village/stability", (coord, stability))
+      .post("cheat/city/stability", (coord, stability))
       .await
   }
 }

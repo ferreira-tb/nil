@@ -4,7 +4,7 @@
 use derive_more::{Deref, Into};
 use serde::{Deserialize, Serialize};
 
-/// Political stability of the village.
+/// Political stability of the city.
 #[derive(Clone, Copy, Debug, Deref, Into, Deserialize, Serialize)]
 pub struct Stability(f64);
 

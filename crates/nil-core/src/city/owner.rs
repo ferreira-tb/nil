@@ -10,7 +10,7 @@ use serde::{Deserialize, Serialize};
 #[allow(variant_size_differences)]
 #[derive(Owner, Clone, Debug, Deserialize, Serialize)]
 #[serde(tag = "kind", rename_all = "kebab-case")]
-pub enum VillageOwner {
+pub enum CityOwner {
   Bot { id: BotId },
   Player { id: PlayerId },
   Precursor { id: PrecursorId },

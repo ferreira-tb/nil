@@ -10,18 +10,18 @@ use axum::extract::{Extension, Json, State};
 use axum::response::Response;
 use futures::{FutureExt, TryFutureExt};
 use itertools::Itertools;
+use nil_core::city::{City, PublicCity};
 use nil_core::continent::Coord;
-use nil_core::village::{PublicVillage, Village};
 
 pub async fn get(
   State(app): State<App>,
   Extension(player): Extension<CurrentPlayer>,
   Json(coord): Json<Coord>,
 ) -> Response {
-  let result: CoreResult<Village> = try {
+  let result: CoreResult<City> = try {
     let world = app.world.read().await;
     bail_not_owned_by!(world, &player.0, coord);
-    world.village(coord)?.clone()
+    world.city(coord)?.clone()
   };
 
   result
@@ -32,8 +32,8 @@ pub async fn get(
 pub async fn get_all_public(State(app): State<App>) -> Response {
   app
     .continent(|k| {
-      k.villages()
-        .map(PublicVillage::from)
+      k.cities()
+        .map(PublicCity::from)
         .collect_vec()
     })
     .map(|villages| res!(OK, Json(villages)))
@@ -42,7 +42,7 @@ pub async fn get_all_public(State(app): State<App>) -> Response {
 
 pub async fn get_public(State(app): State<App>, Json(coord): Json<Coord>) -> Response {
   app
-    .continent(|k| k.village(coord).map(PublicVillage::from))
+    .continent(|k| k.city(coord).map(PublicCity::from))
     .map_ok(|village| res!(OK, Json(village)))
     .unwrap_or_else(from_core_err)
     .await
@@ -51,8 +51,8 @@ pub async fn get_public(State(app): State<App>, Json(coord): Json<Coord>) -> Res
 pub async fn get_public_by(State(app): State<App>, Json(coords): Json<Vec<Coord>>) -> Response {
   app
     .continent(|k| {
-      k.villages_by(|village| coords.contains(&village.coord()))
-        .map(PublicVillage::from)
+      k.cities_by(|village| coords.contains(&village.coord()))
+        .map(PublicCity::from)
         .collect_vec()
     })
     .map(|villages| res!(OK, Json(villages)))
@@ -67,7 +67,7 @@ pub async fn rename(
   let result: CoreResult<()> = try {
     let mut world = app.world.write().await;
     bail_not_owned_by!(world, &player.0, coord);
-    world.rename_village(coord, &name)?;
+    world.rename_city(coord, &name)?;
   };
 
   result

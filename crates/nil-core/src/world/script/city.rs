@@ -7,13 +7,13 @@ use mlua::{LuaSerdeExt, UserDataMethods, Value};
 
 pub(super) fn add_methods<'a, M: UserDataMethods<WorldUserData<'a>>>(methods: &mut M) {
   methods.add_method_mut(
-    "rename_village",
+    "rename_city",
     |lua, this, (coord, name): (Value, String)| {
       let coord = lua.from_value(coord)?;
       bail_not_owned_by!(this, coord);
       this
         .world
-        .rename_village(coord, &name)
+        .rename_city(coord, &name)
         .map_err(Into::into)
     },
   );
