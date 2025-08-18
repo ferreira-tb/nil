@@ -24,6 +24,29 @@ pub async fn get_public_village(app: AppHandle, coord: Coord) -> Result<PublicVi
 }
 
 #[tauri::command]
+pub async fn get_public_villages(app: AppHandle) -> Result<Vec<PublicVillage>> {
+  app
+    .client(async |cl| cl.get_public_villages().await)
+    .await?
+    .map_err(Into::into)
+}
+
+#[tauri::command]
+pub async fn get_public_villages_by(
+  app: AppHandle,
+  coords: Vec<Coord>,
+) -> Result<Vec<PublicVillage>> {
+  if coords.is_empty() {
+    return Ok(Vec::new());
+  }
+
+  app
+    .client(async |cl| cl.get_public_villages_by(coords).await)
+    .await?
+    .map_err(Into::into)
+}
+
+#[tauri::command]
 pub async fn rename_village(app: AppHandle, coord: Coord, name: String) -> Result<()> {
   app
     .client(async |cl| cl.rename_village(coord, &name).await)

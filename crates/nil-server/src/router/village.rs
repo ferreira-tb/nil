@@ -8,7 +8,8 @@ use crate::state::App;
 use crate::{bail_not_owned_by, res};
 use axum::extract::{Extension, Json, State};
 use axum::response::Response;
-use futures::TryFutureExt;
+use futures::{FutureExt, TryFutureExt};
+use itertools::Itertools;
 use nil_core::continent::Coord;
 use nil_core::village::{PublicVillage, Village};
 
@@ -28,11 +29,33 @@ pub async fn get(
     .unwrap_or_else(from_core_err)
 }
 
+pub async fn get_all_public(State(app): State<App>) -> Response {
+  app
+    .continent(|k| {
+      k.villages()
+        .map(PublicVillage::from)
+        .collect_vec()
+    })
+    .map(|villages| res!(OK, Json(villages)))
+    .await
+}
+
 pub async fn get_public(State(app): State<App>, Json(coord): Json<Coord>) -> Response {
   app
     .continent(|k| k.village(coord).map(PublicVillage::from))
     .map_ok(|village| res!(OK, Json(village)))
     .unwrap_or_else(from_core_err)
+    .await
+}
+
+pub async fn get_public_by(State(app): State<App>, Json(coords): Json<Vec<Coord>>) -> Response {
+  app
+    .continent(|k| {
+      k.villages_by(|village| coords.contains(&village.coord()))
+        .map(PublicVillage::from)
+        .collect_vec()
+    })
+    .map(|villages| res!(OK, Json(villages)))
     .await
 }
 

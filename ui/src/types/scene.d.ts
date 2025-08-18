@@ -27,6 +27,6 @@ type AcademyScene = 'academy' | 'academy-settings';
 type PrefectureScene = 'prefecture' | 'prefecture-settings';
 type StableScene = 'stable' | 'stable-settings';
 
-type ProfileScene = 'profile-village';
+type ProfileScene = 'profile-bot' | 'profile-player' | 'profile-precursor' | 'profile-village';
 
 type ScriptScene = 'script' | 'nsr';

@@ -62,7 +62,7 @@ export class CoordImpl implements Coord {
     return this.#index;
   }
 
-  public toIndexStr() {
+  public toIndexString() {
     return this.toIndex().toString(10);
   }
 

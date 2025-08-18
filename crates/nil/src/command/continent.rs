@@ -16,6 +16,10 @@ pub async fn get_field(app: AppHandle, coord: Coord) -> Result<PublicField> {
 
 #[tauri::command]
 pub async fn get_fields(app: AppHandle, coords: Vec<Coord>) -> Result<Vec<(Coord, PublicField)>> {
+  if coords.is_empty() {
+    return Ok(Vec::new());
+  }
+
   app
     .client(async |cl| cl.get_fields(coords).await)
     .await?

@@ -5,8 +5,23 @@ import type { RouteRecordRaw } from 'vue-router';
 
 export const profileRoutes: RouteRecordRaw[] = [
   {
+    component: () => import('@/scenes/game/profile/bot/index.vue'),
+    path: 'profile/bot/:id',
+    name: 'profile-bot' satisfies ProfileScene,
+  },
+  {
+    component: () => import('@/scenes/game/profile/player/index.vue'),
+    path: 'profile/player/:id',
+    name: 'profile-player' satisfies ProfileScene,
+  },
+  {
+    component: () => import('@/scenes/game/profile/precursor/index.vue'),
+    path: 'profile/precursor/:id',
+    name: 'profile-precursor' satisfies ProfileScene,
+  },
+  {
     component: () => import('@/scenes/game/profile/village/index.vue'),
-    path: 'profile/village/:ckey',
+    path: 'profile/village/:ckey', // ContinentKey
     name: 'profile-village' satisfies ProfileScene,
   },
 ];

@@ -114,6 +114,8 @@ pub fn run() {
       command::server::stop_server,
       command::village::get_village,
       command::village::get_public_village,
+      command::village::get_public_villages,
+      command::village::get_public_villages_by,
       command::village::rename_village,
       command::world::get_world_config,
       command::world::get_world_stats,

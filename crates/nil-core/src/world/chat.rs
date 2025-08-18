@@ -17,7 +17,7 @@ impl World {
     self.emit_chat_updated(message);
   }
 
-  pub(crate) fn push_stdout_message(&mut self, player: PlayerId, stdout: Stdout) {
+  pub(crate) fn push_stdout_message(&mut self, player: PlayerId, stdout: &Stdout) {
     let message = ChatMessage::builder(stdout.to_string())
       .author(ChatMessageAuthor::System)
       .kind(ChatMessageKind::Stdout)

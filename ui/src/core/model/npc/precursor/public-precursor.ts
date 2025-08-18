@@ -1,6 +1,7 @@
 // Copyright (C) Call of Nil contributors
 // SPDX-License-Identifier: AGPL-3.0-only
 
+import { go } from '@/router';
 import * as commands from '@/commands';
 import { CoordImpl } from '../../continent/coord';
 
@@ -21,6 +22,10 @@ export class PublicPrecursorImpl implements PublicPrecursor {
 
   public getVillage(key: ContinentKey) {
     return this.coords.find((it) => it.is(key));
+  }
+
+  public async goToProfile() {
+    await go('profile-precursor', { id: this.id });
   }
 
   public static create(args: PublicPrecursorImplConstructorArgs) {

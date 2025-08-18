@@ -12,11 +12,24 @@ impl Client {
     self.http.post_json("village", coord).await
   }
 
+  /// GET `/village/public`
+  pub async fn get_public_villages(&self) -> Result<Vec<PublicVillage>> {
+    self.http.get_json("village/public").await
+  }
+
   /// POST `/village/public`
   pub async fn get_public_village(&self, coord: Coord) -> Result<PublicVillage> {
     self
       .http
       .post_json("village/public", coord)
+      .await
+  }
+
+  /// POST `/village/public-by`
+  pub async fn get_public_villages_by(&self, coords: Vec<Coord>) -> Result<Vec<PublicVillage>> {
+    self
+      .http
+      .post_json("village/public-by", coords)
       .await
   }
 
