@@ -1,6 +1,7 @@
 // Copyright (C) Call of Nil contributors
 // SPDX-License-Identifier: AGPL-3.0-only
 
+import { go } from '@/router';
 import { getPublicVillage } from '@/commands';
 import { CoordImpl } from '@/core/model/continent/coord';
 
@@ -13,6 +14,15 @@ export class PublicVillageImpl implements PublicVillage {
     this.coord = CoordImpl.create(village.coord);
     this.name = village.name;
     this.owner = village.owner;
+  }
+
+  public async goToProfile() {
+    const ckey = this.coord.toIndexString();
+    await go('profile-village', { ckey });
+  }
+
+  get index() {
+    return this.coord.toIndex();
   }
 
   public static create(village: PublicVillage) {

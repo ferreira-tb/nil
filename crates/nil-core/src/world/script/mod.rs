@@ -35,7 +35,7 @@ impl World {
       .iter()
       .any(|line| !line.trim().is_empty())
     {
-      self.push_stdout_message(player, stdout.clone());
+      self.push_stdout_message(player, &stdout);
     }
 
     Ok(stdout)

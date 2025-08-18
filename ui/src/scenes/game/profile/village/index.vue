@@ -6,6 +6,7 @@ import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import Loading from '@/components/Loading.vue';
 import { useRouteParams } from '@vueuse/router';
+import type { RouteLocationAsRelative } from 'vue-router';
 import { usePublicVillage } from '@/composables/village/usePublicVillage';
 import { usePublicVillageOwner } from '@/composables/village/usePublicVillageOwner';
 import {
@@ -27,11 +28,23 @@ const { village, loading } = usePublicVillage(continentKey);
 
 const owner = computed(() => village.value?.owner);
 const { bot, player, precursor } = usePublicVillageOwner(owner);
+
+const toOwnerScene = computed<Option<RouteLocationAsRelative>>(() => {
+  if (owner.value) {
+    const kind = owner.value.kind;
+    return {
+      name: `profile-${kind}` satisfies ProfileScene,
+      params: { id: String(owner.value.id) },
+    };
+  }
+
+  return null;
+});
 </script>
 
 <template>
   <div class="game-layout">
-    <Card class="size-full">
+    <Card class="size-full overflow-x-hidden overflow-y-auto">
       <CardHeader v-if="village && !loading">
         <CardTitle>
           <span>{{ village.name }}</span>
@@ -41,7 +54,7 @@ const { bot, player, precursor } = usePublicVillageOwner(owner);
       <CardContent class="px-2 py-0 relative size-full">
         <Loading v-if="!village || loading" class="absolute inset-0" />
         <div v-else>
-          <Table id="village-profile" class="sm:max-w-max">
+          <Table class="sm:max-w-max">
             <TableBody>
               <TableRow>
                 <TableHead>{{ t('coordinate', 2) }}</TableHead>
@@ -49,11 +62,18 @@ const { bot, player, precursor } = usePublicVillageOwner(owner);
               </TableRow>
 
               <TableRow>
+                <TableHead>{{ t('point', 2) }}</TableHead>
+                <TableCell>???</TableCell>
+              </TableRow>
+
+              <TableRow>
                 <TableHead>{{ t('owner') }}</TableHead>
                 <TableCell>
-                  <span v-if="bot">{{ bot.name }}</span>
-                  <span v-else-if="player">{{ player.id }}</span>
-                  <span v-else-if="precursor">{{ precursor.id }}</span>
+                  <RouterLink v-if="toOwnerScene" :to="toOwnerScene">
+                    <span v-if="bot">{{ bot.name }}</span>
+                    <span v-else-if="player">{{ player.id }}</span>
+                    <span v-else-if="precursor">{{ precursor.id }}</span>
+                  </RouterLink>
                 </TableCell>
               </TableRow>
 
@@ -70,11 +90,7 @@ const { bot, player, precursor } = usePublicVillageOwner(owner);
 </template>
 
 <style scoped>
-:deep(#village-profile th) {
+:deep(table :where(th, td)) {
   padding-right: 2rem;
-}
-
-:deep(#village-profile td) {
-  padding-right: 4rem;
 }
 </style>

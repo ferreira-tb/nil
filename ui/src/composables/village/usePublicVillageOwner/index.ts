@@ -35,8 +35,8 @@ export function usePublicVillageOwner(owner: MaybeNilRef<VillageOwner>) {
     }
   }
 
-  function reset(skip?: Option<VillageOwnerKind>) {
-    switch (skip) {
+  function reset(ignore?: Option<VillageOwnerKind>) {
+    switch (ignore ?? null) {
       case 'bot': {
         player.value = null;
         precursor.value = null;
@@ -64,5 +64,7 @@ export function usePublicVillageOwner(owner: MaybeNilRef<VillageOwner>) {
     bot: bot as Readonly<typeof bot>,
     player: player as Readonly<typeof player>,
     precursor: precursor as Readonly<typeof precursor>,
+    load,
+    reset,
   };
 }

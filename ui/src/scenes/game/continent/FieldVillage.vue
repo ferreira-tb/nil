@@ -3,6 +3,7 @@
 
 <script setup lang="ts">
 import { computed } from 'vue';
+import type { RouteLocationAsRelative } from 'vue-router';
 import type { PublicFieldImpl } from '@/core/model/continent/public-field';
 import type { PublicVillageImpl } from '@/core/model/village/public-village';
 import { Badge, HoverCard, HoverCardContent, HoverCardTrigger } from '@tb-dev/vue-components';
@@ -12,8 +13,8 @@ const props = defineProps<{
   village: PublicVillageImpl;
 }>();
 
-const to = computed(() => {
-  const ckey = props.village.coord.toIndexStr();
+const to = computed<RouteLocationAsRelative>(() => {
+  const ckey = props.village.coord.toIndexString();
   return { name: 'profile-village' satisfies ProfileScene, params: { ckey } };
 });
 

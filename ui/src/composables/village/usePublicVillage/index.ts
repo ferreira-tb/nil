@@ -17,5 +17,6 @@ export function usePublicVillage(key?: MaybeNilRef<ContinentKey>) {
   return {
     village: state,
     loading: isLoading,
+    load: execute,
   };
 }
