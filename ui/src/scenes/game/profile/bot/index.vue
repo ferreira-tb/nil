@@ -56,7 +56,7 @@ const { cities } = usePublicCities(coords);
             </TableBody>
           </Table>
 
-          <CityTable :cities class="sm:max-w-max md:min-w-50" />
+          <CityTable :cities class="sm:max-w-max md:min-w-50 pb-8" />
         </div>
       </CardContent>
     </Card>

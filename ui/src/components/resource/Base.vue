@@ -2,11 +2,58 @@
 <!-- SPDX-License-Identifier: AGPL-3.0-only -->
 
 <script setup lang="ts">
+import { useBreakpoints } from '@/composables/util/useBreakpoints';
+
 const props = defineProps<{
   amount?: Option<number>;
   limit?: Option<number>;
   color: string;
 }>();
+
+const { md } = useBreakpoints();
+
+const defaultIntl = new Intl.NumberFormat(undefined, {
+  style: 'decimal',
+  maximumFractionDigits: 0,
+  roundingMode: 'trunc',
+  notation: 'standard',
+  useGrouping: 'auto',
+  localeMatcher: 'best fit',
+});
+
+const fractionIntl = new Intl.NumberFormat(undefined, {
+  style: 'decimal',
+  maximumFractionDigits: 1,
+  minimumFractionDigits: 0,
+  roundingMode: 'trunc',
+  trailingZeroDisplay: 'stripIfInteger',
+  notation: 'standard',
+  useGrouping: 'auto',
+  localeMatcher: 'best fit',
+});
+
+function format() {
+  const value = props.amount ?? 0;
+  if (!md.value) {
+    if (value >= 10_000 && value <= 99_999) {
+      return `${fractionIntl.format(value / 1_000)}k`;
+    }
+    else if (value >= 100_000 && value <= 999_999) {
+      return `${defaultIntl.format(value / 1_000)}k`;
+    }
+    else if (value >= 1_000_000 && value <= 9_999_999) {
+      return `${fractionIntl.format(value / 1_000_000)}M`;
+    }
+    else if (value >= 10_000_000 && value <= 999_999_999) {
+      return `${defaultIntl.format(value / 1_000_000)}M`;
+    }
+    else if (value >= 1_000_000_000) {
+      return `${fractionIntl.format(value / 1_000_000_000)}B`;
+    }
+  }
+
+  return defaultIntl.format(value);
+}
 
 function isOverflowing() {
   return (
@@ -18,7 +65,7 @@ function isOverflowing() {
 </script>
 
 <template>
-  <div class="flex items-center justify-start gap-1">
+  <div class="flex min-w-max items-center justify-start gap-1">
     <div
       class="size-3 min-h-3 min-w-3 overflow-hidden rounded-full"
       :style="{ backgroundColor: color }"
@@ -26,7 +73,7 @@ function isOverflowing() {
     </div>
 
     <div :class="isOverflowing() ? 'text-red-400' : null">
-      {{ amount ?? 0 }}
+      {{ format() }}
     </div>
   </div>
 </template>

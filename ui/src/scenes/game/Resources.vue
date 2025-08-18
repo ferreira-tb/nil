@@ -10,7 +10,7 @@ const capacity = usePlayerStorageCapacity();
 </script>
 
 <template>
-  <div class="w-max grid grid-cols-4 items-center gap-8">
+  <div class="w-max max-w-max grid grid-cols-4 items-center gap-2 md:gap-4 xl:gap-8 pr-4">
     <Wood :amount="resources?.wood" :limit="capacity?.warehouse" />
     <Stone :amount="resources?.stone" :limit="capacity?.warehouse" />
     <Iron :amount="resources?.iron" :limit="capacity?.warehouse" />

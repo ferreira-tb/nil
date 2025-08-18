@@ -9,7 +9,7 @@ import FooterChat from './FooterChat.vue';
 <template>
   <footer class="flex items-center justify-between gap-4 overflow-hidden">
     <Resources />
-    <div class="flex h-full w-[calc(100%-100px)] min-w-max items-center justify-end">
+    <div class="flex h-full min-w-max items-center justify-end">
       <FooterChat />
     </div>
   </footer>
