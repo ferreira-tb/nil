@@ -37,7 +37,12 @@ const { player } = NIL.player.refs();
 const settings = useAcademySettings();
 const { hideUnmet } = storeToRefs(settings);
 
-const { chunks, resources, maintenance, workforce } = useRecruitCatalogEntry(() => props.entry);
+const {
+  chunks,
+  resources,
+  maintenance,
+  workforce,
+} = useRecruitCatalogEntry(() => props.entry);
 
 const canRecruit = computed(() => {
   if (
@@ -52,6 +57,12 @@ const canRecruit = computed(() => {
 
   return false;
 });
+
+function increaseChunksIfMobile() {
+  if (globalThis.__MOBILE__) {
+    ++chunks.value;
+  }
+}
 </script>
 
 <template>
@@ -60,7 +71,7 @@ const canRecruit = computed(() => {
       <span>{{ t(unit) }}</span>
     </TableCell>
 
-    <TableCell>
+    <TableCell @dblclick="increaseChunksIfMobile">
       <div class="grid grid-cols-5 items-center justify-start gap-4">
         <Wood :amount="resources.wood" :limit="playerResources?.wood" />
         <Stone :amount="resources.stone" :limit="playerResources?.stone" />
@@ -76,7 +87,7 @@ const canRecruit = computed(() => {
           v-model="chunks"
           :disabled="loading"
           :min="0"
-          :max="9999"
+          :max="9_999"
           :step="1"
           class="w-full"
         >
@@ -104,7 +115,7 @@ const canRecruit = computed(() => {
     <TableCell class="min-w-24">
       <span>{{ t(unit) }}</span>
     </TableCell>
-    <TableCell colspan="4" class="w-full">
+    <TableCell colspan="2" class="w-full">
       <div class="text-muted-foreground flex w-full items-center justify-center text-sm">
         <span>{{ t('not-yet-available') }}</span>
       </div>

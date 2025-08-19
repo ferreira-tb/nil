@@ -42,7 +42,10 @@ function format(squad: Squad) {
 
     <TableBody>
       <template v-for="order of academy.recruitQueue" :key="order.id">
-        <TableRow v-if="order.state.kind === 'pending'">
+        <TableRow
+          v-if="order.state.kind === 'pending'"
+          @dblclick="() => onCancel(order.id)"
+        >
           <TableCell>
             <div class="flex items-center justify-start gap-2">
               <span>{{ format(order.squad) }}</span>

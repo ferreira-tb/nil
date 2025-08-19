@@ -21,7 +21,7 @@ import {
 
 const { t } = useI18n();
 
-const id = useRouteParams('id', null, { transform: Number.parseInt });
+const id = useRouteParams<Option<BotId>>('id', null);
 const { bot, coords, loading } = usePublicBot(id);
 const { cities } = usePublicCities(coords);
 </script>
@@ -31,22 +31,26 @@ const { cities } = usePublicCities(coords);
     <Card class="size-full overflow-x-hidden overflow-y-auto">
       <CardHeader v-if="bot && !loading">
         <CardTitle>
-          <span>{{ bot.name }}</span>
+          <span>{{ bot.id }}</span>
         </CardTitle>
       </CardHeader>
 
       <CardContent class="px-2 py-0 relative size-full">
         <div class="flex w-full min-w-max flex-col gap-4">
           <Table class="sm:max-w-max md:min-w-50">
-            <TableBody>
+            <TableBody v-if="bot">
               <TableRow>
                 <TableHead>{{ t('point', 2) }}</TableHead>
-                <TableCell>???</TableCell>
+                <TableCell>
+                  {{ bot.ranking?.score.toLocaleString() ?? '???' }}
+                </TableCell>
               </TableRow>
 
               <TableRow>
                 <TableHead>{{ t('rank') }}</TableHead>
-                <TableCell>???</TableCell>
+                <TableCell>
+                  {{ bot.ranking?.rank.toLocaleString() ?? '???' }}
+                </TableCell>
               </TableRow>
 
               <TableRow>

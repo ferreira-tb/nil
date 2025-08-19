@@ -4,16 +4,22 @@
 import { go } from '@/router';
 import * as commands from '@/commands';
 import { CoordImpl } from '@/core/model/continent/coord';
+import { RankingEntryImpl } from '@/core/model/ranking/ranking-entry';
 
 export class PublicPlayerImpl implements PublicPlayer {
   public readonly id: PlayerId;
   public readonly status: PlayerStatus;
   public readonly coords: readonly CoordImpl[];
+  public readonly ranking: Option<RankingEntryImpl>;
 
   protected constructor(args: PublicPlayerImplConstructorArgs) {
     this.id = args.player.id;
     this.status = args.player.status;
     this.coords = args.coords.map((it) => CoordImpl.create(it));
+
+    if (args.ranking) {
+      this.ranking = RankingEntryImpl.create(args.ranking);
+    }
   }
 
   public hasCity(key: ContinentKey) {
@@ -45,16 +51,18 @@ export class PublicPlayerImpl implements PublicPlayer {
   }
 
   public static async load(id: PlayerId) {
-    const [player, coords] = await Promise.all([
+    const [player, coords, ranking] = await Promise.all([
       commands.getPublicPlayer(id),
       commands.getPlayerCoords(id),
+      commands.getPlayerRank(id),
     ]);
 
-    return PublicPlayerImpl.create({ player, coords });
+    return PublicPlayerImpl.create({ player, coords, ranking });
   }
 }
 
 export interface PublicPlayerImplConstructorArgs {
   player: PublicPlayer;
   coords: readonly Coord[];
+  ranking: Option<RankingEntry>;
 }

@@ -35,7 +35,7 @@ const { t } = useI18n();
       >
         <TableCell>{{ city.name }}</TableCell>
         <TableCell>{{ city.coord.format() }}</TableCell>
-        <TableCell>???</TableCell>
+        <TableCell>{{ city.score.toLocaleString() }}</TableCell>
       </TableRow>
     </TableBody>
   </Table>

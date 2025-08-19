@@ -9,6 +9,7 @@ import BuildingTitle from '@/components/infrastructure/BuildingTitle.vue';
 import enUS from '@/locale/en-US/scenes/game/infrastructure/prefecture.json';
 import ptBR from '@/locale/pt-BR/scenes/game/infrastructure/prefecture.json';
 import type { PrefectureImpl } from '@/core/model/infrastructure/building/prefecture/prefecture';
+import type { PrefectureBuildOrderImpl } from '@/core/model/infrastructure/building/prefecture/build-order';
 import { Button, cn, Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@tb-dev/vue-components';
 
 const props = defineProps<{
@@ -29,6 +30,12 @@ const last = computed(() => props.prefecture.buildQueue.last());
 const tableClass = computed(() => {
   return props.prefecture.buildQueue.size === 0 ? 'hidden' : null;
 });
+
+async function cancelIfMobile(order: PrefectureBuildOrderImpl) {
+  if (globalThis.__MOBILE__ && order.id === last.value?.id) {
+    await props.onCancel();
+  }
+}
 </script>
 
 <template>
@@ -49,11 +56,8 @@ const tableClass = computed(() => {
 
     <TableBody>
       <template v-for="order of prefecture.buildQueue" :key="order.id">
-        <TableRow
-          v-if="order.state.kind === 'pending' && order.state.workforce > 0"
-          @dblclick="() => void (order.id === last?.id && onCancel())"
-        >
-          <TableCell>
+        <TableRow v-if="order.state.kind === 'pending' && order.state.workforce > 0">
+          <TableCell @dblclick="cancelIfMobile">
             <div class="flex items-center justify-start gap-2">
               <ChevronUpIcon
                 v-if="order.kind === 'construction'"
@@ -71,7 +75,7 @@ const tableClass = computed(() => {
             </div>
           </TableCell>
 
-          <TableCell>
+          <TableCell @dblclick="cancelIfMobile">
             <div class="flex items-center justify-start">
               <Workforce :amount="order.state.workforce" />
             </div>

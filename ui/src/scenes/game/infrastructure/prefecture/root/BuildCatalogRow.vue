@@ -75,18 +75,21 @@ async function makeOrder(kind: PrefectureBuildOrderKind) {
     props.onBuildOrder(kind);
   }
 }
+
+async function makeOrderIfMobile(kind: PrefectureBuildOrderKind) {
+  if (globalThis.__MOBILE__) {
+    await makeOrder(kind);
+  }
+}
 </script>
 
 <template>
-  <TableRow
-    v-if="entry.kind === 'available'"
-    @dblclick="() => makeOrder('construction')"
-  >
+  <TableRow v-if="entry.kind === 'available'">
     <TableCell>
       <BuildingTitle :building="building.id" :level="building.level" :scene />
     </TableCell>
 
-    <TableCell>
+    <TableCell @dblclick="() => makeOrderIfMobile('construction')">
       <div class="grid grid-cols-5 items-center justify-start gap-4">
         <Wood :amount="entry.recipe.resources.wood" :limit="playerResources?.wood" />
         <Stone :amount="entry.recipe.resources.stone" :limit="playerResources?.stone" />
@@ -134,7 +137,7 @@ async function makeOrder(kind: PrefectureBuildOrderKind) {
       <BuildCatalogBuilding :building :scene />
     </TableCell>
 
-    <TableCell colspan="4">
+    <TableCell colspan="2">
       <div class="text-muted-foreground flex w-full items-center justify-center text-sm">
         <span v-if="entry.kind === 'maxed'">
           {{ t('building-fully-constructed') }}

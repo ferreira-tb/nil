@@ -56,6 +56,7 @@ impl World {
     self.update_bot_resources()?;
     self.update_precursor_resources()?;
     self.process_city_queues();
+    self.update_ranking()?;
     Ok(())
   }
 
@@ -68,11 +69,15 @@ impl World {
       infra.process_prefecture_build_queue();
 
       if let Some(personnel) = infra.process_academy_recruit_queue() {
-        self.military.spawn(coord, &owner, personnel);
+        self
+          .military
+          .spawn(coord, owner.clone(), personnel);
       }
 
       if let Some(personnel) = infra.process_stable_recruit_queue() {
-        self.military.spawn(coord, &owner, personnel);
+        self
+          .military
+          .spawn(coord, owner.clone(), personnel);
       }
     }
   }

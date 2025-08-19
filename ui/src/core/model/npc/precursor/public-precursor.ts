@@ -3,17 +3,23 @@
 
 import { go } from '@/router';
 import * as commands from '@/commands';
-import { CoordImpl } from '../../continent/coord';
+import { CoordImpl } from '@/core/model/continent/coord';
+import { RankingEntryImpl } from '@/core/model/ranking/ranking-entry';
 
 export class PublicPrecursorImpl implements PublicPrecursor {
   public readonly id: PrecursorId;
   public readonly origin: Coord;
-  public readonly coords: readonly CoordImpl[] = [];
+  public readonly coords: readonly CoordImpl[];
+  public readonly ranking: Option<RankingEntryImpl>;
 
   protected constructor(args: PublicPrecursorImplConstructorArgs) {
     this.id = args.precursor.id;
     this.origin = args.precursor.origin;
     this.coords = args.coords.map((it) => CoordImpl.create(it));
+
+    if (args.ranking) {
+      this.ranking = RankingEntryImpl.create(args.ranking);
+    }
   }
 
   public hasCity(key: ContinentKey) {
@@ -37,16 +43,18 @@ export class PublicPrecursorImpl implements PublicPrecursor {
   }
 
   public static async load(id: PrecursorId) {
-    const [precursor, coords] = await Promise.all([
+    const [precursor, coords, ranking] = await Promise.all([
       commands.getPublicPrecursor(id),
       commands.getPrecursorCoords(id),
+      commands.getPrecursorRank(id),
     ]);
 
-    return PublicPrecursorImpl.create({ precursor, coords });
+    return PublicPrecursorImpl.create({ precursor, coords, ranking });
   }
 }
 
 export interface PublicPrecursorImplConstructorArgs {
   precursor: PublicPrecursor;
   coords: readonly Coord[];
+  ranking: Option<RankingEntry>;
 }

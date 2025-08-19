@@ -38,15 +38,19 @@ const { cities } = usePublicCities(coords);
       <CardContent class="px-2 py-0 relative size-full">
         <div class="flex w-full min-w-max flex-col gap-4">
           <Table class="sm:max-w-max md:min-w-50">
-            <TableBody>
+            <TableBody v-if="player">
               <TableRow>
                 <TableHead>{{ t('point', 2) }}</TableHead>
-                <TableCell>???</TableCell>
+                <TableCell>
+                  {{ player.ranking?.score.toLocaleString() ?? '???' }}
+                </TableCell>
               </TableRow>
 
               <TableRow>
                 <TableHead>{{ t('rank') }}</TableHead>
-                <TableCell>???</TableCell>
+                <TableCell>
+                  {{ player.ranking?.rank.toLocaleString() ?? '???' }}
+                </TableCell>
               </TableRow>
 
               <TableRow>
