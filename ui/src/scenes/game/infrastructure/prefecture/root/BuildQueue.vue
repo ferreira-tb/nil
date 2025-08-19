@@ -5,12 +5,12 @@
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { ChevronDownIcon, ChevronUpIcon } from 'lucide-vue-next';
+import { useBreakpoints } from '@/composables/util/useBreakpoints';
 import BuildingTitle from '@/components/infrastructure/BuildingTitle.vue';
 import enUS from '@/locale/en-US/scenes/game/infrastructure/prefecture.json';
 import ptBR from '@/locale/pt-BR/scenes/game/infrastructure/prefecture.json';
+import { Button, cn, Table, TableBody, TableCell, TableRow } from '@tb-dev/vue-components';
 import type { PrefectureImpl } from '@/core/model/infrastructure/building/prefecture/prefecture';
-import type { PrefectureBuildOrderImpl } from '@/core/model/infrastructure/building/prefecture/build-order';
-import { Button, cn, Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@tb-dev/vue-components';
 
 const props = defineProps<{
   prefecture: PrefectureImpl;
@@ -31,33 +31,18 @@ const tableClass = computed(() => {
   return props.prefecture.buildQueue.size === 0 ? 'hidden' : null;
 });
 
-async function cancelIfMobile(order: PrefectureBuildOrderImpl) {
-  if (globalThis.__MOBILE__ && order.id === last.value?.id) {
-    await props.onCancel();
-  }
-}
+const { sm } = useBreakpoints();
 </script>
 
 <template>
   <Table :class="cn(tableClass, 'xl:table xl:w-2/5 xl:max-w-[500px] xl:min-w-[250px]')">
-    <TableHeader>
-      <TableRow class="bg-card">
-        <TableHead>
-          <span>{{ t('order') }}</span>
-        </TableHead>
-        <TableHead>
-          <span>{{ t('workforce') }}</span>
-        </TableHead>
-        <TableHead>
-          <span></span>
-        </TableHead>
-      </TableRow>
-    </TableHeader>
-
     <TableBody>
       <template v-for="order of prefecture.buildQueue" :key="order.id">
-        <TableRow v-if="order.state.kind === 'pending' && order.state.workforce > 0">
-          <TableCell @dblclick="cancelIfMobile">
+        <TableRow
+          v-if="order.state.kind === 'pending' && order.state.workforce > 0"
+          class="hover:bg-card"
+        >
+          <TableCell>
             <div class="flex items-center justify-start gap-2">
               <ChevronUpIcon
                 v-if="order.kind === 'construction'"
@@ -75,7 +60,7 @@ async function cancelIfMobile(order: PrefectureBuildOrderImpl) {
             </div>
           </TableCell>
 
-          <TableCell @dblclick="cancelIfMobile">
+          <TableCell>
             <div class="flex items-center justify-start">
               <Workforce :amount="order.state.workforce" />
             </div>
@@ -85,7 +70,7 @@ async function cancelIfMobile(order: PrefectureBuildOrderImpl) {
             <div v-if="order.id === last?.id" class="flex items-center justify-start md:justify-center">
               <Button
                 variant="destructive"
-                size="sm"
+                :size="sm ? 'sm' : 'xs'"
                 :disabled="loading"
                 @click="onCancel"
               >

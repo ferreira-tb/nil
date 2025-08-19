@@ -1,7 +1,7 @@
 {
   "name": "ui",
   "type": "module",
-  "packageManager": "pnpm@10.14.0",
+  "packageManager": "pnpm@10.15.0",
   "license": "AGPL-3.0-only",
   "private": true,
   "scripts": {
@@ -20,7 +20,7 @@
     "@tb-dev/prototype-dom": "^7.0.22",
     "@tb-dev/utils": "^7.0.12",
     "@tb-dev/vue": "^3.2.1",
-    "@tb-dev/vue-components": "^5.3.0",
+    "@tb-dev/vue-components": "^5.4.1",
     "@vueuse/components": "^13.7.0",
     "@vueuse/core": "^13.7.0",
     "@vueuse/math": "^13.7.0",
