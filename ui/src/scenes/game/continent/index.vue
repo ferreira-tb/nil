@@ -6,6 +6,7 @@ import Field from './Field.vue';
 import { until } from '@vueuse/core';
 import { useRoute } from 'vue-router';
 import { Continent } from 'nil-continent';
+import Navigation from './Navigation.vue';
 import { useElementSize } from '@tb-dev/vue';
 import { ListenerSet } from '@/lib/listener-set';
 import { CoordImpl } from '@/core/model/continent/coord';
@@ -14,7 +15,7 @@ import { memory } from 'nil-continent/nil_continent_bg.wasm';
 import { useBreakpoints } from '@/composables/util/useBreakpoints';
 import { PublicFieldImpl } from '@/core/model/continent/public-field';
 import { useDefaultCoords } from '@/composables/continent/useDefaultCoords';
-import { onKeyboardMovement } from '@/composables/continent/onKeyboardMovement';
+import { type Direction, onKeyboardMovement } from '@/composables/continent/onKeyboardMovement';
 import {
   computed,
   nextTick,
@@ -32,6 +33,7 @@ const continent = new Continent();
 
 const route = useRoute();
 const defaultCoords = useDefaultCoords();
+const { continentSize } = NIL.world.refs();
 
 const fields = shallowRef<PublicFieldImpl[]>([]);
 const cache = new Map<string, PublicFieldImpl>();
@@ -117,7 +119,7 @@ onUnmounted(() => {
   continent.free();
 });
 
-onKeyboardMovement(continent, render);
+onKeyboardMovement(move);
 
 function render() {
   if (route.name === ('continent' satisfies GameScene)) {
@@ -182,6 +184,39 @@ async function loadCoord(coord: Coord) {
     });
   }
 }
+
+function move(direction: Direction, delta: number) {
+  const center = continent.center();
+  const initialX = center.x();
+  const initialY = center.y();
+
+  let x = initialX;
+  let y = initialY;
+
+  switch (direction) {
+    case 'up': {
+      y = Math.min(y + delta, continentSize.value - 1);
+      break;
+    }
+    case 'down': {
+      y = Math.max(y - delta, 0);
+      break;
+    }
+    case 'left': {
+      x = Math.max(x - delta, 0);
+      break;
+    }
+    case 'right': {
+      x = Math.min(x + delta, continentSize.value - 1);
+      break;
+    }
+  }
+
+  if (x !== initialX || y !== initialY) {
+    continent.set_center(x, y);
+    render();
+  }
+}
 </script>
 
 <template>
@@ -189,6 +224,15 @@ async function loadCoord(coord: Coord) {
     <Card class="size-full overflow-hidden p-0">
       <CardContent class="relative size-full overflow-hidden p-0 select-none">
         <div id="continent-container" ref="container" class="bg-card">
+          <Navigation
+            :cell-size
+            :interval="50"
+            @up="() => move('up', 1)"
+            @right="() => move('right', 1)"
+            @down="() => move('down', 1)"
+            @left="() => move('left', 1)"
+          />
+
           <div id="continent-grid">
             <Field
               v-for="field of fields"
