@@ -18,13 +18,13 @@ pub struct Battle<'a> {
   wall: Option<&'a WallStats>,
 }
 
-impl<'a> Battle<'a> {
+impl Battle<'_> {
   pub fn offensive_power(&self) -> OffensivePower {
-    OffensivePower::new(&self.attacker)
+    OffensivePower::new(self.attacker)
   }
 
   pub fn defensive_power(&self) -> DefensivePower {
-    DefensivePower::new(&self.defender, self.offensive_power(), self.wall)
+    DefensivePower::new(self.defender, self.offensive_power(), self.wall)
   }
 
   pub fn winner_losses(&self) -> WinnerLosses {

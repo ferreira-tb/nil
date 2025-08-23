@@ -95,6 +95,9 @@ pub enum Error {
   #[error("Village not found: {0}")]
   VillageNotFound(Coord),
 
+  #[error("No stats found for wall at level {0}")]
+  WallStatsNotFoundForLevel(BuildingLevel),
+
   #[error("World is full")]
   WorldIsFull,
 }

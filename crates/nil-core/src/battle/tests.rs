@@ -2,10 +2,11 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 
 use super::Battle;
-use crate::military::squad::{Squad, SquadSize};
-use crate::military::unit::{heavy_cavalry, UnitId};
-use crate::military::unit::UnitId::*;
 use crate::infrastructure::InfrastructureStats;
+use crate::infrastructure::building::BuildingLevel;
+use crate::military::squad::{Squad, SquadSize};
+use crate::military::unit::UnitId;
+use crate::military::unit::UnitId::*;
 use std::sync::LazyLock;
 
 static STATS: LazyLock<InfrastructureStats> = LazyLock::new(InfrastructureStats::default);
@@ -13,9 +14,7 @@ static STATS: LazyLock<InfrastructureStats> = LazyLock::new(InfrastructureStats:
 #[test]
 fn offensive_power() {
   let attacker = [s(Axeman, 100), s(Swordsman, 50)];
-  let battle = Battle::builder()
-    .attacker(&attacker)
-    .build();
+  let battle = Battle::builder().attacker(&attacker).build();
 
   let power = battle.offensive_power();
   assert_eq!(power.total, 2250.0);
@@ -25,9 +24,7 @@ fn offensive_power() {
 #[test]
 fn offensive_power_cavalry() {
   let attacker = [s(HeavyCavalry, 100)];
-  let battle = Battle::builder()
-    .attacker(&attacker)
-    .build();
+  let battle = Battle::builder().attacker(&attacker).build();
 
   let power = battle.offensive_power();
   assert_eq!(power.total, 15000.0);
@@ -37,9 +34,7 @@ fn offensive_power_cavalry() {
 #[test]
 fn offensive_power_mixed() {
   let attacker = [s(HeavyCavalry, 100), s(Pikeman, 500)];
-  let battle = Battle::builder()
-    .attacker(&attacker)
-    .build();
+  let battle = Battle::builder().attacker(&attacker).build();
 
   let power = battle.offensive_power();
   assert_eq!(power.total, 20000.0);
@@ -64,7 +59,7 @@ fn defensive_power() {
 #[test]
 fn defensive_power_mixed() {
   let attacker = [s(HeavyCavalry, 100), s(Pikeman, 500)];
-  let defender = [s(Pikeman, 100)]; 
+  let defender = [s(Pikeman, 100)];
   let battle = Battle::builder()
     .attacker(&attacker)
     .defender(&defender)
@@ -72,6 +67,24 @@ fn defensive_power_mixed() {
 
   let power = battle.defensive_power();
   assert_eq!(power.total, 3750.0);
+}
+
+#[test]
+fn defensive_power_with_wall() {
+  let attacker = [s(Axeman, 100), s(Swordsman, 50)];
+  let defender = [s(Pikeman, 100), s(Swordsman, 50)];
+  let wall = STATS
+    .wall()
+    .get(BuildingLevel::new(2))
+    .unwrap();
+  let battle = Battle::builder()
+    .attacker(&attacker)
+    .defender(&defender)
+    .wall(wall)
+    .build();
+
+  let power = battle.defensive_power();
+  assert_eq!(power.total, 4000.0);
 }
 
 #[test]

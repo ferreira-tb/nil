@@ -3,6 +3,7 @@
 
 use super::{BuildingId, BuildingLevel};
 use crate::check_total_resource_ratio;
+use crate::error::{Error, Result};
 use crate::infrastructure::requirements::InfrastructureRequirements;
 use crate::resources::{Cost, MaintenanceRatio, ResourceRatio, Workforce};
 use derive_more::Deref;
@@ -151,6 +152,14 @@ impl WallStatsTable {
     table.shrink_to_fit();
 
     Self(table)
+  }
+
+  #[inline]
+  pub fn get(&self, level: BuildingLevel) -> Result<&WallStats> {
+    self
+      .0
+      .get(&level)
+      .ok_or(Error::WallStatsNotFoundForLevel(level))
   }
 }
 
