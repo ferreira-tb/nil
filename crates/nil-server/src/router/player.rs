@@ -9,7 +9,7 @@ use axum::extract::{Extension, Json, Path, State};
 use axum::response::Response;
 use futures::{FutureExt, TryFutureExt};
 use itertools::Itertools;
-use nil_core::player::{Player, PlayerId, PlayerOptions, PlayerStatus};
+use nil_core::player::{Player, PlayerId, PlayerOptions, PlayerStatus, PublicPlayer};
 
 pub async fn exists(State(app): State<App>, Path(id): Path<PlayerId>) -> Response {
   app
@@ -29,6 +29,17 @@ pub async fn get(State(app): State<App>, Json(id): Json<PlayerId>) -> Response {
 pub async fn get_all(State(app): State<App>) -> Response {
   app
     .player_manager(|pm| pm.players().cloned().collect_vec())
+    .map(|players| res!(OK, Json(players)))
+    .await
+}
+
+pub async fn get_all_public(State(app): State<App>) -> Response {
+  app
+    .player_manager(|pm| {
+      pm.players()
+        .map(PublicPlayer::from)
+        .collect_vec()
+    })
     .map(|players| res!(OK, Json(players)))
     .await
 }
@@ -61,6 +72,14 @@ pub async fn get_military(
   app
     .world(|world| world.get_player_military(&player))
     .map(|military| res!(OK, Json(military)))
+    .await
+}
+
+pub async fn get_public(State(app): State<App>, Path(id): Path<PlayerId>) -> Response {
+  app
+    .player_manager(|pm| pm.player(&id).map(PublicPlayer::from))
+    .map_ok(|player| res!(OK, Json(player)))
+    .unwrap_or_else(from_core_err)
     .await
 }
 

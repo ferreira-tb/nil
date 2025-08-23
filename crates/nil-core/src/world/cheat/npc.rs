@@ -10,7 +10,7 @@ use crate::resources::Resources;
 use crate::world::World;
 
 impl World {
-  pub fn cheat_get_bot_resources(&self, id: BotId) -> Result<Resources> {
+  pub fn cheat_get_bot_resources(&self, id: &BotId) -> Result<Resources> {
     bail_cheat_not_allowed!(self);
     self
       .bot_manager
@@ -19,7 +19,7 @@ impl World {
       .cloned()
   }
 
-  pub fn cheat_get_bot_storage_capacity(&self, id: BotId) -> Result<OverallStorageCapacity> {
+  pub fn cheat_get_bot_storage_capacity(&self, id: &BotId) -> Result<OverallStorageCapacity> {
     bail_cheat_not_allowed!(self);
     self.get_bot_storage_capacity(id)
   }
@@ -43,8 +43,8 @@ impl World {
     self.get_precursor_storage_capacity(id)
   }
 
-  pub fn cheat_spawn_bot(&mut self) -> Result<BotId> {
+  pub fn cheat_spawn_bot(&mut self, name: &str) -> Result<BotId> {
     bail_cheat_not_allowed!(self);
-    self.spawn_bot()
+    self.spawn_bot(name)
   }
 }

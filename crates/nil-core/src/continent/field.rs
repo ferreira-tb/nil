@@ -1,7 +1,7 @@
 // Copyright (C) Call of Nil contributors
 // SPDX-License-Identifier: AGPL-3.0-only
 
-use crate::village::{PublicVillage, Village};
+use crate::city::{City, PublicCity};
 use serde::{Deserialize, Serialize};
 use strum::EnumIs;
 
@@ -10,35 +10,36 @@ use strum::EnumIs;
 pub enum Field {
   #[default]
   Empty,
-  Village {
-    village: Village,
+  City {
+    city: City,
   },
 }
 
 impl Field {
   #[inline]
-  pub fn village(&self) -> Option<&Village> {
-    if let Self::Village { village } = self { Some(village) } else { None }
+  pub fn city(&self) -> Option<&City> {
+    if let Self::City { city } = self { Some(city) } else { None }
   }
 
-  pub(super) fn village_mut(&mut self) -> Option<&mut Village> {
-    if let Self::Village { village } = self { Some(village) } else { None }
-  }
-}
-
-impl From<Village> for Field {
-  fn from(village: Village) -> Self {
-    Self::Village { village }
+  pub(super) fn city_mut(&mut self) -> Option<&mut City> {
+    if let Self::City { city } = self { Some(city) } else { None }
   }
 }
 
+impl From<City> for Field {
+  fn from(city: City) -> Self {
+    Self::City { city }
+  }
+}
+
+/// Public data about a field, to which any player can have access.
 #[derive(Clone, Debug, Default, Deserialize, Serialize, EnumIs)]
 #[serde(tag = "kind", rename_all = "kebab-case")]
 pub enum PublicField {
   #[default]
   Empty,
-  Village {
-    village: PublicVillage,
+  City {
+    city: PublicCity,
   },
 }
 
@@ -46,11 +47,7 @@ impl From<&Field> for PublicField {
   fn from(field: &Field) -> Self {
     match field {
       Field::Empty => Self::Empty,
-      Field::Village { village } => {
-        Self::Village {
-          village: PublicVillage::from(village),
-        }
-      }
+      Field::City { city } => Self::City { city: PublicCity::from(city) },
     }
   }
 }

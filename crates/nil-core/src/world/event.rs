@@ -23,18 +23,23 @@ impl World {
     self.emitter.emit_to(target, event);
   }
 
-  /// Emits the event to the owner of the village at the specified coordinate, if any.
+  /// Emits the event to the owner of the city at the specified coordinate, if any.
   fn emit_to_owner(&self, coord: Coord, event: Event) {
-    if let Ok(village) = self.village(coord)
-      && let Some(player) = village.player()
+    if let Ok(city) = self.city(coord)
+      && let Some(player) = city.player()
     {
       self.emitter.emit_to(player, event);
     }
   }
 
-  /// Emits [`Event::ChatMessage`].
+  /// Emits [`Event::ChatUpdated`].
   pub(super) fn emit_chat_updated(&self, message: ChatMessage) {
     self.broadcast(Event::ChatUpdated { message });
+  }
+
+  /// Emits [`Event::ChatUpdated`] to a specific player.
+  pub(super) fn emit_chat_updated_to(&self, player: PlayerId, message: ChatMessage) {
+    self.emit_to(player, Event::ChatUpdated { message });
   }
 
   /// Emits [`Event::PlayerUpdated`].
@@ -42,9 +47,9 @@ impl World {
     self.emit_to(player.clone(), Event::PlayerUpdated { player });
   }
 
-  /// Emits [`Event::PublicVillageUpdated`].
-  pub(super) fn emit_public_village_updated(&self, coord: Coord) {
-    self.broadcast(Event::PublicVillageUpdated { coord });
+  /// Emits [`Event::PublicCityUpdated`].
+  pub(super) fn emit_public_city_updated(&self, coord: Coord) {
+    self.broadcast(Event::PublicCityUpdated { coord });
   }
 
   /// Emits [`Event::RoundUpdated`].
@@ -53,8 +58,8 @@ impl World {
     self.broadcast(Event::RoundUpdated { round });
   }
 
-  /// Emits [`Event::VillageUpdated`].
-  pub(super) fn emit_village_updated(&self, coord: Coord) {
-    self.emit_to_owner(coord, Event::VillageUpdated { coord });
+  /// Emits [`Event::CityUpdated`].
+  pub(super) fn emit_city_updated(&self, coord: Coord) {
+    self.emit_to_owner(coord, Event::CityUpdated { coord });
   }
 }

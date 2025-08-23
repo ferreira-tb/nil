@@ -33,7 +33,8 @@ export class RoundEntity extends Entity {
     // This typically indicates that the current round is complete, so we update all the entities.
     if (round.id !== this.id || round.state.kind !== this.state?.kind) {
       await NIL.update();
-    } else {
+    }
+    else {
       this.round.value = RoundImpl.create(round);
     }
   }
@@ -62,14 +63,14 @@ export class RoundEntity extends Entity {
   }
 
   public static init() {
-    if (!Object.hasOwn(window.NIL, 'round')) {
-      const round: (typeof window.NIL)['round'] = {
+    if (!Object.hasOwn(globalThis.NIL, 'round')) {
+      const round: (typeof globalThis.NIL)['round'] = {
         refs: RoundEntity.refs.bind(RoundEntity),
         update: RoundEntity.update.bind(RoundEntity),
         use: RoundEntity.use.bind(RoundEntity),
       };
 
-      Object.defineProperty(window.NIL, 'round', {
+      Object.defineProperty(globalThis.NIL, 'round', {
         configurable: false,
         enumerable: true,
         writable: false,

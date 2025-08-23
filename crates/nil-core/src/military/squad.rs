@@ -1,7 +1,9 @@
 // Copyright (C) Call of Nil contributors
 // SPDX-License-Identifier: AGPL-3.0-only
 
-use crate::military::unit::{Power, Unit, UnitBox, UnitId, UnitKind};
+use crate::military::unit::stats::power::Power;
+use crate::military::unit::{Unit, UnitBox, UnitId, UnitKind};
+use crate::ranking::Score;
 use derive_more::{Deref, From, Into};
 use serde::{Deserialize, Serialize};
 use std::ops::{Add, AddAssign, Mul, Sub, SubAssign};
@@ -39,17 +41,22 @@ impl Squad {
     self.size
   }
 
+  #[inline]
+  pub fn score(&self) -> Score {
+    self.size * self.unit.score()
+  }
+
   pub fn attack(&self) -> SquadAttack {
-    let attack = self.unit.stats().attack;
+    let attack = self.unit.stats().attack();
     let total = f64::from(attack * self.size);
     SquadAttack::new(total)
   }
 
   pub fn defense(&self) -> SquadDefense {
     let stats = self.unit.stats();
-    let infantry = f64::from(stats.infantry_defense * self.size);
-    let cavalry = f64::from(stats.cavalry_defense * self.size);
-    let ranged = f64::from(stats.ranged_defense * self.size);
+    let infantry = f64::from(stats.infantry_defense() * self.size);
+    let cavalry = f64::from(stats.cavalry_defense() * self.size);
+    let ranged = f64::from(stats.ranged_defense() * self.size);
     SquadDefense { infantry, cavalry, ranged }
   }
 }
@@ -196,5 +203,14 @@ impl Mul<SquadSize> for Power {
 
   fn mul(self, rhs: SquadSize) -> Self::Output {
     self * rhs.0
+  }
+}
+
+impl Mul<Score> for SquadSize {
+  type Output = Score;
+
+  fn mul(self, rhs: Score) -> Self::Output {
+    let rhs = u32::from(rhs);
+    Score::new(self.0.saturating_mul(rhs))
   }
 }

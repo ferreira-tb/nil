@@ -6,6 +6,7 @@ use crate::npc::bot::BotId;
 use crate::npc::precursor::PrecursorId;
 use crate::player::PlayerId;
 use crate::resources::prelude::*;
+use crate::ruler::Ruler;
 use crate::world::World;
 use std::collections::HashMap;
 
@@ -16,11 +17,11 @@ impl World {
     let stats = self.stats.infrastructure.as_ref();
     let mut diff: HashMap<PlayerId, ResourcesDiff> = HashMap::new();
 
-    for village in self.continent.villages() {
-      if let Some(id) = village.owner().player().cloned() {
+    for city in self.continent.cities() {
+      if let Some(id) = city.owner().player().cloned() {
         let resources = diff.entry(id).or_default();
-        *resources += village.round_production(stats)?;
-        resources.food -= village.maintenance(stats)?;
+        *resources += city.round_production(stats)?;
+        resources.food -= city.maintenance(stats)?;
       }
     }
 
@@ -29,7 +30,7 @@ impl World {
       self
         .player_mut(&id)?
         .resources_mut()
-        .add_if_within_capacity(&resources, &capacity);
+        .add_within_capacity(&resources, &capacity);
     }
 
     Ok(())
@@ -39,21 +40,21 @@ impl World {
     let stats = self.stats.infrastructure.as_ref();
     let mut diff: HashMap<BotId, ResourcesDiff> = HashMap::new();
 
-    for village in self.continent.villages() {
-      if let Some(id) = village.owner().bot() {
+    for city in self.continent.cities() {
+      if let Some(id) = city.owner().bot().cloned() {
         let resources = diff.entry(id).or_default();
-        *resources += village.round_production(stats)?;
-        resources.food -= village.maintenance(stats)?;
+        *resources += city.round_production(stats)?;
+        resources.food -= city.maintenance(stats)?;
       }
     }
 
     for (id, resources) in diff {
-      let capacity = self.get_bot_storage_capacity(id)?;
+      let capacity = self.get_bot_storage_capacity(&id)?;
       self
         .bot_manager
-        .bot_mut(id)?
+        .bot_mut(&id)?
         .resources_mut()
-        .add_if_within_capacity(&resources, &capacity);
+        .add_within_capacity(&resources, &capacity);
     }
 
     Ok(())
@@ -63,11 +64,11 @@ impl World {
     let stats = self.stats.infrastructure.as_ref();
     let mut diff: HashMap<PrecursorId, ResourcesDiff> = HashMap::new();
 
-    for village in self.continent.villages() {
-      if let Some(id) = village.owner().precursor() {
+    for city in self.continent.cities() {
+      if let Some(id) = city.owner().precursor() {
         let resources = diff.entry(id).or_default();
-        *resources += village.round_production(stats)?;
-        resources.food -= village.maintenance(stats)?;
+        *resources += city.round_production(stats)?;
+        resources.food -= city.maintenance(stats)?;
       }
     }
 
@@ -77,7 +78,7 @@ impl World {
         .precursor_manager
         .precursor_mut(id)
         .resources_mut()
-        .add_if_within_capacity(&resources, &capacity);
+        .add_within_capacity(&resources, &capacity);
     }
 
     Ok(())

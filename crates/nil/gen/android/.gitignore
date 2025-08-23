@@ -1,0 +1,16 @@
+.gradle
+build
+buildSrc
+
+keystore.properties
+local.properties
+tauri.settings.gradle
+
+app/proguard-rules.pro
+app/proguard-tauri.pro
+app/tauri.build.gradle.kts
+app/tauri.properties
+
+app/src/main/assets
+app/src/main/jniLibs
+app/src/main/java/tsukilabs/nil/generated

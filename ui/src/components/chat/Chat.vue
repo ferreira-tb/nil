@@ -2,85 +2,58 @@
 <!-- SPDX-License-Identifier: AGPL-3.0-only -->
 
 <script setup lang="ts">
-import { useI18n } from 'vue-i18n';
-import { handleError } from '@/lib/error';
-import { pushChatMessage } from '@/commands';
 import MessagePlayer from './MessagePlayer.vue';
-import { onKeyDown, useMutex } from '@tb-dev/vue';
-import { Button, Input, ScrollArea } from '@tb-dev/vue-components';
-import { computed, nextTick, onMounted, ref, useTemplateRef } from 'vue';
+import MessageStdout from './MessageStdout.vue';
+import { ListenerSet } from '@/lib/listener-set';
+import { ScrollArea } from '@tb-dev/vue-components';
+import { nextTick, onMounted, useTemplateRef, type VNode } from 'vue';
 
-const { t } = useI18n();
+interface Props {
+  scrollHeight?: string;
+}
+
+withDefaults(defineProps<Props>(), {
+  scrollHeight: 'calc(100% - 60px) !important',
+});
+
+defineSlots<{
+  input?: (props: { scroll: typeof scroll; }) => VNode;
+}>();
 
 const { chat } = NIL.chat.refs();
 
 const content = useTemplateRef('contentEl');
-const chatInput = useTemplateRef('chatInputEl');
-const chatInputInner = computed(() => chatInput.value?.$el);
 
-const draft = ref<Option<string>>();
-const { locked, ...mutex } = useMutex();
+const listener = new ListenerSet();
+listener.event.onChatUpdated(scroll);
 
-onKeyDown('Enter', send, { target: chatInputInner });
-
-async function send() {
-  if (draft.value) {
-    try {
-      await mutex.acquire();
-      const id = await pushChatMessage(draft.value);
-      draft.value = null;
-      void scroll(id);
-    } catch (err) {
-      handleError(err);
-    } finally {
-      mutex.release();
-      await nextTick();
-      chatInputInner.value?.focus();
-    }
-  }
-}
-
-async function scroll(id: ChatMessageId) {
-  const elementId = `#${toElementId(id)}`;
-  await content.value?.waitScroll(elementId, {
+async function scroll() {
+  await nextTick();
+  content.value?.parentElement?.parentElement?.scrollTo({
+    top: Number.MAX_SAFE_INTEGER,
     behavior: 'instant',
-    timeout: 1000,
-    throwOnTimeout: false,
   });
 }
 
-function toElementId(id: ChatMessageId) {
-  return `chat-message-${id}`;
-}
+onMounted(scroll);
 
-onMounted(() => {
-  const last = chat.value?.history.last();
-  if (last) void scroll(last.id);
-});
+defineExpose({ scroll });
 </script>
 
 <template>
   <div class="overflow-hidden">
     <div class="flex size-full flex-col gap-4">
-      <div class="flex h-full flex-col gap-4 overflow-hidden">
-        <ScrollArea class="h-[calc(100%-50px)]">
-          <div v-if="chat" ref="contentEl" class="flex flex-col gap-3 pr-6 pl-4">
-            <div v-for="message of chat" :id="toElementId(message.id)" :key="message.id">
+      <div class="flex h-full flex-col justify-between gap-4 overflow-hidden">
+        <ScrollArea :style="{ height: scrollHeight }">
+          <div v-if="chat" ref="contentEl" class="flex flex-col gap-3 pr-6 pl-2 sm:pl-4">
+            <div v-for="message of chat" :key="message.id">
               <MessagePlayer v-if="message.author.kind === 'player'" :message />
+              <MessageStdout v-else-if="message.kind === 'stdout'" :message />
             </div>
           </div>
         </ScrollArea>
 
-        <div class="flex h-[30px] items-center justify-between gap-2 px-2 pb-2">
-          <Input
-            ref="chatInputEl"
-            v-model.trim="draft"
-            type="text"
-            :disabled="locked"
-            :maxlength="200"
-          />
-          <Button :disabled="!draft || locked" @click="send">{{ t('send') }}</Button>
-        </div>
+        <slot name="input" v-bind="{ scroll }"></slot>
       </div>
     </div>
   </div>

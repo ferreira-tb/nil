@@ -3,17 +3,19 @@
 
 mod chat;
 mod cheat;
+mod city;
 mod continent;
 mod event;
 mod infrastructure;
 mod npc;
 mod player;
+mod ranking;
 mod round;
 mod savedata;
 mod script;
-mod village;
 
 use crate::chat::Chat;
+use crate::city::City;
 use crate::continent::{Continent, Coord};
 use crate::error::{Error, Result};
 use crate::event::Emitter;
@@ -22,10 +24,10 @@ use crate::military::Military;
 use crate::npc::bot::BotManager;
 use crate::npc::precursor::PrecursorManager;
 use crate::player::{Player, PlayerId, PlayerManager};
+use crate::ranking::Ranking;
 use crate::round::Round;
+use crate::savedata::Savedata;
 use crate::script::Scripting;
-use crate::village::Village;
-use savedata::Savedata;
 use serde::{Deserialize, Serialize};
 use std::num::NonZeroU8;
 use std::path::{Path, PathBuf};
@@ -39,6 +41,7 @@ pub struct World {
   bot_manager: BotManager,
   precursor_manager: PrecursorManager,
   military: Military,
+  ranking: Ranking,
   config: WorldConfig,
   stats: WorldStats,
   chat: Chat,
@@ -63,6 +66,7 @@ impl World {
       bot_manager: BotManager::default(),
       precursor_manager,
       military,
+      ranking: Ranking::default(),
       config,
       stats: WorldStats::new(),
       chat: Chat::default(),
@@ -74,26 +78,14 @@ impl World {
 
     world.spawn_precursors()?;
     world.spawn_bots()?;
+    world.update_ranking()?;
 
     Ok(world)
   }
 
+  #[inline]
   pub fn with_savedata(savedata: Savedata) -> Self {
-    Self {
-      round: savedata.round,
-      continent: savedata.continent,
-      player_manager: savedata.player_manager,
-      bot_manager: savedata.bot_manager,
-      precursor_manager: savedata.precursor_manager,
-      military: savedata.military,
-      config: savedata.config,
-      stats: savedata.stats,
-      chat: savedata.chat,
-      scripting: savedata.scripting,
-
-      emitter: Emitter::default(),
-      pending_save: None,
-    }
+    Self::from(savedata)
   }
 
   pub fn load(path: impl AsRef<Path>) -> Result<Self> {
@@ -127,27 +119,25 @@ impl World {
   }
 
   #[inline]
-  pub fn village(&self, coord: Coord) -> Result<&Village> {
-    self.continent.village(coord)
+  pub fn city(&self, coord: Coord) -> Result<&City> {
+    self.continent.city(coord)
   }
 
   #[inline]
-  pub fn village_mut(&mut self, coord: Coord) -> Result<&mut Village> {
-    self.continent.village_mut(coord)
+  pub fn city_mut(&mut self, coord: Coord) -> Result<&mut City> {
+    self.continent.city_mut(coord)
   }
 
   #[inline]
   pub fn infrastructure(&self, coord: Coord) -> Result<&Infrastructure> {
-    self
-      .village(coord)
-      .map(Village::infrastructure)
+    self.city(coord).map(City::infrastructure)
   }
 
   #[inline]
   pub fn infrastructure_mut(&mut self, coord: Coord) -> Result<&mut Infrastructure> {
     self
-      .village_mut(coord)
-      .map(Village::infrastructure_mut)
+      .city_mut(coord)
+      .map(City::infrastructure_mut)
   }
 
   #[inline]
@@ -188,6 +178,21 @@ impl World {
   #[inline]
   pub fn scripting_mut(&mut self) -> &mut Scripting {
     &mut self.scripting
+  }
+
+  #[inline]
+  pub fn bot_manager(&self) -> &BotManager {
+    &self.bot_manager
+  }
+
+  #[inline]
+  pub fn precursor_manager(&self) -> &PrecursorManager {
+    &self.precursor_manager
+  }
+
+  #[inline]
+  pub fn ranking(&self) -> &Ranking {
+    &self.ranking
   }
 }
 

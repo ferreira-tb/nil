@@ -1,7 +1,10 @@
+/** Copyright (C) Call of Nil contributors */
+/** SPDX-License-Identifier: AGPL-3.0-only */
+
 @font-face {
   font-style: normal;
   font-weight: 400;
-  src: url(/fonts/SyneMono-Regular.ttf) format('truetype');
-  font-family: 'Syne Mono';
+  src: url(/fonts/SyneMono-Regular.ttf) format("truetype");
+  font-family: "Syne Mono";
   font-display: swap;
 }

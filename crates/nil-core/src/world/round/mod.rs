@@ -24,12 +24,12 @@ impl World {
   }
 
   pub fn end_turn(&mut self, player: &PlayerId) -> Result<()> {
-    if self.round.end_turn(player) {
-      self.emit_round_updated();
-    }
+    self.round.end_turn(player);
 
     if self.round.is_done() {
       self.next_round()?;
+    } else {
+      self.emit_round_updated();
     }
 
     Ok(())
@@ -55,15 +55,30 @@ impl World {
     self.update_player_resources()?;
     self.update_bot_resources()?;
     self.update_precursor_resources()?;
-    self.process_village_queues();
+    self.process_city_queues();
+    self.update_ranking()?;
     Ok(())
   }
 
-  /// Processes the build and recruitment queues for all villages.
-  fn process_village_queues(&mut self) {
-    for village in self.continent.villages_mut() {
-      let infra = village.infrastructure_mut();
+  /// Processes the build and recruitment queues for all cities.
+  fn process_city_queues(&mut self) {
+    for city in self.continent.cities_mut() {
+      let coord = city.coord();
+      let owner = city.owner().clone();
+      let infra = city.infrastructure_mut();
       infra.process_prefecture_build_queue();
+
+      if let Some(personnel) = infra.process_academy_recruit_queue() {
+        self
+          .military
+          .spawn(coord, owner.clone(), personnel);
+      }
+
+      if let Some(personnel) = infra.process_stable_recruit_queue() {
+        self
+          .military
+          .spawn(coord, owner.clone(), personnel);
+      }
     }
   }
 }

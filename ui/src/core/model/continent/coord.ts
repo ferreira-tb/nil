@@ -1,6 +1,7 @@
 // Copyright (C) Call of Nil contributors
 // SPDX-License-Identifier: AGPL-3.0-only
 
+import { go } from '@/router';
 import type { Option } from '@tb-dev/utils';
 
 export class CoordImpl implements Coord {
@@ -10,13 +11,15 @@ export class CoordImpl implements Coord {
   #id: Option<string>;
   #xOutside: Option<boolean>;
   #yOutside: Option<boolean>;
+  #index: Option<ContinentIndex>;
 
   private constructor(coord: Coord) {
-    this.x = coord.x;
-    this.y = coord.y;
+    this.x = Math.trunc(coord.x);
+    this.y = Math.trunc(coord.y);
   }
 
-  public is(other: Coord) {
+  public is(other: ContinentKey) {
+    other = CoordImpl.fromKey(other);
     return this.x === other.x && this.y === other.y;
   }
 
@@ -26,8 +29,7 @@ export class CoordImpl implements Coord {
 
   public isXOutside() {
     if (typeof this.#xOutside !== 'boolean') {
-      const size = NIL.world.refs().continentSize.value;
-      this.#xOutside = this.x < 0 || this.x >= size;
+      this.#xOutside = isOutside(this.x);
     }
 
     return this.#xOutside;
@@ -35,11 +37,16 @@ export class CoordImpl implements Coord {
 
   public isYOutside() {
     if (typeof this.#yOutside !== 'boolean') {
-      const size = NIL.world.refs().continentSize.value;
-      this.#yOutside = this.y < 0 || this.y >= size;
+      this.#yOutside = isOutside(this.y);
     }
 
     return this.#yOutside;
+  }
+
+  public async goToContinent() {
+    const x = this.x.toString(10);
+    const y = this.y.toString(10);
+    await go('continent', { query: { x, y } });
   }
 
   public format() {
@@ -56,7 +63,12 @@ export class CoordImpl implements Coord {
   }
 
   public toIndex() {
-    return CoordImpl.toIndex(this);
+    this.#index ??= CoordImpl.toIndex(this);
+    return this.#index;
+  }
+
+  public toIndexString() {
+    return this.toIndex().toString(10);
   }
 
   public toJSON() {
@@ -68,7 +80,19 @@ export class CoordImpl implements Coord {
   }
 
   public static create(coord: Coord) {
+    if (coord instanceof CoordImpl) {
+      return coord;
+    }
+
     return new CoordImpl(coord);
+  }
+
+  public static fromKey(key: ContinentKey) {
+    if (typeof key === 'number') {
+      return CoordImpl.fromIndex(key);
+    }
+
+    return CoordImpl.create(key);
   }
 
   public static fromIndex(index: ContinentIndex) {
@@ -89,4 +113,9 @@ export class CoordImpl implements Coord {
     style: 'decimal',
     useGrouping: false,
   });
+}
+
+export function isOutside(value: number, continentSize?: number) {
+  const size = continentSize ?? NIL.world.refs().continentSize.value;
+  return !Number.isInteger(value) || value < 0 || value >= size;
 }

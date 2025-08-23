@@ -8,6 +8,7 @@ use crate::npc::precursor::PrecursorId;
 use crate::player::PlayerId;
 use crate::script::ScriptId;
 use mlua::ExternalError as _;
+use regex::Regex;
 use serde::Serialize;
 use serde::ser::Serializer;
 use std::result::Result as StdResult;
@@ -17,6 +18,9 @@ pub type Result<T, E = Error> = StdResult<T, E>;
 #[derive(Clone, Debug, thiserror::Error)]
 #[remain::sorted]
 pub enum Error {
+  #[error("Bot already spawned: {0}")]
+  BotAlreadySpawned(BotId),
+
   #[error("Bot not found: {0}")]
   BotNotFound(BotId),
 
@@ -35,7 +39,10 @@ pub enum Error {
   #[error("Cheating is not allowed in this world")]
   CheatingNotAllowed,
 
-  #[error("Failed to execute script")]
+  #[error("City not found: {0}")]
+  CityNotFound(Coord),
+
+  #[error("{}", display_lua_err(.0))]
   FailedToExecuteScript(#[from] mlua::Error),
 
   #[error("Failed to load world")]
@@ -92,9 +99,6 @@ pub enum Error {
   #[error("No stats found for storage \"{0}\" at level {1}")]
   StorageStatsNotFoundForLevel(StorageId, BuildingLevel),
 
-  #[error("Village not found: {0}")]
-  VillageNotFound(Coord),
-
   #[error("No stats found for wall at level {0}")]
   WallStatsNotFoundForLevel(BuildingLevel),
 
@@ -115,6 +119,18 @@ impl From<Error> for mlua::Error {
   fn from(err: Error) -> Self {
     err.into_lua_err()
   }
+}
+
+fn display_lua_err(err: &mlua::Error) -> String {
+  let err = err.to_string();
+  Regex::new(r"crates.+?\.rs:\d+?:\d+?:")
+    .expect("regex should be valid")
+    .replace_all(&err, "")
+    .split("stack traceback")
+    .next()
+    .unwrap_or_default()
+    .trim()
+    .to_owned()
 }
 
 pub trait WrapOk<T> {

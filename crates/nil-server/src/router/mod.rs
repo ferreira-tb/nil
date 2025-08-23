@@ -3,12 +3,14 @@
 
 mod chat;
 mod cheat;
+mod city;
 mod continent;
 mod infrastructure;
+mod npc;
 mod player;
+mod ranking;
 mod round;
 mod script;
-mod village;
 mod world;
 
 use crate::middleware::{CurrentPlayer, authorization};
@@ -39,9 +41,10 @@ pub(crate) fn create() -> Router<App> {
     .route("/", get(ok))
     .route("/chat", get(chat::get))
     .route("/chat", post(chat::push))
-    .route("/cheat/bot/spawn", get(cheat::spawn_bot))
+    .route("/cheat/bot/spawn", post(cheat::spawn_bot))
     .route("/cheat/bot/{id}/infrastructure/storage", get(cheat::get_bot_storage_capacity))
     .route("/cheat/bot/{id}/resources", get(cheat::get_bot_resources))
+    .route("/cheat/city/stability", post(cheat::set_stability))
     .route("/cheat/infrastructure", post(cheat::set_max_infrastructure))
     .route("/cheat/infrastructure/building", post(cheat::set_building_level))
     .route("/cheat/precursor/{id}/infrastructure/storage", get(cheat::get_precursor_storage_capacity))
@@ -58,25 +61,42 @@ pub(crate) fn create() -> Router<App> {
     .route("/cheat/resources/warehouse", get(cheat::set_max_warehouse_resources))
     .route("/cheat/resources/wood", get(cheat::set_max_wood))
     .route("/cheat/resources/wood", post(cheat::set_wood))
-    .route("/cheat/village/stability", post(cheat::set_stability))
+    .route("/city", post(city::get))
+    .route("/city/public", post(city::get_public))
+    .route("/city/rename", post(city::rename))
+    .route("/city/score", post(city::get_score))
     .route("/continent/field", post(continent::get_field))
     .route("/continent/fields", post(continent::get_fields))
     .route("/continent/size", get(continent::size))
+    .route("/infrastructure/academy/recruit/add", post(academy::add_recruit_order))
+    .route("/infrastructure/academy/recruit/cancel", post(academy::cancel_recruit_order))
+    .route("/infrastructure/academy/recruit/catalog", post(academy::get_recruit_catalog))
     .route("/infrastructure/prefecture/build/add", post(prefecture::add_build_order))
     .route("/infrastructure/prefecture/build/cancel", post(prefecture::cancel_build_order))
     .route("/infrastructure/prefecture/build/catalog", post(prefecture::get_build_catalog))
+    .route("/infrastructure/stable/recruit/add", post(stable::add_recruit_order))
+    .route("/infrastructure/stable/recruit/cancel", post(stable::cancel_recruit_order))
+    .route("/infrastructure/stable/recruit/catalog", post(stable::get_recruit_catalog))
     .route("/infrastructure/toggle", post(infrastructure::toggle))
     .route("/leave", get(leave))
+    .route("/npc/bot/{id}/coord", get(npc::bot::get_coords))
+    .route("/npc/bot/{id}/public", get(npc::bot::get_public))
+    .route("/npc/precursor/{id}/coord", get(npc::precursor::get_coords))
+    .route("/npc/precursor/{id}/public", get(npc::precursor::get_public))
     .route("/player", get(player::get_all))
     .route("/player", post(player::get))
     .route("/player/capacity", get(player::get_storage_capacity))
     .route("/player/maintenance", get(player::get_maintenance))
     .route("/player/military", get(player::get_military))
+    .route("/player/public", get(player::get_all_public))
     .route("/player/spawn", post(player::spawn))
     .route("/player/status", post(player::set_status))
     .route("/player/{id}/coord", get(player::get_coords))
     .route("/player/{id}/exists", get(player::exists))
+    .route("/player/{id}/public", get(player::get_public))
     .route("/player/{id}/status", get(player::get_status))
+    .route("/ranking", get(ranking::get))
+    .route("/ranking", post(ranking::get_rank))
     .route("/round", get(round::get))
     .route("/round/start", get(round::start))
     .route("/round/turn/end", get(round::end_turn))
@@ -88,8 +108,6 @@ pub(crate) fn create() -> Router<App> {
     .route("/script/{id}/execute", get(script::execute))
     .route("/script/{id}/remove", get(script::remove))
     .route("/version", get(version))
-    .route("/village", post(village::get))
-    .route("/village/rename", post(village::rename))
     .route("/world/config", get(world::get_config))
     .route("/world/save", post(world::save))
     .route("/world/stats", get(world::get_stats))

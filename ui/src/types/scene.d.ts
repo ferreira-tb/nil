@@ -1,22 +1,33 @@
 // Copyright (C) Call of Nil contributors
 // SPDX-License-Identifier: AGPL-3.0-only
 
-type Scene = 'home' | 'host-game' | 'join-game' | 'settings' | GameScene;
+type Scene = GameScene | 'home' | 'host-game' | 'join-game' | 'load-game' | 'settings';
 
-type GameScene = 'continent' | 'village' | InfrastructureScene | ScriptScene;
+type GameScene =
+  | InfrastructureScene
+  | ProfileScene
+  | ScriptScene
+  | 'chat'
+  | 'city'
+  | 'continent'
+  | 'ranking';
 
 type InfrastructureScene =
-  | 'academy'
+  | AcademyScene
+  | PrefectureScene
+  | StableScene
   | 'farm'
   | 'iron-mine'
   | 'quarry'
   | 'sawmill'
   | 'silo'
-  | 'stable'
   | 'wall'
-  | 'warehouse'
-  | PrefectureScene;
+  | 'warehouse';
 
-type PrefectureScene = 'prefecture' | 'village-management';
+type AcademyScene = 'academy' | 'academy-settings';
+type PrefectureScene = 'prefecture' | 'prefecture-settings';
+type StableScene = 'stable' | 'stable-settings';
+
+type ProfileScene = 'profile-bot' | 'profile-city' | 'profile-player' | 'profile-precursor';
 
 type ScriptScene = 'script' | 'nsr';

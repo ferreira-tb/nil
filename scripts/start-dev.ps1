@@ -2,6 +2,13 @@
 # SPDX-License-Identifier: AGPL-3.0-only
 
 param(
+  [Alias('A')]
+  [switch]$Android,
+
+  [Alias('D')]
+  [string]$Device,
+
+  [Alias('S')]
   [switch]$SkipWasm
 )
 
@@ -12,4 +19,10 @@ if (-not $SkipWasm) {
   pnpm run wasm
 }
 
-cargo tauri dev
+if ($Android) {
+  $Device = if ($Device) { `"$($Device.Trim())`" } else { '' }
+  Invoke-Expression "cargo tauri android dev $Device".Trim()
+}
+else {
+  cargo tauri dev
+}

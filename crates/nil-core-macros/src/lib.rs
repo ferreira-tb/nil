@@ -3,6 +3,7 @@
 
 mod infrastructure;
 mod npc;
+mod ruler;
 mod unit;
 
 use proc_macro::TokenStream;
@@ -20,6 +21,11 @@ pub fn derive_mine(input: TokenStream) -> TokenStream {
 #[proc_macro_derive(Precursor)]
 pub fn derive_precursor(input: TokenStream) -> TokenStream {
   npc::impl_precursor(&syn::parse(input).unwrap())
+}
+
+#[proc_macro_derive(Ruler)]
+pub fn derive_ruler(input: TokenStream) -> TokenStream {
+  ruler::impl_ruler(&syn::parse(input).unwrap())
 }
 
 #[proc_macro_derive(Storage)]

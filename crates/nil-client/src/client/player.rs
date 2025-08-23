@@ -6,7 +6,7 @@ use crate::error::Result;
 use nil_core::continent::Coord;
 use nil_core::infrastructure::storage::OverallStorageCapacity;
 use nil_core::military::Military;
-use nil_core::player::{Player, PlayerId, PlayerOptions, PlayerStatus};
+use nil_core::player::{Player, PlayerId, PlayerOptions, PlayerStatus, PublicPlayer};
 use nil_core::resources::Maintenance;
 
 impl Client {
@@ -38,6 +38,11 @@ impl Client {
     self.http.get_json("player/military").await
   }
 
+  /// GET `/player/public`
+  pub async fn get_public_players(&self) -> Result<Vec<PublicPlayer>> {
+    self.http.get_json("player/public").await
+  }
+
   /// POST `/player/spawn`
   pub async fn spawn_player(&self, options: PlayerOptions) -> Result<()> {
     self.http.post("player/spawn", options).await
@@ -61,6 +66,14 @@ impl Client {
     self
       .http
       .get_json(&format!("player/{id}/exists"))
+      .await
+  }
+
+  /// GET `/player/{id}/public`
+  pub async fn get_public_player(&self, id: PlayerId) -> Result<PublicPlayer> {
+    self
+      .http
+      .get_json(&format!("player/{id}/public"))
       .await
   }
 

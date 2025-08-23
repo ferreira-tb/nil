@@ -7,29 +7,36 @@ import { useI18n } from 'vue-i18n';
 import { storeToRefs } from 'pinia';
 import { throttle } from 'es-toolkit';
 import type { Locale } from '@/locale';
-import { showWindow } from '@/commands';
 import { onKeyDown } from '@tb-dev/vue';
 import { handleError } from '@/lib/error';
-import { watchImmediate } from '@vueuse/core';
 import { Sonner } from '@tb-dev/vue-components';
-import { defineGlobalCommands } from '@/lib/global';
-import { setTheme, useSettingsStore } from '@/stores/settings';
+import { setTheme, useSettings } from '@/settings';
+import { createTrayIcon, showWindow } from '@/commands';
+import { syncRef, useColorMode, watchImmediate } from '@vueuse/core';
+import { defineGlobalCommands, defineReactiveConsole } from '@/lib/global';
 
 const i18n = useI18n();
 
-const settings = useSettingsStore();
-const { locale, theme } = storeToRefs(settings);
+const settings = useSettings();
+const { locale, theme, colorMode } = storeToRefs(settings);
+
+const desktop = globalThis.__DESKTOP__;
 
 watchImmediate(locale, setLocale);
 watchImmediate(theme, setTheme);
 
-onKeyDown('F5', throttle(NIL.update, 1000));
+syncRef(useColorMode(), colorMode, { direction: 'rtl' });
+
+onKeyDown('F5', throttle(NIL.update, 1000), { enabled: desktop });
 
 onMounted(async () => {
   try {
+    await createTrayIcon();
     await showWindow();
     defineGlobalCommands();
-  } catch (err) {
+    defineReactiveConsole();
+  }
+  catch (err) {
     handleError(err);
   }
 });
@@ -40,9 +47,9 @@ function setLocale(value: Locale) {
 </script>
 
 <template>
-  <main class="fixed inset-0 select-none">
+  <main class="fixed inset-0 select-none pb-safe">
     <Sonner />
-    <div class="absolute inset-0 overflow-hidden">
+    <div class="relative size-full overflow-hidden">
       <RouterView #default="{ Component }">
         <template v-if="Component">
           <component :is="Component" />

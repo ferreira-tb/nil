@@ -3,7 +3,10 @@
 
 use nil_core::chat::Chat;
 use nil_core::continent::Continent;
+use nil_core::npc::bot::BotManager;
+use nil_core::npc::precursor::PrecursorManager;
 use nil_core::player::PlayerManager;
+use nil_core::ranking::Ranking;
 use nil_core::round::Round;
 use nil_core::script::Scripting;
 use nil_core::world::World;
@@ -33,6 +36,15 @@ impl App {
     f(&mut *self.world.write().await)
   }
 
+  pub async fn bot_manager<F, T>(&self, f: F) -> T
+  where
+    F: FnOnce(&BotManager) -> T,
+  {
+    self
+      .world(|world| f(world.bot_manager()))
+      .await
+  }
+
   pub async fn chat<F, T>(&self, f: F) -> T
   where
     F: FnOnce(&Chat) -> T,
@@ -56,6 +68,22 @@ impl App {
     self
       .world(|world| f(world.player_manager()))
       .await
+  }
+
+  pub async fn precursor_manager<F, T>(&self, f: F) -> T
+  where
+    F: FnOnce(&PrecursorManager) -> T,
+  {
+    self
+      .world(|world| f(world.precursor_manager()))
+      .await
+  }
+
+  pub async fn ranking<F, T>(&self, f: F) -> T
+  where
+    F: FnOnce(&Ranking) -> T,
+  {
+    self.world(|world| f(world.ranking())).await
   }
 
   pub async fn round<F, T>(&self, f: F) -> T

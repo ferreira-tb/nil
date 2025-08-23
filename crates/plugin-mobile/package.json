@@ -1,0 +1,26 @@
+{
+  "name": "tauri-plugin-mobile",
+  "type": "module",
+  "packageManager": "pnpm@10.15.0",
+  "license": "AGPL-3.0-only",
+  "private": true,
+  "files": [
+    "dist"
+  ],
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "vite build",
+    "type-check": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@tauri-apps/api": "^2.8.0",
+    "@tb-dev/utils": "^7.0.12"
+  }
+}

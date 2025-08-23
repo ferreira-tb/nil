@@ -3,11 +3,13 @@
 
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n';
-import { useTemplateRef } from 'vue';
 import { asyncRef } from '@tb-dev/vue';
 import * as commands from '@/commands';
+import RoundState from './RoundState.vue';
 import { onBeforeRouteUpdate } from 'vue-router';
+import { computed, nextTick, useTemplateRef } from 'vue';
 import { writeText } from '@tauri-apps/plugin-clipboard-manager';
+import { useBreakpoints } from '@/composables/util/useBreakpoints';
 import { type OnClickOutsideProps, vOnClickOutside } from '@vueuse/components';
 import {
   Button,
@@ -20,30 +22,51 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  useSidebar,
 } from '@tb-dev/vue-components';
 
 const props = defineProps<{
   isHost: boolean;
-  toggleSidebar: (value?: boolean) => boolean;
+  lastSavedAt: Option<RoundId>;
   onSave: () => MaybePromise<void>;
   onLeave: () => MaybePromise<void>;
 }>();
 
 const { t } = useI18n();
 
+const sidebar = useSidebar();
+
 const { config } = NIL.world.refs();
 const { round } = NIL.round.refs();
+const { player } = NIL.player.refs();
 
 const { state: serverAddr } = asyncRef(null, commands.getServerAddr);
 
+const { sm } = useBreakpoints();
+
+const sidebarHeader = useTemplateRef('sidebarHeaderEl');
 const sidebarFooter = useTemplateRef('sidebarFooterEl');
 const onClickOutsideOptions: OnClickOutsideProps['options'] = {
-  ignore: [sidebarFooter],
+  ignore: [sidebarHeader, sidebarFooter],
 };
 
-const closeSidebar = () => void props.toggleSidebar(false);
+const canSave = computed(() => {
+  return (props.isHost &&
+    round.value?.state.kind !== 'idle' &&
+    round.value?.id !== props.lastSavedAt);
+});
 
 onBeforeRouteUpdate(closeSidebar);
+
+async function closeSidebar() {
+  await nextTick();
+  if (sidebar.isMobile.value) {
+    sidebar.setOpenMobile(false);
+  }
+  else {
+    sidebar.setOpen(false);
+  }
+}
 
 function copyServerAddr() {
   if (serverAddr.value) {
@@ -54,10 +77,12 @@ function copyServerAddr() {
 </script>
 
 <template>
-  <Sidebar class="z-[var(--game-sidebar-z-index)]">
+  <Sidebar class="z-[var(--game-sidebar-z-index)] select-none">
     <SidebarHeader>
-      <div class="flex flex-col items-center">
-        <h1 v-if="config" class="font-nil text-lg">{{ config.name }}</h1>
+      <div ref="sidebarHeaderEl" class="flex flex-col items-center overflow-hidden pt-4">
+        <h1 v-if="config" class="font-nil text-lg break-all text-center">
+          {{ config.name }}
+        </h1>
         <h2
           v-if="serverAddr"
           class="text-muted-foreground cursor-pointer text-sm"
@@ -65,6 +90,8 @@ function copyServerAddr() {
         >
           {{ serverAddr.format() }}
         </h2>
+
+        <RoundState v-if="!sm && player && round?.state.kind === 'waiting'" class="mt-4" />
       </div>
     </SidebarHeader>
 
@@ -77,6 +104,14 @@ function copyServerAddr() {
                 <SidebarMenuButton as-child>
                   <RouterLink :to="{ name: 'continent' satisfies Scene }">
                     {{ t('continent') }}
+                  </RouterLink>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+
+              <SidebarMenuItem>
+                <SidebarMenuButton as-child>
+                  <RouterLink :to="{ name: 'ranking' satisfies GameScene }">
+                    {{ t('ranking') }}
                   </RouterLink>
                 </SidebarMenuButton>
               </SidebarMenuItem>
@@ -105,9 +140,9 @@ function copyServerAddr() {
     <SidebarFooter>
       <div
         ref="sidebarFooterEl"
-        class="grid grid-cols-2 items-center justify-center gap-4 px-6 pb-4"
+        class="grid grid-cols-2 items-center justify-center gap-4"
       >
-        <Button size="sm" :disabled="!isHost || round?.state.kind === 'idle'" @click="onSave">
+        <Button size="sm" :disabled="!canSave" @click="onSave">
           <span>{{ t('save') }}</span>
         </Button>
         <Button variant="destructive" size="sm" @click="onLeave">

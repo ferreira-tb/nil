@@ -1,14 +1,18 @@
 [package]
 name = "nil"
-version = "0.1.0"
 publish = false
 
+version.workspace = true
 edition.workspace = true
 rust-version.workspace = true
 license-file.workspace = true
 homepage.workspace = true
 repository.workspace = true
 authors.workspace = true
+
+[lib]
+name = "nil_lib"
+crate-type = ["cdylib", "rlib", "staticlib"]
 
 [lints]
 workspace = true
@@ -27,20 +31,24 @@ serde_json.workspace = true
 tauri-plugin-clipboard-manager.workspace = true
 tauri-plugin-dialog.workspace = true
 tauri-plugin-fs.workspace = true
+tauri-plugin-mobile.workspace = true
 tauri-plugin-persisted-scope.workspace = true
-tauri-plugin-prevent-default.workspace = true
+tauri-plugin-pinia.workspace = true
 tauri-plugin-process.workspace = true
-tauri-plugin-single-instance.workspace = true
-tauri-plugin-window-state.workspace = true
 thiserror.workspace = true
 tokio.workspace = true
 tracing.workspace = true
 tracing-subscriber.workspace = true
 
 [dependencies.tauri]
-version = "2.7"
-features = ["protocol-asset", "rustls-tls"]
+version = "2.8"
+features = ["image-png", "protocol-asset", "rustls-tls", "tray-icon"]
+
+[target.'cfg(not(target_os = "android"))'.dependencies]
+tauri-plugin-prevent-default.workspace = true
+tauri-plugin-single-instance.workspace = true
+tauri-plugin-window-state.workspace = true
 
 [build-dependencies.tauri-build]
-version = "2.3"
+version = "2.4"
 features = []

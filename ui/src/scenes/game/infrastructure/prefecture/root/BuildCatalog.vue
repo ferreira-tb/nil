@@ -7,10 +7,11 @@ import { useI18n } from 'vue-i18n';
 import type { MaybePromise } from '@tb-dev/utils';
 import BuildCatalogRow from './BuildCatalogRow.vue';
 import { usePlayerTurn } from '@/composables/player/usePlayerTurn';
-import type { InfrastructureImpl } from '@/core/model/infrastructure';
+import { useBreakpoints } from '@/composables/util/useBreakpoints';
 import { usePlayerResources } from '@/composables/player/usePlayerResources';
 import enUS from '@/locale/en-US/scenes/game/infrastructure/prefecture.json';
 import ptBR from '@/locale/pt-BR/scenes/game/infrastructure/prefecture.json';
+import type { InfrastructureImpl } from '@/core/model/infrastructure/infrastructure';
 import { Table, TableBody, TableHead, TableHeader, TableRow } from '@tb-dev/vue-components';
 
 const props = defineProps<{
@@ -34,6 +35,8 @@ const playerResources = usePlayerResources();
 const hasSomeAvailable = computed(() => {
   return Object.values(props.catalog).some((it) => it.kind === 'available');
 });
+
+const { sm } = useBreakpoints();
 </script>
 
 <template>
@@ -46,13 +49,7 @@ const hasSomeAvailable = computed(() => {
         <TableHead v-if="hasSomeAvailable">
           <span>{{ t('cost') }}</span>
         </TableHead>
-        <TableHead v-if="hasSomeAvailable">
-          <span>{{ t('maintenance') }}</span>
-        </TableHead>
-        <TableHead v-if="hasSomeAvailable">
-          <span>{{ t('workforce') }}</span>
-        </TableHead>
-        <TableHead :colspan="hasSomeAvailable ? 1 : 4">
+        <TableHead v-if="sm" :colspan="hasSomeAvailable ? 1 : 2">
           <span></span>
         </TableHead>
       </TableRow>

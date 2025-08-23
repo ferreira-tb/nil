@@ -2,44 +2,52 @@
 <!-- SPDX-License-Identifier: AGPL-3.0-only -->
 
 <script setup lang="ts">
+import { watchEffect } from 'vue';
 import Chat from '@/components/chat/Chat.vue';
+import { useRoute, useRouter } from 'vue-router';
 import { ListenerSet } from '@/lib/listener-set';
 import { useToggle, whenever } from '@vueuse/core';
-import { MessageSquareTextIcon } from 'lucide-vue-next';
+import ChatIcon from '@/components/chat/ChatIcon.vue';
+import ChatInput from '@/components/chat/ChatInput.vue';
+import { useBreakpoints } from '@/composables/util/useBreakpoints';
 import { Button, Popover, PopoverContent, PopoverTrigger } from '@tb-dev/vue-components';
 
 const { player } = NIL.player.refs();
 
 const [isChatOpen, toggleChat] = useToggle(false);
-const closeChat = () => void toggleChat(false);
-
 const [hasUnread, toggleUnread] = useToggle(false);
+
+const route = useRoute();
+const router = useRouter();
 
 const listener = new ListenerSet();
 listener.event.onChatUpdated(onChatUpdated);
 
+const { sm } = useBreakpoints();
+
 whenever(isChatOpen, () => void toggleUnread(false));
 
+watchEffect(() => {
+  if (route.name === ('chat' satisfies GameScene)) {
+    hasUnread.value = false;
+  }
+});
+
 function onChatUpdated({ message }: ChatUpdatedPayload) {
-  if (!isChatOpen.value && message.author.id !== player.value?.id) {
+  if (
+    !isChatOpen.value &&
+    route.name !== ('chat' satisfies GameScene) &&
+    (message.author.kind !== 'player' || message.author.id !== player.value?.id)
+  ) {
     hasUnread.value = true;
   }
 }
 </script>
 
 <template>
-  <Popover v-model:open="isChatOpen">
+  <Popover v-if="sm" v-model:open="isChatOpen">
     <PopoverTrigger as-child>
-      <div class="relative">
-        <Button variant="ghost" size="icon">
-          <MessageSquareTextIcon />
-        </Button>
-
-        <div
-          v-if="hasUnread"
-          class="absolute top-[4px] right-[4px] size-[10px] min-h-[10px] min-w-[10px] overflow-hidden rounded-full bg-red-500"
-        ></div>
-      </div>
+      <ChatIcon :has-unread />
     </PopoverTrigger>
 
     <PopoverContent
@@ -47,10 +55,28 @@ function onChatUpdated({ message }: ChatUpdatedPayload) {
       :align-offset="-15"
       side="top"
       :side-offset="10"
-      class="h-[500px] max-h-[75vh] w-96"
-      @pointer-down-outside="closeChat"
+      disable-outside-pointer-events
+      class="w-96 2xl:w-120 max-w-[90vw] h-[500px] max-h-[75vh] px-0"
+      @pointer-down-outside="() => void toggleChat(false)"
     >
-      <Chat class="h-[470px] max-h-[calc(75vh-30px)] w-90" />
+      <Chat class="w-full h-[470px] max-h-[calc(75vh-30px)]">
+        <template #input="{ scroll }">
+          <ChatInput @send="scroll" />
+        </template>
+      </Chat>
     </PopoverContent>
   </Popover>
+
+  <Button
+    v-else-if="route.name === ('chat' satisfies GameScene)"
+    variant="ghost"
+    size="icon"
+    @click="() => router.back()"
+  >
+    <ChatIcon :has-unread />
+  </Button>
+
+  <RouterLink v-else :to="{ name: 'chat' satisfies GameScene }">
+    <ChatIcon :has-unread />
+  </RouterLink>
 </template>

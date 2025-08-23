@@ -1,57 +1,65 @@
+/** Copyright (C) Call of Nil contributors */
+/** SPDX-License-Identifier: AGPL-3.0-only */
+
+@reference "./base.css";
+
+* {
+  @apply border-border outline-ring/50;
+}
+
+body {
+  @apply bg-background text-foreground;
+}
+
 button {
-  cursor: pointer;
+  @apply cursor-pointer;
 }
 
-label:where(
-  :has(input[type='number']),
-  :has(input[type='text']),
-  :has(input[type='url']),
-  :has(select),
-  :has(textarea),
-  :has(button[role='combobox'])
-) {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: flex-start;
-  gap: 0.5rem;
-  width: 100%;
-  font-weight: 400;
+button[data-slot="tabs-trigger"] {
+  @apply border-0!;
+}
+
+label:has(select),
+label:has(textarea),
+label:has(button[role="combobox"]),
+label:has(input[type="number"]),
+label:has(input[type="text"]),
+label:has(input[type="url"]) {
+  @apply flex w-full flex-col justify-center items-start gap-2 py-1 font-normal;
 
   & > span {
-    width: 100%;
+    @apply w-full;
   }
 }
 
-label:where(:has(button[role='switch']), :has(input[type='checkbox']), :has(input[type='radio'])) {
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-start;
-  align-items: center;
-  gap: 0.5rem;
-  font-weight: 400;
+label:has(button[role="checkbox"]),
+label:has(button[role="switch"]),
+label:has(input[type="checkbox"]),
+label:has(input[type="radio"]) {
+  @apply flex flex-row justify-start items-center gap-2 py-1 font-normal;
 
   & > span {
-    width: 100%;
+    @apply w-full;
   }
+}
+
+[data-scrollbarimpl] {
+  @apply border-0!;
+}
+
+[data-slot="dialog-content"]:not(:has([data-slot="command"])) {
+  @apply px-2;
+
+  width: 400px;
+  height: 500px;
+  max-width: 90svw;
+  max-height: calc(75svh - var(--safe-bottom));
+}
+
+[data-slot="sidebar-footer"] > div {
+  @apply pb-safe-4 px-6;
 }
 
 [data-sonner-toast] [data-description] {
-  color: var(--foreground) !important;
-}
-
-.ellipsis {
-  display: inline-block;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.game-layout {
-  display: flex;
-  padding: 1rem;
-  width: 100%;
-  height: 100%;
-  overflow-x: hidden;
-  overflow-y: auto;
+  @apply text-foreground!;
 }

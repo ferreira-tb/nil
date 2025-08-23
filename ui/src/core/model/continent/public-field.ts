@@ -3,24 +3,25 @@
 
 import { getField, getFields } from '@/commands';
 import { tryOnScopeDispose } from '@vueuse/core';
-import type { MaybePromise, Option } from '@tb-dev/utils';
+import type { MaybePromise } from '@tb-dev/utils';
 import type { CoordImpl } from '@/core/model/continent/coord';
-import { PublicVillageImpl } from '@/core/model/village/public';
 
-enum Flags {
+const enum Flags {
   Uninit = 1 << 0,
   Loading = 1 << 1,
   Empty = 1 << 2,
-  Village = 1 << 3,
+  City = 1 << 3,
 }
 
 export class PublicFieldImpl {
   public readonly coord: CoordImpl;
+  public readonly index: ContinentIndex;
+
   #flags: Flags = Flags.Uninit;
-  #village: Option<PublicVillageImpl>;
 
   private constructor(coord: CoordImpl) {
     this.coord = coord;
+    this.index = coord.toIndex();
   }
 
   public async load(options?: LoadOptions) {
@@ -28,34 +29,34 @@ export class PublicFieldImpl {
       this.#flags |= Flags.Loading;
       try {
         await options?.onBeforeLoad?.();
-        this.set(await getField(this.coord));
+        const field = await getField(this.coord);
+        this.setKind(field.kind);
         await options?.onLoad?.();
-      } catch (err) {
+      }
+      catch (err) {
         this.#flags ^= Flags.Loading;
         throw err;
       }
     }
   }
 
-  private init(field: PublicField) {
+  private init(kind: PublicFieldKind) {
     if (this.#flags & Flags.Uninit) {
-      this.set(field);
+      this.setKind(kind);
       return true;
     }
 
     return false;
   }
 
-  private set(field: PublicField) {
-    switch (field.kind) {
+  private setKind(kind: PublicFieldKind) {
+    switch (kind) {
       case 'empty': {
         this.#flags = Flags.Empty;
-        this.#village = null;
         break;
       }
-      case 'village': {
-        this.#flags = Flags.Village;
-        this.#village = PublicVillageImpl.create(field.village);
+      case 'city': {
+        this.#flags = Flags.City;
         break;
       }
     }
@@ -73,8 +74,8 @@ export class PublicFieldImpl {
     return this.#flags & Flags.Empty;
   }
 
-  public isVillage() {
-    return this.#flags & Flags.Village;
+  public isCity() {
+    return this.#flags & Flags.City;
   }
 
   public isOutside() {
@@ -97,10 +98,6 @@ export class PublicFieldImpl {
     return this.#flags;
   }
 
-  get village() {
-    return this.#village;
-  }
-
   get x() {
     return this.coord.x;
   }
@@ -114,19 +111,19 @@ export class PublicFieldImpl {
   }
 
   public static createBulkInitializer() {
-    const isInitializing = new Set<string>();
+    const isInitializing = new Set<ContinentIndex>();
     tryOnScopeDispose(() => isInitializing.clear());
 
-    return async function (fields: readonly PublicFieldImpl[]) {
+    return async function(fields: readonly PublicFieldImpl[]) {
       const coords: Coord[] = [];
       for (const field of fields) {
         if (
           field.flags === Flags.Uninit &&
-          !isInitializing.has(field.id) &&
+          !isInitializing.has(field.index) &&
           !field.coord.isOutside()
         ) {
           coords.push(field.coord);
-          isInitializing.add(field.id);
+          isInitializing.add(field.index);
         }
       }
 
@@ -135,8 +132,8 @@ export class PublicFieldImpl {
         for (const [coord, field] of await getFields(coords)) {
           const impl = fields.find((it) => it.coord.is(coord));
           if (impl) {
-            impl.init(field);
-            isInitializing.delete(impl.id);
+            impl.init(field.kind);
+            isInitializing.delete(impl.index);
             counter++;
           }
         }

@@ -7,14 +7,15 @@ mod maintenance;
 pub mod prelude;
 mod workforce;
 
+use crate::city::Stability;
 use crate::infrastructure::mine::MineProduction;
 use crate::infrastructure::storage::{OverallStorageCapacity, StorageCapacity};
-use crate::village::Stability;
 use derive_more::{Deref, Display, Into};
 use nil_num::impl_mul_ceil;
 use nil_num::ops::MulCeil;
 use serde::{Deserialize, Serialize};
 use std::cmp::Ordering;
+use std::num::NonZeroU32;
 use std::ops::{Add, AddAssign, Mul, MulAssign, Sub, SubAssign};
 
 pub use cost::{Cost, ResourceRatio};
@@ -102,17 +103,13 @@ impl Resources {
     Self { wood, ..self.clone() }
   }
 
-  pub fn add_if_within_capacity(
-    &mut self,
-    diff: &ResourcesDiff,
-    capacity: &OverallStorageCapacity,
-  ) {
+  pub fn add_within_capacity(&mut self, diff: &ResourcesDiff, capacity: &OverallStorageCapacity) {
     macro_rules! add {
-      ($($res:ident => $storage:ident),+ $(,)?) => {
+      ($($resource:ident => $storage:ident),+ $(,)?) => {
         $(
-          self
-            .$res
-            .add_if_within_capacity(diff.$res, capacity.$storage);
+          let resource = diff.$resource;
+          let storage = capacity.$storage;
+          self.$resource.add_within_capacity(resource, storage);
         )+
       };
     }
@@ -234,6 +231,27 @@ impl SubAssign<&Resources> for Resources {
   }
 }
 
+impl Mul<u32> for &Resources {
+  type Output = Resources;
+
+  fn mul(self, rhs: u32) -> Self::Output {
+    Resources {
+      food: self.food * rhs,
+      iron: self.iron * rhs,
+      stone: self.stone * rhs,
+      wood: self.wood * rhs,
+    }
+  }
+}
+
+impl Mul<NonZeroU32> for &Resources {
+  type Output = Resources;
+
+  fn mul(self, rhs: NonZeroU32) -> Self::Output {
+    self * rhs.get()
+  }
+}
+
 macro_rules! decl_resource {
   ($($name:ident => $diff:ident),+ $(,)?) => {
     $(
@@ -269,13 +287,37 @@ macro_rules! decl_resource {
           self.0.checked_sub(rhs.0).map(Self::new)
         }
 
-        pub fn add_if_within_capacity(&mut self, diff: $diff, capacity: StorageCapacity) {
+        pub fn add_within_capacity(&mut self, diff: $diff, capacity: StorageCapacity) {
           if diff < 0i32 {
             *self += diff;
           } else if self.0 < *capacity {
             let capacity = $name::from(capacity);
             *self = (*self + diff).min(capacity);
           }
+        }
+      }
+
+      impl From<u32> for $name {
+        fn from(value: u32) -> Self {
+          Self(value)
+        }
+      }
+
+      impl From<f64> for $name {
+        fn from(value: f64) -> Self {
+          Self(value as u32)
+        }
+      }
+
+      impl From<MineProduction> for $name {
+        fn from(value: MineProduction) -> Self {
+          Self(*value)
+        }
+      }
+
+      impl From<StorageCapacity> for $name {
+        fn from(value: StorageCapacity) -> Self {
+          Self(*value)
         }
       }
 
@@ -299,6 +341,14 @@ macro_rules! decl_resource {
         }
       }
 
+      impl Add<u32> for $name {
+        type Output = Self;
+
+        fn add(self, rhs: u32) -> Self {
+          Self(self.0.saturating_add(rhs))
+        }
+      }
+
       impl AddAssign for $name {
         fn add_assign(&mut self, rhs: Self) {
           *self = *self + rhs;
@@ -313,27 +363,33 @@ macro_rules! decl_resource {
         }
       }
 
+      impl Sub<u32> for $name {
+        type Output = Self;
+
+        fn sub(self, rhs: u32) -> Self {
+          Self(self.0.saturating_sub(rhs))
+        }
+      }
+
       impl SubAssign for $name {
         fn sub_assign(&mut self, rhs: Self) {
           *self = *self - rhs;
         }
       }
 
-      impl From<MineProduction> for $name {
-        fn from(value: MineProduction) -> Self {
-          Self::new(*value)
+      impl Mul<u32> for $name {
+        type Output = Self;
+
+        fn mul(self, rhs: u32) -> Self::Output {
+          Self(self.0.saturating_mul(rhs))
         }
       }
 
-      impl From<StorageCapacity> for $name {
-        fn from(value: StorageCapacity) -> Self {
-          Self::new(*value)
-        }
-      }
+      impl Mul<NonZeroU32> for $name {
+        type Output = Self;
 
-      impl From<f64> for $name {
-        fn from(value: f64) -> Self {
-          Self::new(value as u32)
+        fn mul(self, rhs: NonZeroU32) -> Self::Output {
+          self * rhs.get()
         }
       }
 
@@ -345,19 +401,17 @@ macro_rules! decl_resource {
         }
       }
 
-      impl Mul<$name> for f64 {
-        type Output = f64;
-
-        fn mul(self, rhs: $name) -> Self::Output {
-          self * f64::from(rhs.0)
-        }
-      }
-
       impl Mul<Stability> for $name {
         type Output = $name;
 
         fn mul(self, rhs: Stability) -> Self::Output {
           Self::from(self.mul_ceil(*rhs))
+        }
+      }
+
+      impl MulAssign<u32> for $name {
+        fn mul_assign(&mut self, rhs: u32) {
+          *self = *self * rhs;
         }
       }
 

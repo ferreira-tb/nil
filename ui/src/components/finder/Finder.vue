@@ -30,6 +30,10 @@ const items = computed<FinderItem[]>(() => {
       label: t('academy'),
     },
     {
+      value: 'city',
+      label: t('city'),
+    },
+    {
       value: 'continent',
       label: t('continent-map'),
     },
@@ -43,7 +47,7 @@ const items = computed<FinderItem[]>(() => {
     },
     {
       value: 'nsr',
-      label: 'NSR',
+      label: t('registry'),
     },
     {
       value: 'prefecture',
@@ -52,6 +56,10 @@ const items = computed<FinderItem[]>(() => {
     {
       value: 'quarry',
       label: t('quarry'),
+    },
+    {
+      value: 'ranking',
+      label: t('ranking'),
     },
     {
       value: 'sawmill',
@@ -72,14 +80,6 @@ const items = computed<FinderItem[]>(() => {
     {
       value: 'script',
       label: t('script', 2),
-    },
-    {
-      value: 'village',
-      label: t('village'),
-    },
-    {
-      value: 'village-management',
-      label: t('village-management'),
     },
     {
       value: 'wall',

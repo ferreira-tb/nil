@@ -3,15 +3,15 @@
 
 import { Entity } from './abstract';
 import { ChatEntity } from './chat';
+import { CityEntity } from './city';
 import { RoundEntity } from './round';
 import { WorldEntity } from './world';
 import { PlayerEntity } from './player';
-import { VillageEntity } from './village';
 import { MilitaryEntity } from './military';
 
 export function initEntities() {
-  if (!Object.hasOwn(window, 'NIL')) {
-    Object.defineProperty(window, 'NIL', {
+  if (!Object.hasOwn(globalThis, 'NIL')) {
+    Object.defineProperty(globalThis, 'NIL', {
       configurable: false,
       enumerable: true,
       writable: false,
@@ -27,6 +27,6 @@ export function initEntities() {
   ChatEntity.init();
   RoundEntity.init();
   PlayerEntity.init();
-  VillageEntity.init();
+  CityEntity.init();
   MilitaryEntity.init();
 }

@@ -4,7 +4,7 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
-import { useSettingsStore } from '@/stores/settings';
+import { useSettings } from '@/settings';
 import enUS from '@/locale/en-US/scenes/settings.json';
 import ptBR from '@/locale/pt-BR/scenes/settings.json';
 import {
@@ -14,6 +14,7 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
+  Checkbox,
   Label,
   Select,
   SelectContent,
@@ -30,19 +31,19 @@ const { t } = useI18n({
 });
 
 const router = useRouter();
-const settings = useSettingsStore();
+const settings = useSettings();
+
+const desktop = window.__DESKTOP__;
 </script>
 
 <template>
-  <div class="flex size-full flex-col items-center justify-center gap-2">
-    <Card :key="settings.locale" class="p-2 sm:min-w-80">
-      <CardHeader class="pt-4">
-        <CardTitle>
-          <span class="text-xl">{{ t('settings') }}</span>
-        </CardTitle>
+  <div class="card-layout">
+    <Card :key="settings.locale">
+      <CardHeader>
+        <CardTitle>{{ t('settings') }}</CardTitle>
       </CardHeader>
 
-      <CardContent class="flex flex-col gap-4 px-4">
+      <CardContent>
         <Label>
           <span>{{ t('language') }}</span>
           <Select v-model="settings.locale">
@@ -91,10 +92,17 @@ const settings = useSettingsStore();
             </SelectContent>
           </Select>
         </Label>
+
+        <div v-if="desktop" class="flex items-center justify-center py-1">
+          <Label>
+            <Checkbox v-model="settings.hideOnClose" />
+            <span>{{ t('hide-on-close') }}</span>
+          </Label>
+        </div>
       </CardContent>
 
-      <CardFooter class="flex items-center justify-center gap-2 px-12 pb-6">
-        <Button to="home" variant="default" class="px-8" @click="() => router.back()">
+      <CardFooter class="flex">
+        <Button variant="default" class="px-8" @click="() => router.back()">
           <span>OK</span>
         </Button>
       </CardFooter>

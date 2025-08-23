@@ -3,21 +3,26 @@
 
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n';
+import { storeToRefs } from 'pinia';
 import { computed, nextTick } from 'vue';
+import CostGrid from '@/components/resources/CostGrid.vue';
 import type { ResourcesImpl } from '@/core/model/resources';
-import BuildCatalogBuilding from './BuildCatalogBuilding.vue';
-import { Button, TableCell, TableRow } from '@tb-dev/vue-components';
+import { TableCell, TableRow } from '@tb-dev/vue-components';
+import BuildCatalogRowAction from './BuildCatalogRowAction.vue';
+import { useBreakpoints } from '@/composables/util/useBreakpoints';
+import BuildingTitle from '@/components/infrastructure/BuildingTitle.vue';
+import { usePrefectureSettings } from '@/settings/infrastructure/prefecture';
 import enUS from '@/locale/en-US/scenes/game/infrastructure/prefecture.json';
 import ptBR from '@/locale/pt-BR/scenes/game/infrastructure/prefecture.json';
 import type { BuildingImpl } from '@/core/model/infrastructure/building/abstract';
-import type { PrefectureImpl } from '@/core/model/infrastructure/building/prefecture';
+import type { PrefectureImpl } from '@/core/model/infrastructure/building/prefecture/prefecture';
 import { useResolvedBuildingLevel } from '@/composables/infrastructure/useResolvedBuildingLevel';
 
 const props = defineProps<{
   entry: PrefectureBuildCatalogEntry;
   building: BuildingImpl;
   prefecture: PrefectureImpl;
-  scene: GameScene;
+  scene: InfrastructureScene;
   loading: boolean;
   isPlayerTurn: boolean;
   playerResources: Option<ResourcesImpl>;
@@ -33,6 +38,9 @@ const { t } = useI18n({
 });
 
 const { player } = NIL.player.refs();
+
+const settings = usePrefectureSettings();
+const { hideMaxed, hideUnmet } = storeToRefs(settings);
 
 const level = useResolvedBuildingLevel(() => props.building);
 
@@ -52,18 +60,23 @@ const canBuild = computed(() => {
 });
 
 const canDemolish = computed(() => {
-  return (
+  return Boolean(
     !props.loading &&
-    player.value &&
-    props.isPlayerTurn &&
-    props.prefecture.enabled &&
-    level.value.previous >= level.value.min
+      player.value &&
+      props.isPlayerTurn &&
+      props.prefecture.enabled &&
+      level.value.previous >= level.value.min,
   );
 });
 
+const { sm } = useBreakpoints();
+
 async function makeOrder(kind: PrefectureBuildOrderKind) {
   await nextTick();
-  if ((kind === 'construction' && canBuild.value) || (kind === 'demolition' && canDemolish.value)) {
+  if (
+    (kind === 'construction' && canBuild.value) ||
+    (kind === 'demolition' && canDemolish.value)
+  ) {
     props.onBuildOrder(kind);
   }
 }
@@ -71,67 +84,68 @@ async function makeOrder(kind: PrefectureBuildOrderKind) {
 
 <template>
   <TableRow v-if="entry.kind === 'available'">
-    <TableCell class="min-w-24">
-      <BuildCatalogBuilding :building :scene />
-    </TableCell>
     <TableCell>
-      <div class="grid grid-cols-3 items-center justify-start gap-4">
-        <Wood :amount="entry.recipe.resources.wood" :limit="playerResources?.wood" />
-        <Stone :amount="entry.recipe.resources.stone" :limit="playerResources?.stone" />
-        <Iron :amount="entry.recipe.resources.iron" :limit="playerResources?.iron" />
-      </div>
+      <BuildingTitle :building="building.id" :level="building.level" :scene />
     </TableCell>
+
     <TableCell>
-      <div class="flex items-center justify-start">
-        <Food :amount="entry.recipe.maintenance" />
-      </div>
+      <CostGrid
+        v-if="sm"
+        :resources="entry.recipe.resources"
+        :maintenance="entry.recipe.maintenance"
+        :workforce="entry.recipe.workforce"
+        :limit="playerResources"
+      />
+      <template v-else>
+        <div class="flex flex-col gap-2 py-2">
+          <CostGrid
+            :resources="entry.recipe.resources"
+            :maintenance="entry.recipe.maintenance"
+            :workforce="entry.recipe.workforce"
+            :limit="playerResources"
+          />
+          <BuildCatalogRowAction
+            :building
+            :can-build
+            :can-demolish
+            :is-player-turn
+            :loading
+            @order="makeOrder"
+            @toggle="onToggle"
+          />
+        </div>
+      </template>
     </TableCell>
+
+    <TableCell v-if="sm">
+      <BuildCatalogRowAction
+        :building
+        :can-build
+        :can-demolish
+        :is-player-turn
+        :loading
+        @order="makeOrder"
+        @toggle="onToggle"
+      />
+    </TableCell>
+  </TableRow>
+
+  <TableRow v-else-if="(entry.kind === 'maxed' && !hideMaxed) || (entry.kind === 'unmet' && !hideUnmet)">
     <TableCell>
-      <div class="flex items-center justify-start">
-        <Workforce :amount="entry.recipe.workforce" />
-      </div>
+      <BuildingTitle :building="building.id" :level="building.level" :scene />
     </TableCell>
-    <TableCell class="min-w-30">
-      <div class="grid max-w-fit grid-cols-2 items-center justify-start gap-4 lg:grid-cols-3">
-        <Button
-          variant="default"
-          size="sm"
-          :disabled="!canBuild"
-          class="max-w-24"
-          @click="() => makeOrder('construction')"
-        >
-          <span>{{ t('build') }}</span>
-        </Button>
-        <Button
-          variant="secondary"
-          size="sm"
-          :disabled="loading || !isPlayerTurn"
-          class="max-w-24"
-          @click="() => onToggle()"
-        >
-          <span>{{ building.enabled ? t('disable') : t('enable') }}</span>
-        </Button>
-        <Button
-          variant="destructive"
-          size="sm"
-          :disabled="!canDemolish"
-          class="hidden max-w-24 lg:inline-flex"
-          @click="() => makeOrder('demolition')"
-        >
-          <span>{{ t('demolish') }}</span>
-        </Button>
+
+    <TableCell :colspan="sm ? 2 : 1">
+      <div class="text-muted-foreground flex w-full items-center justify-center text-sm">
+        <span v-if="entry.kind === 'maxed'">
+          {{ t('building-fully-constructed') }}
+        </span>
+        <span v-else-if="entry.kind === 'unmet'">
+          {{ t('not-yet-available') }}
+        </span>
       </div>
     </TableCell>
   </TableRow>
 
-  <TableRow v-else-if="entry.kind === 'maxed'">
-    <TableCell>
-      <BuildCatalogBuilding :building :scene />
-    </TableCell>
-    <TableCell colspan="4" class="w-full">
-      <div class="text-muted-foreground flex w-full items-center justify-center text-sm">
-        <span>{{ t('building-fully-constructed') }}</span>
-      </div>
-    </TableCell>
-  </TableRow>
+  <TableRow v-else class="hidden" />
 </template>

@@ -7,7 +7,8 @@ import '@/assets/style/vars.css';
 import '@/assets/style/themes.css';
 import '@/assets/style/fonts.css';
 import '@/assets/style/main.css';
-import '@/assets/style/nsr.css';
+import '@/assets/style/layout.css';
+import '@/assets/style/markdown.css';
 import '@/lib/prototype';
 import App from '@/App.vue';
 import { createApp } from 'vue';
@@ -16,6 +17,7 @@ import { router } from '@/router';
 import { createPinia } from 'pinia';
 import { handleError } from '@/lib/error';
 import { initEntities } from '@/core/entity';
+import { TauriPluginPinia } from '@tauri-store/pinia';
 import { registerGlobalComponents } from '@/components';
 import { setCurrentApp, setErrorHandler } from '@tb-dev/vue';
 
@@ -25,6 +27,14 @@ const pinia = createPinia();
 setCurrentApp(app);
 setErrorHandler(handleError, app);
 registerGlobalComponents(app);
+
+pinia.use(TauriPluginPinia({
+  autoStart: true,
+  saveOnChange: true,
+  saveStrategy: 'debounce',
+  saveInterval: 1000,
+  hooks: { error: handleError },
+}));
 
 app.use(i18n());
 app.use(router);

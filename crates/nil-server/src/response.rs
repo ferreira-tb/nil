@@ -43,32 +43,33 @@ pub(crate) fn from_core_err(err: CoreError) -> Response {
 
   let text = err.to_string();
   match err {
-    BotNotFound(_) => res!(NOT_FOUND, text),
-    BuildingStatsNotFound(_) => res!(NOT_FOUND, text),
+    BotAlreadySpawned(..) => res!(CONFLICT, text),
+    BotNotFound(..) => res!(NOT_FOUND, text),
+    BuildingStatsNotFound(..) => res!(NOT_FOUND, text),
     BuildingStatsNotFoundForLevel(..) => res!(NOT_FOUND, text),
-    CannotDecreaseBuildingLevel(_) => res!(BAD_REQUEST, text),
-    CannotIncreaseBuildingLevel(_) => res!(BAD_REQUEST, text),
+    CannotDecreaseBuildingLevel(..) => res!(BAD_REQUEST, text),
+    CannotIncreaseBuildingLevel(..) => res!(BAD_REQUEST, text),
     CheatingNotAllowed => res!(BAD_REQUEST, text),
-    FailedToExecuteScript(_) => res!(INTERNAL_SERVER_ERROR, text),
+    CityNotFound(..) => res!(NOT_FOUND, text),
+    FailedToExecuteScript(..) => res!(INTERNAL_SERVER_ERROR, text),
     FailedToLoadWorld => res!(INTERNAL_SERVER_ERROR, text),
     FailedToSaveWorld => res!(INTERNAL_SERVER_ERROR, text),
     Forbidden => res!(FORBIDDEN, text),
-    IndexOutOfBounds(_) => res!(BAD_REQUEST, text),
+    IndexOutOfBounds(..) => res!(BAD_REQUEST, text),
     InsufficientResources => res!(BAD_REQUEST, text),
-    MineStatsNotFound(_) => res!(NOT_FOUND, text),
+    MineStatsNotFound(..) => res!(NOT_FOUND, text),
     MineStatsNotFoundForLevel(..) => res!(NOT_FOUND, text),
     NoPlayer => res!(BAD_REQUEST, text),
-    PlayerAlreadySpawned(_) => res!(CONFLICT, text),
-    PlayerIsNotPending(_) => res!(BAD_REQUEST, text),
-    PlayerNotFound(_) => res!(NOT_FOUND, text),
-    PrecursorNotFound(_) => res!(NOT_FOUND, text),
+    PlayerAlreadySpawned(..) => res!(CONFLICT, text),
+    PlayerIsNotPending(..) => res!(BAD_REQUEST, text),
+    PlayerNotFound(..) => res!(NOT_FOUND, text),
+    PrecursorNotFound(..) => res!(NOT_FOUND, text),
     RoundAlreadyStarted => res!(CONFLICT, text),
     RoundHasPendingPlayers => res!(BAD_REQUEST, text),
     RoundNotStarted => res!(BAD_REQUEST, text),
-    ScriptNotFound(_) => res!(NOT_FOUND, text),
-    StorageStatsNotFound(_) => res!(NOT_FOUND, text),
+    ScriptNotFound(..) => res!(NOT_FOUND, text),
+    StorageStatsNotFound(..) => res!(NOT_FOUND, text),
     StorageStatsNotFoundForLevel(..) => res!(NOT_FOUND, text),
-    VillageNotFound(_) => res!(NOT_FOUND, text),
     WallStatsNotFoundForLevel(..) => res!(NOT_FOUND, text),
     WorldIsFull => res!(INTERNAL_SERVER_ERROR, text),
   }
@@ -101,7 +102,7 @@ macro_rules! bail_not_player {
 macro_rules! bail_not_owned_by {
   ($world:expr, $player:expr, $coord:expr) => {
     if !$world
-      .village($coord)?
+      .city($coord)?
       .is_owned_by_player_and(|id| $player == id)
     {
       return $crate::res!(FORBIDDEN);

@@ -9,7 +9,7 @@ import { usePrefecture } from '@/composables/infrastructure/useBuilding';
 import { useInfrastructure } from '@/composables/infrastructure/useInfrastructure';
 import { usePrefectureBuildCatalog } from '@/composables/infrastructure/usePrefectureBuildCatalog';
 
-const { coord, village } = NIL.village.refs();
+const { coord, city } = NIL.city.refs();
 
 const infrastructure = useInfrastructure();
 const prefecture = usePrefecture();
@@ -18,11 +18,11 @@ const { catalog, loading, add, cancel, load, toggle } = usePrefectureBuildCatalo
 
 await load();
 
-watch(village, load);
+watch(city, load);
 </script>
 
 <template>
-  <div class="flex w-full flex-col gap-4 xl:flex-row-reverse">
+  <div class="flex w-full min-w-max flex-col gap-4 xl:flex-row-reverse">
     <BuildQueue v-if="prefecture" :prefecture :loading @cancel="cancel" />
     <BuildCatalog
       v-if="infrastructure && catalog"

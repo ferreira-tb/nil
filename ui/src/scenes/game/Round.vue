@@ -3,14 +3,16 @@
 
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n';
+import RoundState from './RoundState.vue';
 import { Button } from '@tb-dev/vue-components';
 import type { MaybePromise } from '@tb-dev/utils';
 import { usePlayerTurn } from '@/composables/player/usePlayerTurn';
+import { useBreakpoints } from '@/composables/util/useBreakpoints';
 
 defineProps<{
   isHost: boolean;
   onStartRound: () => MaybePromise<void>;
-  onEndTurn: () => MaybePromise<void>;
+  onFinishTurn: () => MaybePromise<void>;
 }>();
 
 const { t } = useI18n();
@@ -19,32 +21,27 @@ const { round } = NIL.round.refs();
 const { player } = NIL.player.refs();
 
 const isPlayerTurn = usePlayerTurn();
+
+const { sm } = useBreakpoints();
 </script>
 
 <template>
   <div class="flex items-center justify-center gap-4">
-    <div
-      v-if="player && round?.state.kind === 'waiting'"
-      class="flex flex-col items-center justify-center"
+    <RoundState v-if="sm && player && round?.state.kind === 'waiting'" />
+    <Button
+      v-if="isHost && round?.state.kind === 'idle'"
+      size="sm"
+      @click="onStartRound"
     >
-      <span class="text-sm font-semibold">
-        {{ `${t('round')} ${round.id}` }}
-      </span>
-      <span class="text-muted-foreground text-sm">
-        {{ isPlayerTurn ? t('your-turn') : t('waiting-players') }}
-      </span>
-    </div>
-
-    <Button v-if="isHost && round?.state.kind === 'idle'" size="sm" @click="onStartRound">
       {{ t('start') }}
     </Button>
     <Button
       v-else-if="round?.state.kind === 'waiting'"
       size="sm"
       :disabled="!isPlayerTurn"
-      @click="onEndTurn"
+      @click="onFinishTurn"
     >
-      {{ t('end-turn') }}
+      {{ sm ? t('finish-turn') : t('finish') }}
     </Button>
   </div>
 </template>

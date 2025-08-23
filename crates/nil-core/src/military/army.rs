@@ -1,12 +1,16 @@
 // Copyright (C) Call of Nil contributors
 // SPDX-License-Identifier: AGPL-3.0-only
 
+use crate::city::CityOwner;
+use crate::impl_from_ruler;
 use crate::military::squad::{Squad, SquadSize};
 use crate::military::unit::UnitId;
 use crate::npc::bot::BotId;
 use crate::npc::precursor::PrecursorId;
 use crate::player::PlayerId;
+use crate::ranking::Score;
 use bon::Builder;
+use nil_core_macros::Ruler;
 use serde::{Deserialize, Serialize};
 use std::ops::{Add, AddAssign, Sub, SubAssign};
 use strum::EnumIs;
@@ -24,7 +28,7 @@ pub struct Army {
   #[builder(into)]
   owner: ArmyOwner,
 
-  #[builder(skip = ArmyState::Idle)]
+  #[builder(skip)]
   state: ArmyState,
 }
 
@@ -47,6 +51,11 @@ impl Army {
   #[inline]
   pub fn is_idle(&self) -> bool {
     self.state.is_idle()
+  }
+
+  #[inline]
+  pub fn score(&self) -> Score {
+    self.personnel.score()
   }
 }
 
@@ -98,11 +107,36 @@ impl ArmyPersonnel {
       swordsman: Squad::new(Swordsman, swordsman),
     }
   }
+
+  pub fn score(&self) -> Score {
+    let mut score = Score::default();
+    score += self.archer.score();
+    score += self.axeman.score();
+    score += self.heavy_cavalry.score();
+    score += self.light_cavalry.score();
+    score += self.pikeman.score();
+    score += self.swordsman.score();
+    score
+  }
 }
 
 impl Default for ArmyPersonnel {
   fn default() -> Self {
     Self::builder().build()
+  }
+}
+
+impl FromIterator<Squad> for ArmyPersonnel {
+  fn from_iter<T>(iter: T) -> Self
+  where
+    T: IntoIterator<Item = Squad>,
+  {
+    iter
+      .into_iter()
+      .fold(Self::default(), |mut personnel, squad| {
+        personnel += squad;
+        personnel
+      })
   }
 }
 
@@ -188,8 +222,8 @@ pub enum ArmyState {
   Idle,
 }
 
-#[expect(variant_size_differences)]
-#[derive(Clone, Debug, PartialEq, Eq, Deserialize, Serialize)]
+#[allow(variant_size_differences)]
+#[derive(Ruler, Clone, Debug, Deserialize, Serialize)]
 #[serde(tag = "kind", rename_all = "kebab-case")]
 pub enum ArmyOwner {
   Bot { id: BotId },
@@ -197,26 +231,6 @@ pub enum ArmyOwner {
   Precursor { id: PrecursorId },
 }
 
-impl From<BotId> for ArmyOwner {
-  fn from(id: BotId) -> Self {
-    Self::Bot { id }
-  }
-}
+impl_from_ruler!(CityOwner => ArmyOwner);
 
-impl From<PlayerId> for ArmyOwner {
-  fn from(id: PlayerId) -> Self {
-    Self::Player { id }
-  }
-}
-
-impl From<&PlayerId> for ArmyOwner {
-  fn from(id: &PlayerId) -> Self {
-    Self::Player { id: id.clone() }
-  }
-}
-
-impl From<PrecursorId> for ArmyOwner {
-  fn from(id: PrecursorId) -> Self {
-    Self::Precursor { id }
-  }
-}
+impl_from_ruler!(ArmyOwner => CityOwner);

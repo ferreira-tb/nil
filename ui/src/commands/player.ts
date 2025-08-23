@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 
 import { invoke } from '@tauri-apps/api/core';
-import type { RawMilitary } from '@/core/model/military';
+import type { RawMilitary } from '@/core/model/military/military';
 
 export function getPlayer(id: PlayerId) {
   return invoke<Player>('get_player', { id });
@@ -30,6 +30,14 @@ export async function getPlayerStorageCapacity() {
 
 export function getPlayers() {
   return invoke<readonly Player[]>('get_players');
+}
+
+export function getPublicPlayer(id: PlayerId) {
+  return invoke<PublicPlayer>('get_public_player', { id });
+}
+
+export function getPublicPlayers() {
+  return invoke<readonly PublicPlayer[]>('get_public_players');
 }
 
 export function playerExists(id: PlayerId) {

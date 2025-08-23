@@ -2,16 +2,27 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 
 import { computed } from 'vue';
-import type { MaybeNilRef } from '@tb-dev/vue';
-import type { PlayerImpl } from '@/core/model/player';
+import type { RoundImpl } from '@/core/model/round';
 import { toPlayerRef } from '@/composables/util/toRef';
+import type { PlayerImpl } from '@/core/model/player/player';
 
 export function usePlayerTurn(player?: MaybeNilRef<PlayerImpl>) {
   const { round } = NIL.round.refs();
   const playerRef = toPlayerRef(player);
   return computed(() => {
-    const id = playerRef.value?.id;
-    const isWaiting = id ? round.value?.isWaitingPlayer(id) : null;
-    return isWaiting ?? false;
+    if (round.value && playerRef.value) {
+      return isPlayerTurn(round.value, playerRef.value);
+    }
+
+    return false;
   });
+}
+
+export function isPlayerTurn(round?: Option<RoundImpl>, player?: Option<Player>) {
+  round ??= NIL.round.refs().round.value;
+  player ??= NIL.player.refs().player.value;
+
+  const id = player?.id;
+  const isWaiting = id ? round?.isWaitingPlayer(id) : null;
+  return isWaiting ?? false;
 }
