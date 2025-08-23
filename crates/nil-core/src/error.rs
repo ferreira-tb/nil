@@ -99,6 +99,9 @@ pub enum Error {
   #[error("No stats found for storage \"{0}\" at level {1}")]
   StorageStatsNotFoundForLevel(StorageId, BuildingLevel),
 
+  #[error("No stats found for wall at level {0}")]
+  WallStatsNotFoundForLevel(BuildingLevel),
+
   #[error("World is full")]
   WorldIsFull,
 }

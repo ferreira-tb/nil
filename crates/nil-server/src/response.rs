@@ -70,6 +70,7 @@ pub(crate) fn from_core_err(err: CoreError) -> Response {
     ScriptNotFound(..) => res!(NOT_FOUND, text),
     StorageStatsNotFound(..) => res!(NOT_FOUND, text),
     StorageStatsNotFoundForLevel(..) => res!(NOT_FOUND, text),
+    WallStatsNotFoundForLevel(..) => res!(NOT_FOUND, text),
     WorldIsFull => res!(INTERNAL_SERVER_ERROR, text),
   }
 }
