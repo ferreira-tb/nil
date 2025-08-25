@@ -38,10 +38,10 @@ impl Wall {
   pub const MAX_WORKFORCE: Workforce = Workforce::new(200);
 
   pub const MIN_DEFENSE_BOOST_PERCENT: WallDefensePercent = WallDefensePercent::new(5.0);
-  pub const MAX_DEFENSE_BOOST_PERCENT: WallDefensePercent = WallDefensePercent::new(20.0);
+  pub const MAX_DEFENSE_BOOST_PERCENT: WallDefensePercent = WallDefensePercent::new(107.0);
 
-  pub const MIN_DEFENSE: WallDefenseValue = WallDefenseValue::new(2000);
-  pub const MAX_DEFENSE: WallDefenseValue = WallDefenseValue::new(20000);
+  pub const MIN_DEFENSE: WallDefenseValue = WallDefenseValue::new(500);
+  pub const MAX_DEFENSE: WallDefenseValue = WallDefenseValue::new(10000);
 
   pub const MIN_SCORE: Score = Score::new(8);
   pub const MAX_SCORE: Score = Score::new(256);
@@ -89,9 +89,10 @@ impl From<f64> for WallDefenseValue {
 pub struct WallDefensePercent(f64);
 
 impl WallDefensePercent {
+  pub const MIN: WallDefensePercent = WallDefensePercent(0.0);
   #[inline]
   pub const fn new(value: f64) -> Self {
-    Self(value.clamp(0.0, 100.0))
+    Self(value.max(Self::MIN.0))
   }
 }
 
@@ -126,14 +127,14 @@ impl WallStatsTable {
     let mut defense = f64::from(Wall::MIN_DEFENSE);
     let defense_growth = growth()
       .floor(defense)
-      .ceil(Wall::MAX_DEFENSE)
+      .ceil(f64::from(Wall::MAX_DEFENSE))
       .max_level(max_level)
       .call();
 
     let mut defense_percent = f64::from(Wall::MIN_DEFENSE_BOOST_PERCENT);
     let defense_percent_growth = growth()
       .floor(defense_percent)
-      .ceil(Wall::MAX_DEFENSE_BOOST_PERCENT)
+      .ceil(f64::from(Wall::MAX_DEFENSE_BOOST_PERCENT))
       .max_level(max_level)
       .call();
 
