@@ -18,7 +18,7 @@ function Build {
   $Path = "crates/$Crate/pkg"
 
   if (Test-Path -Path $Path ) {
-    Get-ChildItem -Path $Path -Recurse | Remove-Item
+    Get-ChildItem -Path $Path -Recurse | Remove-Item -Recurse
   }
 
   $BuildCmd = "wasm-pack build crates/$Crate --scope tsukilabs"
