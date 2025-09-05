@@ -21,6 +21,7 @@ impl Cost {
 
 impl From<f64> for Cost {
   fn from(value: f64) -> Self {
+    debug_assert!(value.is_finite());
     Self::new(value as u32)
   }
 }
@@ -56,6 +57,7 @@ pub struct ResourceRatio(f64);
 impl ResourceRatio {
   #[inline]
   pub const fn new(value: f64) -> Self {
+    debug_assert!(value.is_finite());
     Self(value.clamp(0.0, 1.0))
   }
 

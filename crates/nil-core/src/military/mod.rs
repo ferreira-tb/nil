@@ -2,14 +2,16 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 
 pub mod army;
+pub mod maneuver;
 pub mod squad;
 pub mod unit;
 
 use crate::continent::{ContinentIndex, ContinentKey, ContinentSize};
-use crate::military::army::{Army, ArmyPersonnel};
 use crate::ranking::Score;
 use crate::resources::Maintenance;
 use crate::ruler::Ruler;
+use army::{Army, ArmyPersonnel};
+use maneuver::Maneuver;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 
@@ -18,15 +20,17 @@ use std::collections::HashMap;
 pub struct Military {
   continent: HashMap<ContinentIndex, Vec<Army>>,
   continent_size: ContinentSize,
+  maneuvers: Vec<Maneuver>,
 }
 
 // TODO: All armies should be reconciled when the round ends to avoid having
-// multiple copies of idle armies owned by the same entity in the same location.
+// multiple copies of idle armies owned by the same ruler in the same location.
 impl Military {
   pub(crate) fn new(size: ContinentSize) -> Self {
     Self {
       continent: HashMap::new(),
       continent_size: size,
+      maneuvers: Vec::new(),
     }
   }
 

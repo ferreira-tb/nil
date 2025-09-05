@@ -196,9 +196,9 @@ impl<'de> Visitor<'de> for CoordVisitor {
 }
 
 #[derive(
-  Clone, Copy, Debug, From, Into, PartialEq, Eq, PartialOrd, Ord, Deserialize, Serialize,
+  Clone, Copy, Debug, Default, From, Into, PartialEq, Eq, PartialOrd, Ord, Deserialize, Serialize,
 )]
-#[into(i16, u8)]
+#[into(i16, u8, f64)]
 pub struct Distance(u8);
 
 impl Distance {

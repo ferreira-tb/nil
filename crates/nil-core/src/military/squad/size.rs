@@ -6,15 +6,42 @@ use crate::ranking::Score;
 use crate::resources::Maintenance;
 use derive_more::{Deref, From, Into};
 use serde::{Deserialize, Serialize};
+use std::cmp::Ordering;
 use std::ops::{Add, AddAssign, Mul, Sub, SubAssign};
 
-#[derive(Clone, Copy, Debug, Default, Deref, From, Into, PartialEq, Eq, Deserialize, Serialize)]
+#[derive(
+  Clone,
+  Copy,
+  Debug,
+  Default,
+  Deref,
+  From,
+  Into,
+  PartialEq,
+  Eq,
+  PartialOrd,
+  Ord,
+  Deserialize,
+  Serialize,
+)]
 pub struct SquadSize(u32);
 
 impl SquadSize {
   #[inline]
   pub const fn new(size: u32) -> Self {
     Self(size)
+  }
+}
+
+impl PartialEq<u32> for SquadSize {
+  fn eq(&self, other: &u32) -> bool {
+    self.0.eq(other)
+  }
+}
+
+impl PartialOrd<u32> for SquadSize {
+  fn partial_cmp(&self, other: &u32) -> Option<Ordering> {
+    self.0.partial_cmp(other)
   }
 }
 
