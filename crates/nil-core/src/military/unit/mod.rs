@@ -79,6 +79,14 @@ impl UnitBox {
   }
 }
 
+impl PartialEq for UnitBox {
+  fn eq(&self, other: &Self) -> bool {
+    self.id() == other.id()
+  }
+}
+
+impl Eq for UnitBox {}
+
 impl Clone for UnitBox {
   fn clone(&self) -> Self {
     Self::from(self.0.id())

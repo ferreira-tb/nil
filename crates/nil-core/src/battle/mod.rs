@@ -35,12 +35,6 @@ impl Battle<'_> {
 }
 
 #[derive(Clone, Debug)]
-enum BattleWinner {
-  Attacker,
-  Defender,
-}
-
-#[derive(Clone, Debug)]
 pub struct OffensivePower {
   total: f64,
   infantry_ratio: f64,
@@ -137,6 +131,12 @@ impl DefensivePower {
   }
 }
 
+#[derive(Clone, Debug, PartialEq)]
+enum BattleWinner {
+  Attacker,
+  Defender,
+}
+
 #[expect(dead_code)]
 #[derive(Clone, Debug)]
 pub struct BattleResult {
@@ -145,10 +145,12 @@ pub struct BattleResult {
   defender_personnel: ArmyPersonnel,
   defender_surviving_personnel: ArmyPersonnel,
   wall_level: BuildingLevel,
+  winner: BattleWinner,
+  losses_ratio: f64,
 }
 
 impl BattleResult {
-  fn new(defending_squads: &[Squad], attacking_squads: &[Squad], wall: Option<&WallStats>) -> Self {
+  fn new(attacking_squads: &[Squad], defending_squads: &[Squad], wall: Option<&WallStats>) -> Self {
     let attacker_power = OffensivePower::new(attacking_squads);
     let defender_power = DefensivePower::new(defending_squads, &attacker_power, wall);
 
@@ -161,8 +163,8 @@ impl BattleResult {
     let mut defender_surviving_personnel = ArmyPersonnel::default();
 
     let losses_ratio = match winner {
-      BattleWinner::Attacker => (defender_power.total / attacker_power.total).powf(1.5),
-      BattleWinner::Defender => (attacker_power.total / defender_power.total).powf(1.5),
+      BattleWinner::Attacker => defender_power.total / attacker_power.total,
+      BattleWinner::Defender => attacker_power.total / defender_power.total,
     };
 
     let mut squad_survivors: f64;
@@ -194,6 +196,8 @@ impl BattleResult {
       defender_personnel,
       defender_surviving_personnel,
       wall_level,
+      winner,
+      losses_ratio,
     }
   }
 }
