@@ -3,9 +3,9 @@ resolver = "3"
 members = ["crates/*"]
 
 [workspace.package]
-version = "0.1.42"
+version = "0.1.44"
 edition = "2024"
-rust-version = "1.91"
+rust-version = "1.92"
 license-file = "./LICENSE"
 homepage = "https://nil.dev.br"
 repository = "https://github.com/tsukilabs/nil"
