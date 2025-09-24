@@ -4978,9 +4978,9 @@ dependencies = [
 
 [[package]]
 name = "tauri-plugin-pinia"
-version = "3.7.1"
+version = "4.0.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "481fee958a45a38d65de1a663889fc474f679d3f06f9ee791954c4613bf51523"
+checksum = "3c7c3fd11f9e1bca61c83075e150d45df09f2fae049888a231352fc8b753b828"
 dependencies = [
  "serde",
  "tauri",
@@ -5130,13 +5130,14 @@ dependencies = [
 
 [[package]]
 name = "tauri-store"
-version = "0.12.1"
+version = "1.0.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "3d2373226e4990b400755fbac4f04bcd0a6a145bde2dc04beaa7faeba2e205bd"
+checksum = "e409037dc02543c66c24934344af8366a889bebbdc2ab3c2bc2f5a729aab2151"
 dependencies = [
  "dashmap",
  "futures",
  "itertools",
+ "semver",
  "serde",
  "serde_json",
  "tauri",
@@ -5148,9 +5149,9 @@ dependencies = [
 
 [[package]]
 name = "tauri-store-macros"
-version = "0.12.1"
+version = "1.0.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "5c5d75706620db59708071e3fba8d560c6d69f225560c712d45f7bc3493f97fb"
+checksum = "076940f49b9dedb3f210ed7db814792b112876982241c58b7580aeb1538099f2"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -5159,13 +5160,11 @@ dependencies = [
 
 [[package]]
 name = "tauri-store-utils"
-version = "0.5.0"
+version = "0.6.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "baed2bbdce143a0b6e8105a0c9c7d9bfaa9c5689c3632bff12085c7209365d3f"
+checksum = "5637592d1062e5140a271dbf834a94954aec52960cdb6c9e24ef71a387e5163b"
 dependencies = [
- "bon",
- "serde",
- "serde_json",
+ "semver",
  "tauri",
  "thiserror 2.0.16",
  "tokio",
