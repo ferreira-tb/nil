@@ -18,6 +18,7 @@ mod tray;
 use error::BoxResult;
 use state::Nil;
 use tauri::{AppHandle, Manager, Wry};
+use tauri_plugin_pinia::CborMarshaler;
 
 #[expect(clippy::too_many_lines)]
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
@@ -152,6 +153,7 @@ fn setup(app: &AppHandle) -> BoxResult<()> {
   let app_dir = app.path().app_data_dir()?;
   let pinia = tauri_plugin_pinia::Builder::new()
     .path(app_dir.join("settings"))
+    .marshaler(Box::new(CborMarshaler))
     .build();
 
   app.plugin(pinia)?;
