@@ -134,7 +134,6 @@ fn builder() -> tauri::Builder<Wry> {
   use plugin::desktop;
   let mut builder = tauri::Builder::default()
     .plugin(desktop::prevent_default())
-    .plugin(desktop::window_state())
     .plugin(tauri_plugin_updater::Builder::new().build());
 
   if !cfg!(debug_assertions) {

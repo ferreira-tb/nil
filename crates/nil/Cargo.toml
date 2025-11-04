@@ -49,7 +49,6 @@ features = ["image-png", "protocol-asset", "rustls-tls", "tray-icon"]
 tauri-plugin-prevent-default.workspace = true
 tauri-plugin-single-instance.workspace = true
 tauri-plugin-updater.workspace = true
-tauri-plugin-window-state.workspace = true
 
 [build-dependencies.tauri-build]
 version = "2.4"

@@ -14,10 +14,12 @@ pub fn prevent_default() -> TauriPlugin<Wry> {
   let builder = Builder::new().with_flags(Flags::debug());
 
   #[cfg(windows)]
-  let builder = builder.platform(PlatformOptions {
-    general_autofill: false,
-    password_autosave: false,
-  });
+  let builder = builder.platform(
+    PlatformOptions::new()
+      .general_autofill(false)
+      .password_autosave(false)
+      .zoom_control(false),
+  );
 
   builder.build()
 }
@@ -31,12 +33,4 @@ pub fn single_instance() -> TauriPlugin<Wry> {
       window.set_focus()?;
     };
   })
-}
-
-pub fn window_state() -> TauriPlugin<Wry> {
-  use tauri_plugin_window_state::StateFlags as Flags;
-
-  tauri_plugin_window_state::Builder::new()
-    .with_state_flags(Flags::MAXIMIZED | Flags::POSITION)
-    .build()
 }

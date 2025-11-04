@@ -1,12 +1,11 @@
 // Copyright (C) Call of Nil contributors
 // SPDX-License-Identifier: AGPL-3.0-only
 
-use std::ops::{Sub, SubAssign};
-
 use crate::continent::{Coord, Distance};
 use crate::military::army::{Army, ArmyPersonnel};
 use crate::military::unit::stats::speed::Speed;
 use serde::{Deserialize, Serialize};
+use std::ops::{Sub, SubAssign};
 use uuid::Uuid;
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
