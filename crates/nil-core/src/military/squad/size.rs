@@ -73,6 +73,12 @@ impl AddAssign<u32> for SquadSize {
   }
 }
 
+impl From<f64> for SquadSize {
+  fn from(value: f64) -> Self {
+    Self::new(value as u32)
+  }
+}
+
 impl Sub for SquadSize {
   type Output = SquadSize;
 

@@ -17,6 +17,7 @@ pub mod military;
 pub mod npc;
 pub mod player;
 pub mod ranking;
+pub mod report;
 pub mod resources;
 pub mod round;
 pub mod ruler;
