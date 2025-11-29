@@ -2,7 +2,4 @@ ignoreWorkspaceRootCheck: true
 
 packages:
   - "crates/nil-continent/pkg"
-  - "crates/plugin-mobile"
-  - "docs"
-  - "registry"
   - "ui"

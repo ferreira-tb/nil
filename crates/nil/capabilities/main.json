@@ -14,7 +14,6 @@
     "dialog:allow-message",
     "dialog:allow-open",
     "dialog:allow-save",
-    "mobile:default",
     "pinia:default",
     "process:allow-exit",
 

@@ -39,8 +39,6 @@ app.use(i18n());
 app.use(router);
 app.use(pinia);
 
-router
-  .push({ name: 'home' })
-  .then(() => initEntities())
-  .then(() => app.mount('#app'))
-  .err();
+initEntities();
+
+app.mount('#app');
