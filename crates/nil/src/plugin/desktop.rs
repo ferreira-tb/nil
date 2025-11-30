@@ -16,8 +16,12 @@ pub fn prevent_default() -> TauriPlugin<Wry> {
   #[cfg(windows)]
   let builder = builder.platform(
     PlatformOptions::new()
+      .browser_accelerator_keys(cfg!(debug_assertions))
+      .default_context_menus(cfg!(debug_assertions))
+      .default_script_dialogs(cfg!(debug_assertions))
       .general_autofill(false)
       .password_autosave(false)
+      .pinch_zoom(false)
       .zoom_control(false),
   );
 
