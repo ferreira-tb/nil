@@ -56,11 +56,11 @@ impl Maneuver {
   }
 }
 
+#[must_use]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Deserialize, Serialize)]
 pub struct ManeuverId(Uuid);
 
 impl ManeuverId {
-  #[must_use]
   pub fn new() -> Self {
     Self(Uuid::new_v4())
   }
