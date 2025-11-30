@@ -2580,6 +2580,7 @@ dependencies = [
  "itertools",
  "nil-client",
  "nil-core",
+ "nil-payload",
  "nil-server",
  "nil-util",
  "remain",
@@ -2614,6 +2615,7 @@ dependencies = [
  "http",
  "local-ip-address",
  "nil-core",
+ "nil-payload",
  "percent-encoding",
  "reqwest",
  "serde",
@@ -2695,6 +2697,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "nil-payload"
+version = "0.1.1"
+dependencies = [
+ "nil-core",
+ "serde",
+]
+
+[[package]]
 name = "nil-server"
 version = "0.1.1"
 dependencies = [
@@ -2704,6 +2714,7 @@ dependencies = [
  "futures",
  "itertools",
  "nil-core",
+ "nil-payload",
  "nil-util",
  "percent-encoding",
  "serde",
