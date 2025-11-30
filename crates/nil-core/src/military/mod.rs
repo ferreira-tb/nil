@@ -129,7 +129,7 @@ impl Military {
       })
   }
 
-  pub fn request_maneuver(&mut self, request: ManeuverRequest) -> Result<()> {
+  pub fn request_maneuver(&mut self, request: &ManeuverRequest) -> Result<()> {
     self
       .maneuvers
       .extend(Some(Maneuver::new(request)));

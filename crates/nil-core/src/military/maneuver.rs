@@ -20,10 +20,9 @@ pub struct Maneuver {
 }
 
 impl Maneuver {
-  pub(super) fn new(request: ManeuverRequest) -> (ManeuverId, Self) {
+  pub(super) fn new(request: &ManeuverRequest) -> (ManeuverId, Self) {
     let id = ManeuverId::new();
     let distance = request.origin.distance(request.destination);
-
     let maneuver = Self {
       id,
       kind: request.kind,

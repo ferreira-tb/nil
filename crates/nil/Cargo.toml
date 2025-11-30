@@ -19,7 +19,6 @@ workspace = true
 
 [dependencies]
 anyhow.workspace = true
-ciborium.workspace = true
 futures.workspace = true
 itertools.workspace = true
 nil-client.workspace = true
