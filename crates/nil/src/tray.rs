@@ -1,14 +1,15 @@
 // Copyright (C) Call of Nil contributors
 // SPDX-License-Identifier: AGPL-3.0-only
 
+use crate::window::desktop::WindowExt;
 use anyhow::Result;
 use tauri::tray::{MouseButton, MouseButtonState, TrayIcon, TrayIconBuilder, TrayIconEvent};
-use tauri::{AppHandle, Manager, Wry, include_image};
+use tauri::{AppHandle, include_image};
 
 #[cfg(not(target_os = "linux"))]
 use {
-  crate::window::desktop::WindowExt,
   tauri::menu::{Menu, MenuBuilder, PredefinedMenuItem},
+  tauri::{Manager, Wry},
 };
 
 const ID: &str = "nil-tray";
