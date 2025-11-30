@@ -119,7 +119,9 @@ onUnmounted(() => {
   continent.free();
 });
 
-onKeyboardMovement(move);
+if (__DESKTOP__) {
+  onKeyboardMovement(move);
+}
 
 function render() {
   if (route.name === ('continent' satisfies GameScene)) {
