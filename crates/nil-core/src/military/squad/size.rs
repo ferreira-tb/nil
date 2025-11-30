@@ -24,6 +24,7 @@ use std::ops::{Add, AddAssign, Mul, Sub, SubAssign};
   Deserialize,
   Serialize,
 )]
+#[into(u32, f64)]
 pub struct SquadSize(u32);
 
 impl SquadSize {

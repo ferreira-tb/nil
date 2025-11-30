@@ -107,12 +107,17 @@ fn battle_result() {
     .build();
 
   let attacker: ArmyPersonnel = attacker.iter().cloned().collect();
-  let defender_survivors: ArmyPersonnel = [s(Pikeman, 71), s(Swordsman, 35)].iter().cloned().collect();
+  let defender_survivors: ArmyPersonnel = [s(Pikeman, 71), s(Swordsman, 35)]
+    .into_iter()
+    .collect();
 
   let result = battle.battle_result();
   assert_eq!(result.winner, BattleWinner::Defender);
   assert_eq!(result.attacker_personnel, attacker);
-  assert_eq!(result.attacker_surviving_personnel, ArmyPersonnel::default());
+  assert_eq!(
+    result.attacker_surviving_personnel,
+    ArmyPersonnel::default()
+  );
   assert_eq!(result.defender_surviving_personnel, defender_survivors);
 }
 
