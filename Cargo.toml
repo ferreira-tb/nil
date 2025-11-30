@@ -3,7 +3,7 @@ resolver = "3"
 members = ["crates/*"]
 
 [workspace.package]
-version = "0.1.0"
+version = "0.1.1"
 edition = "2024"
 rust-version = "1.93"
 license-file = "./LICENSE"
@@ -42,7 +42,6 @@ nil-util.path = "./crates/nil-util"
 anyhow = "1.0"
 bon = "3.8"
 bytes = "1.11"
-ciborium = "0.2"
 futures = "0.3"
 http = "1.3"
 itertools = "0.14"
@@ -119,7 +118,6 @@ features = ["rustls-tls"]
 [workspace.dependencies.tauri-plugin-pinia]
 git = "https://github.com/ferreira-tb/tauri-store"
 branch = "main"
-features = ["marshaler-cbor"]
 
 [workspace.dependencies.tauri-plugin-prevent-default]
 git = "https://github.com/ferreira-tb/tauri-plugin-prevent-default"

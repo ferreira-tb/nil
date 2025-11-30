@@ -1,9 +1,10 @@
+import { attemptAsync } from 'es-toolkit';
 import { check } from '@tauri-apps/plugin-updater';
 import { relaunch } from '@tauri-apps/plugin-process';
 
 export async function checkForUpdates() {
   if (__DESKTOP__ && !__DEBUG_ASSERTIONS__) {
-    const update = await check();
+    const [_, update] = await attemptAsync(check);
     if (update) {
       await update.downloadAndInstall();
       await relaunch();
