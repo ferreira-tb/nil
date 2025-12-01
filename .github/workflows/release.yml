@@ -50,6 +50,7 @@ jobs:
         with:
           tagName: v__VERSION__
           releaseName: "Call of Nil v__VERSION__"
+          releaseBody: "This is an early preview. The game is still under development and not yet ready to play."
           releaseDraft: false
           prerelease: false
           includeUpdaterJson: true

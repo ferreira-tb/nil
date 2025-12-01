@@ -78,6 +78,7 @@ fn defensive_power_with_wall() {
     .wall()
     .get(BuildingLevel::new(20))
     .unwrap();
+
   let battle = Battle::builder()
     .attacker(&attacker)
     .defender(&defender)
@@ -133,7 +134,7 @@ fn overall() {
   let defense_power = battle.defensive_power();
 
   assert_eq!(attack_power.total, 630000.0);
-  assert!((defense_power.total - 495238.0952380952).abs() <= 0.001);
+  assert!((defense_power.total - 495238.095).abs() <= 0.001);
 
   let attacker = [s(LightCavalry, 3000), s(Axeman, 3000), s(Archer, 2000)];
   let defender = [s(Pikeman, 8000), s(Swordsman, 8000)];
@@ -147,7 +148,7 @@ fn overall() {
 
   assert_eq!(attack_power.total, 570000.0);
   assert!((attack_power.infantry_ratio - 0.21).abs() <= 0.001);
-  assert!((attack_power.cavalry_ratio - 0.68421).abs() <= 0.001);
+  assert!((attack_power.cavalry_ratio - 0.684).abs() <= 0.001);
   assert!((attack_power.ranged_ratio - 0.105).abs() <= 0.001);
   assert!((defense_power.total - 488421.052).abs() <= 0.001);
 }

@@ -3,6 +3,7 @@
 
 #![allow(clippy::needless_pass_by_value)]
 
+pub mod battle;
 pub mod chat;
 pub mod cheat;
 pub mod city;

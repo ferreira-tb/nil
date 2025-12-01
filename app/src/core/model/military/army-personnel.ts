@@ -20,6 +20,21 @@ export class ArmyPersonnelImpl implements ArmyPersonnel {
     this.swordsman = SquadImpl.create(personnel.swordsman);
   }
 
+  public *[Symbol.iterator]() {
+    yield* this.getSquads();
+  }
+
+  public getSquads() {
+    return [
+      this.archer,
+      this.axeman,
+      this.heavyCavalry,
+      this.lightCavalry,
+      this.pikeman,
+      this.swordsman,
+    ];
+  }
+
   public size() {
     return ArmyPersonnelImpl.size(this);
   }
