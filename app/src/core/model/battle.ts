@@ -1,6 +1,7 @@
 // Copyright (C) Call of Nil contributors
 // SPDX-License-Identifier: AGPL-3.0-only
 
+import { simulateBattle } from '@/commands/battle';
 import { ArmyPersonnelImpl } from '@/core/model/military/army-personnel';
 
 export class BattleResultImpl implements BattleResult {
@@ -22,11 +23,23 @@ export class BattleResultImpl implements BattleResult {
     this.lossesRatio = result.lossesRatio;
   }
 
+  public getAttackerLosses() {
+    return this.attackerPersonnel.sub(this.attackerSurvivingPersonnel);
+  }
+
+  public getDefenderLosses() {
+    return this.defenderPersonnel.sub(this.defenderSurvivingPersonnel);
+  }
+
   public static create(result: BattleResult) {
     if (result instanceof BattleResultImpl) {
       return result;
     }
 
     return new BattleResultImpl(result);
+  }
+
+  public static async simulate(args: Parameters<typeof simulateBattle>[0]) {
+    return new BattleResultImpl(await simulateBattle(args));
   }
 }

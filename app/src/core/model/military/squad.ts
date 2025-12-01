@@ -14,11 +14,35 @@ export class SquadImpl implements Squad {
     return this.size === 0;
   }
 
+  public add(squad: Squad) {
+    if (this.unit === squad.unit) {
+      const size = this.size + squad.size;
+      return SquadImpl.create({ unit: this.unit, size });
+    }
+    else {
+      return this;
+    }
+  }
+
+  public sub(squad: Squad) {
+    if (this.unit === squad.unit) {
+      const size = this.size - squad.size;
+      return SquadImpl.create({ unit: this.unit, size });
+    }
+    else {
+      return this;
+    }
+  }
+
   public static create(squad: Squad) {
     if (squad instanceof SquadImpl) {
       return squad;
     }
 
     return new SquadImpl(squad);
+  }
+
+  public static createEmpty(unit: UnitId) {
+    return SquadImpl.create({ unit, size: 0 });
   }
 }

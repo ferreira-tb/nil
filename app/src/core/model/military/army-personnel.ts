@@ -50,12 +50,45 @@ export class ArmyPersonnelImpl implements ArmyPersonnel {
     );
   }
 
+  public add(personnel: ArmyPersonnel) {
+    return ArmyPersonnelImpl.create({
+      archer: this.archer.add(personnel.archer),
+      axeman: this.axeman.add(personnel.axeman),
+      pikeman: this.pikeman.add(personnel.pikeman),
+      swordsman: this.swordsman.add(personnel.swordsman),
+      heavyCavalry: this.heavyCavalry.add(personnel.heavyCavalry),
+      lightCavalry: this.lightCavalry.add(personnel.lightCavalry),
+    });
+  }
+
+  public sub(personnel: ArmyPersonnel) {
+    return ArmyPersonnelImpl.create({
+      archer: this.archer.sub(personnel.archer),
+      axeman: this.axeman.sub(personnel.axeman),
+      pikeman: this.pikeman.sub(personnel.pikeman),
+      swordsman: this.swordsman.sub(personnel.swordsman),
+      heavyCavalry: this.heavyCavalry.sub(personnel.heavyCavalry),
+      lightCavalry: this.lightCavalry.sub(personnel.lightCavalry),
+    });
+  }
+
   public static create(personnel: ArmyPersonnel) {
     if (personnel instanceof ArmyPersonnelImpl) {
       return personnel;
     }
 
     return new ArmyPersonnelImpl(personnel);
+  }
+
+  public static createEmpty() {
+    return this.create({
+      archer: SquadImpl.createEmpty('archer'),
+      axeman: SquadImpl.createEmpty('axeman'),
+      pikeman: SquadImpl.createEmpty('pikeman'),
+      swordsman: SquadImpl.createEmpty('swordsman'),
+      heavyCavalry: SquadImpl.createEmpty('heavy-cavalry'),
+      lightCavalry: SquadImpl.createEmpty('light-cavalry'),
+    });
   }
 
   public static size(personnel: ArmyPersonnel): ArmyPersonnelSize {

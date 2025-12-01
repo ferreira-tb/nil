@@ -3,6 +3,7 @@
 
 import { profileRoutes } from './profile';
 import type { RouteRecordRaw } from 'vue-router';
+import { warRoomRoutes } from '@/router/game/war-room';
 import { infrastructureRoutes } from './infrastructure';
 
 export const gameRoutes: RouteRecordRaw[] = [
@@ -10,6 +11,11 @@ export const gameRoutes: RouteRecordRaw[] = [
     component: () => import('@/scenes/game/chat/index.vue'),
     path: 'chat',
     name: 'chat' satisfies GameScene,
+  },
+  {
+    component: () => import('@/scenes/game/city/index.vue'),
+    path: 'city',
+    name: 'city' satisfies GameScene,
   },
   {
     component: () => import('@/scenes/game/continent/index.vue'),
@@ -32,8 +38,8 @@ export const gameRoutes: RouteRecordRaw[] = [
     name: 'ranking' satisfies GameScene,
   },
   {
-    component: () => import('@/scenes/game/city/index.vue'),
-    path: 'city',
-    name: 'city' satisfies GameScene,
+    component: () => import('@/scenes/game/war-room/index.vue'),
+    path: 'war-room',
+    children: warRoomRoutes,
   },
 ];
