@@ -16,6 +16,14 @@ export class ArmyImpl implements Army {
     this.owner = army.owner;
   }
 
+  public *[Symbol.iterator]() {
+    yield* this.personnel;
+  }
+
+  public getSquads() {
+    return this.personnel.getSquads();
+  }
+
   public isIdle() {
     return this.state.kind === 'idle';
   }

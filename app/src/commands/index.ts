@@ -9,6 +9,7 @@ export * from './city';
 export * from './cheat';
 export * from './round';
 export * from './world';
+export * from './battle';
 export * from './client';
 export * from './server';
 export * from './player';

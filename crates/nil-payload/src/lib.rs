@@ -1,6 +1,7 @@
 // Copyright (C) Call of Nil contributors
 // SPDX-License-Identifier: AGPL-3.0-only
 
+pub mod battle;
 pub mod chat;
 pub mod cheat;
 pub mod city;

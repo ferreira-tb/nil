@@ -1,6 +1,7 @@
 // Copyright (C) Call of Nil contributors
 // SPDX-License-Identifier: AGPL-3.0-only
 
+mod battle;
 mod chat;
 mod cheat;
 mod city;
@@ -38,6 +39,7 @@ pub(crate) fn create() -> Router<App> {
   #[rustfmt::skip]
   let router = Router::new()
     .route("/", get(ok))
+    .route("/battle/simulate", post(battle::simulate))
     .route("/chat", get(chat::get))
     .route("/chat", post(chat::push))
     .route("/cheat/bot/spawn", post(cheat::spawn_bot))

@@ -81,6 +81,14 @@ const items = computed<FinderItem[]>(() => {
       value: 'warehouse',
       label: t('warehouse'),
     },
+    {
+      value: 'war-room',
+      label: t('war-room'),
+    },
+    {
+      value: 'war-room-battle-simulator',
+      label: t('battle-simulator'),
+    },
   ];
 
   _items.sort((a, b) => compare(a.label, b.label));
