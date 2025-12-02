@@ -5,7 +5,7 @@
 import { useI18n } from 'vue-i18n';
 import { useRouteParams } from '@vueuse/router';
 import CityTable from '@/components/profile/CityTable.vue';
-import { usePublicBot } from '@/composables/npc/bot/usePublicBot';
+import { usePublicBot } from '@/composables/npc/usePublicBot';
 import { usePublicCities } from '@/composables/city/usePublicCities';
 import {
   Card,
