@@ -9,6 +9,7 @@ minimumReleaseAgeExclude:
   - "@tauri-store/*"
   - "@tb-dev/*"
   - "@tsukilabs/*"
+  - "reka-ui"
   - "typescript"
   - "vite"
   - "vue"

@@ -6,7 +6,7 @@ import { useI18n } from 'vue-i18n';
 import { useRouteParams } from '@vueuse/router';
 import CityTable from '@/components/profile/CityTable.vue';
 import { usePublicCities } from '@/composables/city/usePublicCities';
-import { usePublicPrecursor } from '@/composables/npc/precursor/usePublicPrecursor';
+import { usePublicPrecursor } from '@/composables/npc/usePublicPrecursor';
 import {
   Card,
   CardContent,
