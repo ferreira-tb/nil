@@ -114,6 +114,7 @@ impl From<Army> for ArmyPersonnel {
 pub struct ArmyId(Uuid);
 
 impl ArmyId {
+  #[inline]
   pub fn new() -> Self {
     Self(Uuid::new_v4())
   }

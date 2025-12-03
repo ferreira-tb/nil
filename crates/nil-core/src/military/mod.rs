@@ -1,6 +1,9 @@
 // Copyright (C) Call of Nil contributors
 // SPDX-License-Identifier: AGPL-3.0-only
 
+#[cfg(test)]
+mod tests;
+
 pub mod army;
 pub mod maneuver;
 pub mod squad;
@@ -120,6 +123,11 @@ impl Military {
     self.continent.values_mut().flatten()
   }
 
+  #[inline]
+  pub fn count_armies(&self) -> usize {
+    self.armies().count()
+  }
+
   pub fn armies_at<K>(&self, key: K) -> &[Army]
   where
     K: ContinentKey,
@@ -130,6 +138,13 @@ impl Military {
       .get(&index)
       .map(Vec::as_slice)
       .unwrap_or_default()
+  }
+
+  pub fn count_armies_at<K>(&self, key: K) -> usize
+  where
+    K: ContinentKey,
+  {
+    self.armies_at(key).iter().count()
   }
 
   pub fn idle_armies_at<K>(&self, key: K) -> impl Iterator<Item = &Army>

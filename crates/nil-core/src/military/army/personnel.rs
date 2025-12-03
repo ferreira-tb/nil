@@ -43,6 +43,29 @@ impl ArmyPersonnel {
     }
   }
 
+  pub fn splat(size: impl Into<SquadSize>) -> Self {
+    let size: SquadSize = size.into();
+    Self::builder()
+      .archer(size)
+      .axeman(size)
+      .heavy_cavalry(size)
+      .light_cavalry(size)
+      .pikeman(size)
+      .swordsman(size)
+      .build()
+  }
+
+  pub fn random() -> Self {
+    Self::builder()
+      .archer(SquadSize::random())
+      .axeman(SquadSize::random())
+      .heavy_cavalry(SquadSize::random())
+      .light_cavalry(SquadSize::random())
+      .pikeman(SquadSize::random())
+      .swordsman(SquadSize::random())
+      .build()
+  }
+
   pub fn squad(&self, id: UnitId) -> &Squad {
     match id {
       UnitId::Archer => &self.archer,

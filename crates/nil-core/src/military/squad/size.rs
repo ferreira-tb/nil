@@ -32,6 +32,11 @@ impl SquadSize {
   pub const fn new(size: u32) -> Self {
     Self(size)
   }
+
+  #[inline]
+  pub fn random() -> Self {
+    Self::new(rand::random())
+  }
 }
 
 impl PartialEq<u32> for SquadSize {
