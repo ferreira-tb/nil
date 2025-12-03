@@ -10,8 +10,8 @@ export const warRoomRoutes: RouteRecordRaw[] = [
     name: 'war-room' satisfies WarRoomScene,
   },
   {
-    component: () => import('@/scenes/game/war-room/battle-simulator/index.vue'),
-    path: 'war-room-battle-simulator',
-    name: 'war-room-battle-simulator' satisfies WarRoomScene,
+    component: () => import('@/scenes/game/war-room/simulator/index.vue'),
+    path: 'war-room-simulator',
+    name: 'war-room-simulator' satisfies WarRoomScene,
   },
 ];

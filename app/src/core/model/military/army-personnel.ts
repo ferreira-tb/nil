@@ -40,14 +40,7 @@ export class ArmyPersonnelImpl implements ArmyPersonnel {
   }
 
   public isEmpty() {
-    return (
-      this.archer.isEmpty() &&
-      this.axeman.isEmpty() &&
-      this.heavyCavalry.isEmpty() &&
-      this.lightCavalry.isEmpty() &&
-      this.pikeman.isEmpty() &&
-      this.swordsman.isEmpty()
-    );
+    return ArmyPersonnelImpl.isEmpty(this);
   }
 
   public add(personnel: ArmyPersonnel) {
@@ -81,14 +74,18 @@ export class ArmyPersonnelImpl implements ArmyPersonnel {
   }
 
   public static createEmpty() {
-    return this.create({
-      archer: SquadImpl.createEmpty('archer'),
-      axeman: SquadImpl.createEmpty('axeman'),
-      pikeman: SquadImpl.createEmpty('pikeman'),
-      swordsman: SquadImpl.createEmpty('swordsman'),
-      heavyCavalry: SquadImpl.createEmpty('heavy-cavalry'),
-      lightCavalry: SquadImpl.createEmpty('light-cavalry'),
-    });
+    return this.create(ArmyPersonnelImpl.createEmptyRaw());
+  }
+
+  public static createEmptyRaw(): ArmyPersonnel {
+    return {
+      archer: SquadImpl.createEmptyRaw('archer'),
+      axeman: SquadImpl.createEmptyRaw('axeman'),
+      pikeman: SquadImpl.createEmptyRaw('pikeman'),
+      swordsman: SquadImpl.createEmptyRaw('swordsman'),
+      heavyCavalry: SquadImpl.createEmptyRaw('heavy-cavalry'),
+      lightCavalry: SquadImpl.createEmptyRaw('light-cavalry'),
+    };
   }
 
   public static size(personnel: ArmyPersonnel): ArmyPersonnelSize {
@@ -100,5 +97,16 @@ export class ArmyPersonnelImpl implements ArmyPersonnel {
       pikeman: personnel.pikeman.size,
       swordsman: personnel.swordsman.size,
     };
+  }
+
+  public static isEmpty(personnel: ArmyPersonnel) {
+    return (
+      SquadImpl.isEmpty(personnel.archer) &&
+      SquadImpl.isEmpty(personnel.axeman) &&
+      SquadImpl.isEmpty(personnel.heavyCavalry) &&
+      SquadImpl.isEmpty(personnel.lightCavalry) &&
+      SquadImpl.isEmpty(personnel.pikeman) &&
+      SquadImpl.isEmpty(personnel.swordsman)
+    );
   }
 }

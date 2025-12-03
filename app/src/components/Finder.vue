@@ -86,8 +86,8 @@ const items = computed<FinderItem[]>(() => {
       label: t('war-room'),
     },
     {
-      value: 'war-room-battle-simulator',
-      label: t('battle-simulator'),
+      value: 'war-room-simulator',
+      label: t('simulator'),
     },
   ];
 
