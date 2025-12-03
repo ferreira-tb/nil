@@ -59,7 +59,9 @@ if ($Publish) {
     $Versions = (Invoke-RestMethod @Request).versions
 
     if (-not ($Versions.PSObject.Properties.Name -contains $CurrentVersion)) {
+      $Path = "crates/$Crate/pkg"
       $Extension = $('*.js', '*.ts')
+
       $Files = Get-ChildItem -Path $Path -Recurse -Name -Include $Extension 
       | ForEach-Object { Join-Path -Path $Path -ChildPath $_ }
 
@@ -71,7 +73,6 @@ if ($Publish) {
         Set-Content -Path $File -Value $Contents
       }
 
-      $Path = "./crates/$Crate/pkg"
       Invoke-Expression "npm publish `"$Path`" --access=public --provenance"
     }
   }
