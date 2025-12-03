@@ -35,6 +35,7 @@ jobs:
         run: pnpm run wasm -Publish -Install
 
   release:
+    needs: publish
     permissions:
       contents: write
     strategy:
