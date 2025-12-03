@@ -27,9 +27,6 @@ jobs:
         with:
           targets: wasm32-unknown-unknown
 
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile false
-
       - name: Publish WASM packages
         shell: pwsh
         run: pnpm run wasm -Publish -Install

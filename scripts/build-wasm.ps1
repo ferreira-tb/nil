@@ -21,9 +21,9 @@ if ($Install) {
   cargo install wasm-pack
 }
 
-function Build {
-  param ([string] $Crate)
-  
+$Crates = @('nil-continent')
+
+foreach ($Crate in $Crates) {
   $Path = "crates/$Crate/pkg"
 
   if (Test-Path -Path $Path) {
@@ -39,12 +39,16 @@ function Build {
   }
 
   Invoke-Expression $BuildCmd
+}
 
-  if ($Publish) {
-    $CurrentVersion = Get-Content -Path 'package.json' -Raw
-    | ConvertFrom-Json
-    | Select-Object -ExpandProperty 'version'
+if ($Publish) {
+  pnpm install --frozen-lockfile false
 
+  $CurrentVersion = Get-Content -Path 'package.json' -Raw
+  | ConvertFrom-Json
+  | Select-Object -ExpandProperty 'version'
+
+  foreach ($Crate in $Crates) {
     $Request = @{
       Uri     = "https://registry.npmjs.org/@tsukilabs/$Crate"
       Headers = @{
@@ -71,5 +75,3 @@ function Build {
     }
   }
 }
-
-Build -Crate 'nil-continent'
