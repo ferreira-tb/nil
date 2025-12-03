@@ -53,7 +53,7 @@ pub struct Bot {
 }
 
 impl Bot {
-  fn new(id: BotId) -> Self {
+  pub(crate) fn new(id: BotId) -> Self {
     Self {
       id,
       ethics: Ethics::random(),
