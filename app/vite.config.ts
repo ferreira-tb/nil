@@ -22,7 +22,7 @@ export default defineConfig({
     chunkSizeWarningLimit: 5000,
     copyPublicDir: true,
     emptyOutDir: true,
-    minify: true,
+    minify: env.VITE_MINIFY !== 'false',
     target: 'baseline-widely-available',
     sourcemap: Boolean(env.TAURI_ENV_DEBUG),
   },
