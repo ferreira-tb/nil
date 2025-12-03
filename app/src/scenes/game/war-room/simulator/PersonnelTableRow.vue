@@ -5,8 +5,6 @@
 import { useI18n } from 'vue-i18n';
 import { NumberField, NumberFieldContent, NumberFieldInput, TableCell, TableRow } from '@tb-dev/vue-components';
 
-defineProps<{ disabled: boolean; }>();
-
 const attacker = defineModel<Squad>('attacker', { required: true });
 const defender = defineModel<Squad>('defender', { required: true });
 
@@ -17,14 +15,26 @@ const { t } = useI18n();
   <TableRow>
     <TableCell>{{ t(attacker.unit) }}</TableCell>
     <TableCell>
-      <NumberField v-model="attacker.size" :min="0" :step="1" :disabled class="w-full">
+      <NumberField
+        v-model="attacker.size"
+        :min="0"
+        :step="1"
+        :default-value="0"
+        class="w-full"
+      >
         <NumberFieldContent>
           <NumberFieldInput class="dark:bg-input/40 max-sm:h-6 max-sm:max-w-28 max-sm:text-xs" />
         </NumberFieldContent>
       </NumberField>
     </TableCell>
     <TableCell>
-      <NumberField v-model="defender.size" :min="0" :step="1" :disabled class="w-full">
+      <NumberField
+        v-model="defender.size"
+        :min="0"
+        :step="1"
+        :default-value="0"
+        class="w-full"
+      >
         <NumberFieldContent>
           <NumberFieldInput class="dark:bg-input/40 max-sm:h-6 max-sm:max-w-28 max-sm:text-xs" />
         </NumberFieldContent>

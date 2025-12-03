@@ -32,4 +32,4 @@ type StableScene = 'stable' | 'stable-settings';
 
 type ProfileScene = 'profile-bot' | 'profile-city' | 'profile-player' | 'profile-precursor';
 
-type WarRoomScene = 'war-room' | 'war-room-battle-simulator';
+type WarRoomScene = 'war-room' | 'war-room-simulator';

@@ -4,7 +4,6 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n';
 import PersonnelTableRow from './PersonnelTableRow.vue';
-import type { ArmyPersonnelImpl } from '@/core/model/military/army-personnel';
 import {
   NumberField,
   NumberFieldContent,
@@ -17,10 +16,8 @@ import {
   TableRow,
 } from '@tb-dev/vue-components';
 
-defineProps<{ disabled: boolean; }>();
-
-const attacker = defineModel<ArmyPersonnelImpl>('attacker', { required: true });
-const defender = defineModel<ArmyPersonnelImpl>('defender', { required: true });
+const attacker = defineModel<ArmyPersonnel>('attacker', { required: true });
+const defender = defineModel<ArmyPersonnel>('defender', { required: true });
 const wallLevel = defineModel<Option<BuildingLevel>>('wall', { required: true });
 
 const { t } = useI18n();
@@ -42,33 +39,26 @@ const { stats } = NIL.world.refs();
       <PersonnelTableRow
         v-model:attacker="attacker.pikeman"
         v-model:defender="defender.pikeman"
-        :disabled
       />
       <PersonnelTableRow
         v-model:attacker="attacker.swordsman"
         v-model:defender="defender.swordsman"
-        :disabled
       />
-
       <PersonnelTableRow
         v-model:attacker="attacker.axeman"
         v-model:defender="defender.axeman"
-        :disabled
       />
       <PersonnelTableRow
         v-model:attacker="attacker.archer"
         v-model:defender="defender.archer"
-        :disabled
       />
       <PersonnelTableRow
         v-model:attacker="attacker.lightCavalry"
         v-model:defender="defender.lightCavalry"
-        :disabled
       />
       <PersonnelTableRow
         v-model:attacker="attacker.heavyCavalry"
         v-model:defender="defender.heavyCavalry"
-        :disabled
       />
 
       <div class="mt-4"></div>
@@ -82,7 +72,7 @@ const { stats } = NIL.world.refs();
             :min="stats?.getBuildingMinLevel('wall')"
             :max="stats?.getBuildingMaxLevel('wall')"
             :step="1"
-            :disabled
+            :default-value="0"
           >
             <NumberFieldContent>
               <NumberFieldInput class="dark:bg-input/40 max-sm:h-6 max-sm:max-w-28 max-sm:text-xs" />

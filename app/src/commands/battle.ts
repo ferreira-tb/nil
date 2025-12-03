@@ -4,6 +4,7 @@
 import { clamp } from 'es-toolkit';
 import { toU8 } from '@/lib/number';
 import { invoke } from '@tauri-apps/api/core';
+import { SquadImpl } from '@/core/model/military/squad';
 
 export async function simulateBattle(args: {
   attacker?: Option<readonly Squad[]>;
@@ -13,6 +14,14 @@ export async function simulateBattle(args: {
   args.attacker ??= [];
   args.defender ??= [];
   args.wall ??= 0;
+
+  if (args.attacker.length > 0) {
+    args.attacker = args.attacker.map(SquadImpl.withValidSize.bind(SquadImpl));
+  }
+
+  if (args.defender.length > 0) {
+    args.defender = args.defender.map(SquadImpl.withValidSize.bind(SquadImpl));
+  }
 
   const stats = NIL.world.getStats();
   if (stats) {

@@ -1,6 +1,8 @@
 // Copyright (C) Call of Nil contributors
 // SPDX-License-Identifier: AGPL-3.0-only
 
+import { toU32 } from '@/lib/number';
+
 export class SquadImpl implements Squad {
   public readonly unit: UnitId;
   public readonly size: number;
@@ -11,7 +13,7 @@ export class SquadImpl implements Squad {
   }
 
   public isEmpty() {
-    return this.size === 0;
+    return SquadImpl.isEmpty(this);
   }
 
   public add(squad: Squad) {
@@ -43,6 +45,21 @@ export class SquadImpl implements Squad {
   }
 
   public static createEmpty(unit: UnitId) {
-    return SquadImpl.create({ unit, size: 0 });
+    return SquadImpl.create(SquadImpl.createEmptyRaw(unit));
+  }
+
+  public static createEmptyRaw(unit: UnitId): Squad {
+    return { unit, size: 0 };
+  }
+
+  public static withValidSize(squad: Squad) {
+    return SquadImpl.create({
+      unit: squad.unit,
+      size: toU32(squad.size),
+    });
+  }
+
+  public static isEmpty(squad: Squad) {
+    return squad.size === 0;
   }
 }
