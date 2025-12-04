@@ -3,6 +3,11 @@
 
 import type { RouteRecordRaw } from 'vue-router';
 
+export const QUERY_WAR_ROOM_ORIGIN_X = 'originX';
+export const QUERY_WAR_ROOM_ORIGIN_Y = 'originY';
+export const QUERY_WAR_ROOM_DEST_X = 'destX';
+export const QUERY_WAR_ROOM_DEST_Y = 'destY';
+
 export const warRoomRoutes: RouteRecordRaw[] = [
   {
     component: () => import('@/scenes/game/war-room/root/index.vue'),
