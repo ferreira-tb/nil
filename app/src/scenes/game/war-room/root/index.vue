@@ -3,24 +3,23 @@
 
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n';
-import { computed, ref } from 'vue';
 import * as commands from '@/commands';
 import SquadGrid from './SquadGrid.vue';
 import Maneuvers from './Maneuvers.vue';
 import { handleError } from '@/lib/error';
 import { asyncComputed } from '@tb-dev/vue';
 import Destination from './Destination.vue';
+import { computed, nextTick, ref } from 'vue';
 import { Button } from '@tb-dev/vue-components';
-import { CoordImpl } from '@/core/model/continent/coord';
 import { useManeuvers } from '@/composables/military/useManeuvers';
 import { ArmyPersonnelImpl } from '@/core/model/military/army-personnel';
+import { useWarRoomCoords } from '@/composables/military/useWarRoomCoords';
 import { foldArmyPersonnel } from '@/composables/military/foldArmyPersonnel';
 import { useOwnIdleArmiesAt } from '@/composables/military/useOwnIdleArmiesAt';
 
 const { t } = useI18n();
 
-const origin = ref(getDefaultCoord());
-const destination = ref(CoordImpl.splat(0));
+const { origin, destination } = useWarRoomCoords();
 const destinationCity = asyncComputed(null, () => {
   return commands.findPublicCity(destination.value);
 });
@@ -42,27 +41,24 @@ const canSend = computed(() => {
 await NIL.military.update();
 
 async function send(kind: ManeuverKind) {
-  try {
-    await commands.requestManeuver({
-      kind,
-      origin: origin.value,
-      destination: destination.value,
-      personnel: personnel.value.normalize(),
-    });
-  }
-  catch (err) {
-    handleError(err);
+  await nextTick();
+  if (canSend.value) {
+    try {
+      await commands.requestManeuver({
+        kind,
+        origin: origin.value,
+        destination: destination.value,
+        personnel: personnel.value.normalize(),
+      });
+    }
+    catch (err) {
+      handleError(err);
+    }
   }
 }
 
 function clear() {
   personnel.value = ArmyPersonnelImpl.createEmpty();
-}
-
-function getDefaultCoord() {
-  return NIL.city.getCoord() ??
-    NIL.player.getCoords().at(0) ??
-    CoordImpl.splat(0);
 }
 </script>
 

@@ -1,7 +1,6 @@
 // Copyright (C) Call of Nil contributors
 // SPDX-License-Identifier: AGPL-3.0-only
 
-import { go } from '@/router';
 import * as commands from '@/commands';
 import { formatInt } from '@/lib/intl';
 import { CoordImpl } from '@/core/model/continent/coord';
@@ -19,13 +18,16 @@ export class PublicCityImpl implements PublicCity {
     this.score = args.score;
   }
 
-  public async goToProfile() {
-    const ckey = this.coord.toIndexString();
-    await go('profile-city', { params: { ckey } });
-  }
-
   public async goToContinent() {
     await this.coord.goToContinent();
+  }
+
+  public async goToProfile() {
+    await this.coord.goToProfile();
+  }
+
+  public async goToWarRoom(kind: 'origin' | 'destination') {
+    await this.coord.goToWarRoom(kind);
   }
 
   public formatScore() {

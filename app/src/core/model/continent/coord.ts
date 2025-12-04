@@ -4,6 +4,12 @@
 import { go } from '@/router';
 import { toU8 } from '@/lib/number';
 import type { Option } from '@tb-dev/utils';
+import {
+  QUERY_WAR_ROOM_DEST_X,
+  QUERY_WAR_ROOM_DEST_Y,
+  QUERY_WAR_ROOM_ORIGIN_X,
+  QUERY_WAR_ROOM_ORIGIN_Y,
+} from '@/router/game/war-room';
 
 export class CoordImpl implements Coord {
   public readonly x: number;
@@ -44,10 +50,27 @@ export class CoordImpl implements Coord {
     return this.#yOutside;
   }
 
-  public async goToContinent() {
+  private async goWithQuery(scene: Scene, queryX = 'x', queryY = 'y') {
     const x = this.x.toString(10);
     const y = this.y.toString(10);
-    await go('continent', { query: { x, y } });
+    await go(scene, {
+      query: { [queryX]: x, [queryY]: y },
+    });
+  }
+
+  public async goToContinent() {
+    await this.goWithQuery('continent');
+  }
+
+  public async goToProfile() {
+    const ckey = this.toIndexString();
+    await go('profile-city', { params: { ckey } });
+  }
+
+  public async goToWarRoom(kind: 'origin' | 'destination') {
+    const queryX = kind === 'origin' ? QUERY_WAR_ROOM_ORIGIN_X : QUERY_WAR_ROOM_DEST_X;
+    const queryY = kind === 'origin' ? QUERY_WAR_ROOM_ORIGIN_Y : QUERY_WAR_ROOM_DEST_Y;
+    await this.goWithQuery('war-room', queryX, queryY);
   }
 
   public format() {
