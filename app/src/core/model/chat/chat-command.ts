@@ -194,7 +194,7 @@ async function setMax() {
   for (const coord of NIL.player.getCoords()) {
     promises.push(
       commands.cheatSetMaxInfrastructure(coord),
-      commands.cheatSpawnPersonnel(coord, player, 10_000),
+      commands.cheatSpawnPersonnel(coord, 10_000, player),
     );
   }
 

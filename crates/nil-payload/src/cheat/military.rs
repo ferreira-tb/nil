@@ -10,6 +10,6 @@ use serde::{Deserialize, Serialize};
 #[serde(rename_all = "camelCase")]
 pub struct CheatSpawnPersonnelRequest {
   pub coord: Coord,
-  pub ruler: Option<Ruler>,
   pub personnel: ArmyPersonnel,
+  pub ruler: Option<Ruler>,
 }

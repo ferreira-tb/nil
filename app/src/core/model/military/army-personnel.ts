@@ -79,6 +79,10 @@ export class ArmyPersonnelImpl implements ArmyPersonnel {
     };
   }
 
+  public static createWritable() {
+    return this.createEmptyRaw() as WritableArmyPersonnel;
+  }
+
   public static splat(size: number) {
     size = toU32(size);
     return {
@@ -89,6 +93,18 @@ export class ArmyPersonnelImpl implements ArmyPersonnel {
       pikeman: SquadImpl.create({ unit: 'pikeman', size }),
       swordsman: SquadImpl.create({ unit: 'swordsman', size }),
     };
+  }
+
+  public static fromSquad(squad: Squad) {
+    const personnel = ArmyPersonnelImpl.createWritable();
+    for (const value of Object.values(personnel)) {
+      if (value.unit === squad.unit) {
+        value.size = squad.size;
+        break;
+      }
+    }
+
+    return ArmyPersonnelImpl.create(personnel);
   }
 
   public static getSize(personnel: ArmyPersonnel): ArmyPersonnelSize {

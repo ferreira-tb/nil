@@ -14,7 +14,7 @@ pub async fn spawn_personnel(
   Json(req): Json<CheatSpawnPersonnelRequest>,
 ) -> Response {
   app
-    .world_mut(|world| world.cheat_spawn_personnel(req.coord, req.ruler, req.personnel))
+    .world_mut(|world| world.cheat_spawn_personnel(req.coord, req.personnel, req.ruler))
     .map_ok(|()| res!(OK))
     .unwrap_or_else(from_core_err)
     .await

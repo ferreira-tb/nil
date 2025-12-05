@@ -7,16 +7,29 @@ import { ArmyPersonnelImpl } from '@/core/model/military/army-personnel';
 
 export async function cheatSpawnPersonnel(
   coord: ContinentKey,
-  ruler?: Option<Ruler>,
   personnel?: Option<ArmyPersonnel | number>,
+  ruler?: Option<Ruler>,
 ) {
   coord = CoordImpl.fromKey(coord);
-  ruler ??= null;
   personnel ??= 1_000;
+  ruler ??= null;
 
   if (typeof personnel === 'number') {
     personnel = ArmyPersonnelImpl.splat(personnel);
   }
 
   await invoke('cheat_spawn_personnel', { req: { coord, ruler, personnel } });
+}
+
+export async function cheatSpawnSquad(
+  coord: ContinentKey,
+  squad: Squad | UnitId,
+  ruler?: Option<Ruler>,
+) {
+  if (typeof squad === 'string') {
+    squad = { unit: squad, size: 1_000 };
+  }
+
+  const personnel = ArmyPersonnelImpl.fromSquad(squad);
+  await cheatSpawnPersonnel(coord, personnel, ruler);
 }

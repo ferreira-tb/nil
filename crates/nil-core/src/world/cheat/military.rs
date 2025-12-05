@@ -13,8 +13,8 @@ impl World {
   pub fn cheat_spawn_personnel(
     &mut self,
     coord: Coord,
-    ruler: Option<Ruler>,
     personnel: ArmyPersonnel,
+    ruler: Option<Ruler>,
   ) -> Result<()> {
     bail_cheat_not_allowed!(self);
     let ruler = ruler.try_else(|| {
