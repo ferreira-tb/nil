@@ -1,14 +1,19 @@
 // Copyright (C) Call of Nil contributors
 // SPDX-License-Identifier: AGPL-3.0-only
 
-use crate::continent::{Coord, Distance};
+mod distance;
+
+use crate::continent::Coord;
 use crate::error::{Error, Result};
 use crate::military::army::{ArmyId, ArmyPersonnel};
 use crate::military::unit::stats::speed::Speed;
 use serde::{Deserialize, Serialize};
-use std::ops::{Sub, SubAssign};
+use strum::EnumIs;
 use uuid::Uuid;
 
+pub use distance::ManeuverDistance;
+
+#[must_use]
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Maneuver {
@@ -19,6 +24,7 @@ pub struct Maneuver {
   origin: Coord,
   destination: Coord,
   state: ManeuverState,
+  speed: Speed,
 }
 
 #[bon::bon]
@@ -29,6 +35,7 @@ impl Maneuver {
     kind: ManeuverKind,
     origin: Coord,
     destination: Coord,
+    speed: Speed,
   ) -> Result<(ManeuverId, Self)> {
     let distance = origin.distance(destination);
     if origin == destination || distance == 0u8 {
@@ -44,9 +51,29 @@ impl Maneuver {
       origin,
       destination,
       state: ManeuverState::new(distance.into()),
+      speed,
     };
 
     Ok((id, maneuver))
+  }
+
+  pub(super) fn advance(&mut self) -> Result<()> {
+    let is_done = match &mut self.state {
+      ManeuverState::Done => {
+        return Err(Error::ManeuverIsDone(self.id));
+      }
+      ManeuverState::Pending { distance } => {
+        *distance -= self.speed;
+        debug_assert!(distance.is_finite());
+        *distance <= 0.0
+      }
+    };
+
+    if is_done {
+      self.state = ManeuverState::Done;
+    }
+
+    Ok(())
   }
 
   #[inline]
@@ -70,6 +97,11 @@ impl Maneuver {
   }
 
   #[inline]
+  pub(crate) fn direction_mut(&mut self) -> &mut ManeuverDirection {
+    &mut self.direction
+  }
+
+  #[inline]
   pub fn origin(&self) -> Coord {
     self.origin
   }
@@ -77,6 +109,36 @@ impl Maneuver {
   #[inline]
   pub fn destination(&self) -> Coord {
     self.destination
+  }
+
+  #[inline]
+  pub fn state(&self) -> &ManeuverState {
+    &self.state
+  }
+
+  #[inline]
+  pub fn speed(&self) -> Speed {
+    self.speed
+  }
+
+  #[inline]
+  pub fn is_done(&self) -> bool {
+    self.state.is_done()
+  }
+
+  #[inline]
+  pub fn is_pending(&self) -> bool {
+    self.state.is_pending()
+  }
+
+  #[inline]
+  pub fn is_going(&self) -> bool {
+    self.direction.is_going()
+  }
+
+  #[inline]
+  pub fn is_returning(&self) -> bool {
+    self.direction.is_returning()
   }
 
   /// Checks whether the maneuver's origin or destination matches the coord.
@@ -102,21 +164,21 @@ impl Default for ManeuverId {
   }
 }
 
-#[derive(Clone, Copy, Debug, Deserialize, Serialize)]
+#[derive(Clone, Copy, Debug, Deserialize, Serialize, EnumIs)]
 #[serde(rename_all = "kebab-case")]
 pub enum ManeuverKind {
   Attack,
   Support,
 }
 
-#[derive(Clone, Copy, Debug, Deserialize, Serialize)]
+#[derive(Clone, Copy, Debug, Deserialize, Serialize, EnumIs)]
 #[serde(rename_all = "kebab-case")]
 pub enum ManeuverDirection {
   Going,
   Returning,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Deserialize, Serialize, EnumIs)]
 #[serde(tag = "kind", rename_all = "kebab-case")]
 pub enum ManeuverState {
   Done,
@@ -126,45 +188,6 @@ pub enum ManeuverState {
 impl ManeuverState {
   fn new(distance: ManeuverDistance) -> Self {
     Self::Pending { distance }
-  }
-}
-
-#[derive(Clone, Copy, Debug, Deserialize, Serialize)]
-pub struct ManeuverDistance(f64);
-
-impl Sub for ManeuverDistance {
-  type Output = ManeuverDistance;
-
-  fn sub(mut self, rhs: Self) -> Self::Output {
-    self -= rhs;
-    self
-  }
-}
-
-impl Sub<Speed> for ManeuverDistance {
-  type Output = ManeuverDistance;
-
-  fn sub(mut self, rhs: Speed) -> Self::Output {
-    self -= rhs;
-    self
-  }
-}
-
-impl SubAssign for ManeuverDistance {
-  fn sub_assign(&mut self, rhs: Self) {
-    *self = Self(self.0 - rhs.0);
-  }
-}
-
-impl SubAssign<Speed> for ManeuverDistance {
-  fn sub_assign(&mut self, rhs: Speed) {
-    *self = Self(self.0 - f64::from(rhs));
-  }
-}
-
-impl From<Distance> for ManeuverDistance {
-  fn from(distance: Distance) -> Self {
-    Self(f64::from(distance))
   }
 }
 
