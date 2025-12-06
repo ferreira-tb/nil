@@ -3,7 +3,9 @@
 
 use crate::client::Client;
 use crate::error::Result;
+use nil_core::resources::Resources;
 use nil_payload::cheat::resources::{
+  CheatGetResourcesRequest,
   CheatSetFoodRequest,
   CheatSetIronRequest,
   CheatSetResourcesRequest,
@@ -12,14 +14,25 @@ use nil_payload::cheat::resources::{
 };
 
 impl Client {
-  /// GET `/cheat/resources`
-  pub async fn cheat_set_max_resources(&self) -> Result<()> {
-    self.http.get("cheat/resources").await
+  /// GET `/cheat/resources/get`
+  pub async fn cheat_get_resources(&self, req: CheatGetResourcesRequest) -> Result<Resources> {
+    self
+      .http
+      .post_json("cheat/resources/get", req)
+      .await
   }
 
-  /// POST `/cheat/resources`
+  /// GET `/cheat/resources/set`
+  pub async fn cheat_set_max_resources(&self) -> Result<()> {
+    self.http.get("cheat/resources/set").await
+  }
+
+  /// POST `/cheat/resources/set`
   pub async fn cheat_set_resources(&self, req: CheatSetResourcesRequest) -> Result<()> {
-    self.http.post("cheat/resources", req).await
+    self
+      .http
+      .post("cheat/resources/set", req)
+      .await
   }
 
   /// GET `/cheat/resources/food`
