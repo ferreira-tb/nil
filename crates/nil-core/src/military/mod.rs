@@ -107,10 +107,7 @@ impl Military {
     Ok(military)
   }
 
-  pub(crate) fn relocate_army<K>(&mut self, id: ArmyId, new_key: K) -> Result<()>
-  where
-    K: ContinentKey,
-  {
+  pub(crate) fn remove_army(&mut self, id: ArmyId) -> Result<Army> {
     let (curr_vec, pos) = self
       .continent
       .values_mut()
@@ -122,7 +119,14 @@ impl Military {
       })
       .ok_or(Error::ArmyNotFound(id))?;
 
-    let army = curr_vec.swap_remove(pos);
+    Ok(curr_vec.swap_remove(pos))
+  }
+
+  pub(crate) fn relocate_army<K>(&mut self, id: ArmyId, new_key: K) -> Result<()>
+  where
+    K: ContinentKey,
+  {
+    let army = self.remove_army(id)?;
     let index = new_key.into_index(self.continent_size);
     self
       .continent

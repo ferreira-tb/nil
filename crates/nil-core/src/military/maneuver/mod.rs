@@ -43,6 +43,7 @@ impl Maneuver {
     }
 
     let id = ManeuverId::new();
+    let state = ManeuverState::with_distance(distance.into());
     let maneuver = Self {
       id,
       army,
@@ -50,7 +51,7 @@ impl Maneuver {
       direction: ManeuverDirection::Going,
       origin,
       destination,
-      state: ManeuverState::new(distance.into()),
+      state,
       speed,
     };
 
@@ -76,6 +77,20 @@ impl Maneuver {
     Ok(())
   }
 
+  pub(crate) fn reverse(&mut self) -> Result<()> {
+    if self.is_pending() {
+      return Err(Error::ManeuverIsPending(self.id));
+    } else if self.is_returning() {
+      return Err(Error::ManeuverIsReturning(self.id));
+    }
+
+    let distance = self.origin.distance(self.destination);
+    self.state = ManeuverState::with_distance(distance.into());
+    self.direction = ManeuverDirection::Returning;
+
+    Ok(())
+  }
+
   #[inline]
   pub fn id(&self) -> ManeuverId {
     self.id
@@ -94,11 +109,6 @@ impl Maneuver {
   #[inline]
   pub fn direction(&self) -> ManeuverDirection {
     self.direction
-  }
-
-  #[inline]
-  pub(crate) fn direction_mut(&mut self) -> &mut ManeuverDirection {
-    &mut self.direction
   }
 
   #[inline]
@@ -186,7 +196,7 @@ pub enum ManeuverState {
 }
 
 impl ManeuverState {
-  fn new(distance: ManeuverDistance) -> Self {
+  fn with_distance(distance: ManeuverDistance) -> Self {
     Self::Pending { distance }
   }
 }
