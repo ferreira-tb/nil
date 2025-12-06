@@ -135,6 +135,14 @@ impl Resources {
       wood: self.wood.checked_sub(rhs.wood)?,
     })
   }
+
+  pub fn sum(&self) -> u32 {
+    0u32
+      .saturating_add(self.food.0)
+      .saturating_add(self.iron.0)
+      .saturating_add(self.stone.0)
+      .saturating_add(self.wood.0)
+  }
 }
 
 impl Default for Resources {

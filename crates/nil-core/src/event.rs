@@ -4,6 +4,7 @@
 use crate::chat::ChatMessage;
 use crate::continent::Coord;
 use crate::player::PlayerId;
+use crate::report::battle::BattleReport;
 use crate::round::Round;
 use bytes::Bytes;
 use nil_util::serde::{from_slice, to_bytes};
@@ -65,6 +66,9 @@ impl fmt::Debug for Emitter {
 #[strum(serialize_all = "kebab-case")]
 #[remain::sorted]
 pub enum Event {
+  /// A battle report was generated.
+  BattleReport { report: BattleReport },
+
   /// A new message has been sent in the chat.
   ChatUpdated { message: ChatMessage },
 

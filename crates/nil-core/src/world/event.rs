@@ -5,6 +5,7 @@ use crate::chat::ChatMessage;
 use crate::continent::Coord;
 use crate::event::{Event, Listener};
 use crate::player::PlayerId;
+use crate::report::battle::BattleReport;
 use crate::world::World;
 
 impl World {
@@ -30,6 +31,11 @@ impl World {
     {
       self.emitter.emit_to(player, event);
     }
+  }
+
+  /// Emits [`Event::BattleReport`].
+  pub(super) fn emit_battle_report(&self, player: PlayerId, report: BattleReport) {
+    self.emit_to(player, Event::BattleReport { report });
   }
 
   /// Emits [`Event::ChatUpdated`].
