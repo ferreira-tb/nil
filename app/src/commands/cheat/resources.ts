@@ -9,6 +9,18 @@ export async function cheatGetResources(ruler: Ruler) {
   return invoke<Resources>('cheat_get_resources', { req: { ruler } });
 }
 
+export async function cheatGetBotResources(bot: BotId) {
+  return cheatGetResources({ kind: 'bot', id: bot });
+}
+
+export async function cheatGetPlayerResources(player: PlayerId) {
+  return cheatGetResources({ kind: 'player', id: player });
+}
+
+export async function cheatGetPrecursorResources(precursor: PrecursorId) {
+  return cheatGetResources({ kind: 'precursor', id: precursor });
+}
+
 export async function cheatSetFood(food: number) {
   food = toU32(food);
   await invoke('cheat_set_food', { req: { food } });

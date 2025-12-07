@@ -8,6 +8,7 @@ pub mod city;
 pub mod continent;
 pub mod infrastructure;
 pub mod military;
+pub mod npc;
 pub mod player;
 pub mod ranking;
 pub mod round;

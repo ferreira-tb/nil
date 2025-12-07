@@ -67,7 +67,7 @@ impl fmt::Debug for Emitter {
 #[remain::sorted]
 pub enum Event {
   /// A battle report was generated.
-  BattleReport { report: BattleReport },
+  BattleReport { report: Box<BattleReport> },
 
   /// A new message has been sent in the chat.
   ChatUpdated { message: ChatMessage },

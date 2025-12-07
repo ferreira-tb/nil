@@ -69,7 +69,6 @@ impl Client {
     addr
   }
 
-  /// GET `/`
   pub async fn is_ready(&self) -> bool {
     self
       .http
@@ -79,12 +78,10 @@ impl Client {
       .unwrap_or(false)
   }
 
-  /// GET `/leave`
   async fn leave(&self) -> Result<()> {
     self.http.get("leave").await
   }
 
-  /// GET `/version`
   pub async fn version(&self) -> Result<String> {
     self.http.get_text("version").await
   }

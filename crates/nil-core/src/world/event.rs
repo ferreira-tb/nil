@@ -35,6 +35,7 @@ impl World {
 
   /// Emits [`Event::BattleReport`].
   pub(super) fn emit_battle_report(&self, player: PlayerId, report: BattleReport) {
+    let report = Box::new(report);
     self.emit_to(player, Event::BattleReport { report });
   }
 

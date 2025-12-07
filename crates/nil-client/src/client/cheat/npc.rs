@@ -7,11 +7,10 @@ use nil_core::npc::bot::BotId;
 use nil_payload::cheat::npc::CheatSpawnBotRequest;
 
 impl Client {
-  /// POST `/cheat/bot/spawn`
   pub async fn cheat_spawn_bot(&self, req: CheatSpawnBotRequest) -> Result<BotId> {
     self
       .http
-      .post_json("cheat/bot/spawn", req)
+      .json_post("cheat-spawn-bot", req)
       .await
   }
 }
