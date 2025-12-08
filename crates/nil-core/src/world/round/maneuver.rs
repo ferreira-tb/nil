@@ -8,12 +8,14 @@ use crate::infrastructure::building::{Building, BuildingLevel};
 use crate::military::army::{Army, ArmyState};
 use crate::military::maneuver::{Maneuver, ManeuverDirection, ManeuverKind};
 use crate::military::unit::stats::haul::Haul;
-use crate::report::battle::BattleReport;
+use crate::player::PlayerId;
+use crate::report::{BattleReport, Report};
 use crate::resources::Resources;
 use crate::ruler::Ruler;
 use crate::world::World;
 use itertools::Itertools;
 use nil_util::result::WrapOk;
+use nil_util::vec::VecExt;
 use num_traits::ToPrimitive;
 
 impl World {
@@ -54,20 +56,22 @@ impl World {
 
           if !hauled_resources.is_empty() {
             self.transpose_resources(
-              rulers.destination_ruler,
+              rulers.destination_ruler.clone(),
               rulers.sender.clone(),
               hauled_resources.clone(),
             )?;
           }
 
+          let players = rulers.players();
           let report = BattleReport::builder()
             .attacker(rulers.sender)
-            .defenders(rulers.destination_army_owners)
+            .defender(rulers.destination_ruler)
             .hauled_resources(hauled_resources)
             .result(battle_result)
             .build();
 
           emit_battle_report(self, &report);
+          self.report.manage(report.into(), players);
         }
       }
       ManeuverKind::Support => {
@@ -118,13 +122,20 @@ impl ManeuverRulers {
       destination_army_owners.extend(owners);
     }
 
-    destination_army_owners.retain(|target| target != &sender);
+    destination_army_owners.retain(|it| it != &sender && it != &destination_ruler);
 
     Ok(Self {
       sender,
       destination_ruler,
       destination_army_owners: destination_army_owners.into_boxed_slice(),
     })
+  }
+
+  fn players(&self) -> Vec<PlayerId> {
+    let mut players = Vec::new();
+    players.try_push(self.sender.player().cloned());
+    players.try_push(self.destination_ruler.player().cloned());
+    players
   }
 }
 
@@ -193,14 +204,12 @@ fn calculate_hauled_resources(world: &World, target: Coord, base: Haul) -> Resul
 }
 
 fn emit_battle_report(world: &World, report: &BattleReport) {
-  if let Some(player) = report.attacker().player().cloned() {
-    world.emit_battle_report(player, report.clone());
+  if let Some(attacker) = report.attacker().player().cloned() {
+    world.emit_report(attacker, report.id());
   }
 
-  for target in report.defenders() {
-    debug_assert_ne!(report.attacker(), target);
-    if let Some(player) = target.player().cloned() {
-      world.emit_battle_report(player, report.clone());
-    }
+  if let Some(defender) = report.defender().player().cloned() {
+    debug_assert_ne!(report.attacker().player(), Some(&defender));
+    world.emit_report(defender, report.id());
   }
 }

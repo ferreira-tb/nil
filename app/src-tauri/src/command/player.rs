@@ -3,10 +3,12 @@
 
 use crate::error::Result;
 use crate::manager::ManagerExt;
+use itertools::Itertools;
 use nil_core::continent::Coord;
 use nil_core::infrastructure::storage::OverallStorageCapacity;
 use nil_core::military::Military;
 use nil_core::player::{Player, PlayerStatus, PublicPlayer};
+use nil_core::report::ReportId;
 use nil_core::resources::Maintenance;
 use nil_payload::player::{
   GetPlayerCoordsRequest,
@@ -17,6 +19,7 @@ use nil_payload::player::{
   SetPlayerStatusRequest,
   SpawnPlayerRequest,
 };
+use nil_util::result::WrapOk;
 use tauri::AppHandle;
 
 #[tauri::command]
@@ -49,6 +52,18 @@ pub async fn get_player_military(app: AppHandle) -> Result<Military> {
     .client(async |cl| cl.get_player_military().await)
     .await?
     .map_err(Into::into)
+}
+
+#[tauri::command]
+pub async fn get_player_reports(app: AppHandle) -> Result<Vec<ReportId>> {
+  app
+    .client(async |cl| cl.get_player_reports().await)
+    .await??
+    .into_iter()
+    .unique()
+    .sorted_unstable()
+    .collect_vec()
+    .wrap_ok()
 }
 
 #[tauri::command]

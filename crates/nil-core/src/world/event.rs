@@ -5,7 +5,7 @@ use crate::chat::ChatMessage;
 use crate::continent::Coord;
 use crate::event::{Event, Listener};
 use crate::player::PlayerId;
-use crate::report::battle::BattleReport;
+use crate::report::ReportId;
 use crate::world::World;
 
 impl World {
@@ -33,12 +33,6 @@ impl World {
     }
   }
 
-  /// Emits [`Event::BattleReport`].
-  pub(super) fn emit_battle_report(&self, player: PlayerId, report: BattleReport) {
-    let report = Box::new(report);
-    self.emit_to(player, Event::BattleReport { report });
-  }
-
   /// Emits [`Event::ChatUpdated`].
   pub(super) fn emit_chat_updated(&self, message: ChatMessage) {
     self.broadcast(Event::ChatUpdated { message });
@@ -57,6 +51,11 @@ impl World {
   /// Emits [`Event::PublicCityUpdated`].
   pub(super) fn emit_public_city_updated(&self, coord: Coord) {
     self.broadcast(Event::PublicCityUpdated { coord });
+  }
+
+  /// Emits [`Event::Report`].
+  pub(super) fn emit_report(&self, player: PlayerId, report: ReportId) {
+    self.emit_to(player, Event::Report { report });
   }
 
   /// Emits [`Event::RoundUpdated`].

@@ -11,6 +11,7 @@ mod military;
 mod npc;
 mod player;
 mod ranking;
+mod report;
 mod round;
 mod world;
 

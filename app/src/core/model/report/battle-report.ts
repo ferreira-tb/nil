@@ -7,15 +7,23 @@ import { BattleResultImpl } from '@/core/model/battle-result';
 
 export class BattleReportImpl extends ReportImpl implements BattleReport {
   public readonly attacker: Ruler;
-  public readonly defenders: readonly Ruler[];
+  public readonly defender: Ruler;
   public readonly hauledResources: ResourcesImpl;
   public readonly result: BattleResultImpl;
 
   private constructor(report: BattleReport) {
     super(report);
     this.attacker = report.attacker;
-    this.defenders = report.defenders;
+    this.defender = report.defender;
     this.hauledResources = ResourcesImpl.create(report.hauledResources);
     this.result = BattleResultImpl.create(report.result);
+  }
+
+  public static create(report: BattleReport) {
+    if (report instanceof BattleReportImpl) {
+      return report;
+    }
+
+    return new BattleReportImpl(report);
   }
 }

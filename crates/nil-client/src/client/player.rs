@@ -7,6 +7,7 @@ use nil_core::continent::Coord;
 use nil_core::infrastructure::storage::OverallStorageCapacity;
 use nil_core::military::Military;
 use nil_core::player::{Player, PlayerStatus, PublicPlayer};
+use nil_core::report::ReportId;
 use nil_core::resources::Maintenance;
 use nil_payload::player::{
   GetPlayerCoordsRequest,
@@ -41,6 +42,13 @@ impl Client {
     self
       .http
       .json_get("get-player-military")
+      .await
+  }
+
+  pub async fn get_player_reports(&self) -> Result<Vec<ReportId>> {
+    self
+      .http
+      .json_get("get-player-reports")
       .await
   }
 

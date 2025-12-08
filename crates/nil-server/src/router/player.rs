@@ -96,6 +96,16 @@ pub async fn get_public(
     .await
 }
 
+pub async fn get_reports(
+  State(app): State<App>,
+  Extension(player): Extension<CurrentPlayer>,
+) -> Response {
+  app
+    .world(|world| world.get_player_reports(&player))
+    .map(|reports| res!(OK, Json(reports)))
+    .await
+}
+
 pub async fn get_status(
   State(app): State<App>,
   Json(req): Json<GetPlayerStatusRequest>,

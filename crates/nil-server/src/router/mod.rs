@@ -11,6 +11,7 @@ mod military;
 mod npc;
 mod player;
 mod ranking;
+mod report;
 mod round;
 mod world;
 
@@ -77,6 +78,7 @@ pub(crate) fn create() -> Router<App> {
     .route("/get-player-coords", post(player::get_coords))
     .route("/get-player-maintenance", get(player::get_maintenance))
     .route("/get-player-military", get(player::get_military))
+    .route("/get-player-reports", get(player::get_reports))
     .route("/get-player-status", post(player::get_status))
     .route("/get-player-storage-capacity", get(player::get_storage_capacity))
     .route("/get-players", get(player::get_all))
@@ -89,6 +91,8 @@ pub(crate) fn create() -> Router<App> {
     .route("/get-public-precursor", post(npc::precursor::get_public))
     .route("/get-rank", post(ranking::get_rank))
     .route("/get-ranking", get(ranking::get))
+    .route("/get-report", post(report::get))
+    .route("/get-reports", post(report::get_by))
     .route("/get-round", get(round::get))
     .route("/get-stable-recruit-catalog", post(stable::get_recruit_catalog))
     .route("/get-world-config", get(world::get_config))

@@ -42,6 +42,7 @@ pub struct BattleResult {
 }
 
 impl BattleResult {
+  #[rustfmt::skip]
   fn new(attacking_squads: &[Squad], defending_squads: &[Squad], wall: Option<&WallStats>) -> Self {
     let attacker_power = OffensivePower::new(attacking_squads);
     let defender_power = DefensivePower::new(defending_squads, &attacker_power, wall);

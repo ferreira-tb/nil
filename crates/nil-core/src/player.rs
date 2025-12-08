@@ -16,7 +16,7 @@ use std::sync::Arc;
 pub struct PlayerManager(HashMap<PlayerId, Player>);
 
 impl PlayerManager {
-  pub(crate) fn insert(&mut self, player: Player) {
+  pub(crate) fn manage(&mut self, player: Player) {
     debug_assert!(!self.0.contains_key(&player.id));
     self.0.insert(player.id(), player);
   }

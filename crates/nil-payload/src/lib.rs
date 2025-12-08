@@ -11,5 +11,6 @@ pub mod military;
 pub mod npc;
 pub mod player;
 pub mod ranking;
+pub mod report;
 pub mod round;
 pub mod world;

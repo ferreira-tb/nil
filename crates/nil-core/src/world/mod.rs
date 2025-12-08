@@ -27,6 +27,7 @@ use crate::npc::bot::{Bot, BotId, BotManager};
 use crate::npc::precursor::{Precursor, PrecursorId, PrecursorManager};
 use crate::player::{Player, PlayerId, PlayerManager};
 use crate::ranking::Ranking;
+use crate::report::ReportManager;
 use crate::round::Round;
 use crate::ruler::{Ruler, RulerRef, RulerRefMut};
 use crate::savedata::Savedata;
@@ -44,6 +45,7 @@ pub struct World {
   precursor_manager: PrecursorManager,
   military: Military,
   ranking: Ranking,
+  report: ReportManager,
   config: WorldConfig,
   stats: WorldStats,
   chat: Chat,
@@ -68,6 +70,7 @@ impl World {
       precursor_manager,
       military,
       ranking: Ranking::default(),
+      report: ReportManager::default(),
       config,
       stats: WorldStats::new(),
       chat: Chat::default(),
@@ -141,6 +144,11 @@ impl World {
   #[inline]
   pub fn ranking(&self) -> &Ranking {
     &self.ranking
+  }
+
+  #[inline]
+  pub fn report(&self) -> &ReportManager {
+    &self.report
   }
 
   #[inline]

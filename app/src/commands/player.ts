@@ -20,6 +20,10 @@ export async function getPlayerMilitary() {
   return invoke<RawMilitary>('get_player_military');
 }
 
+export async function getPlayerReports() {
+  return invoke<ReportId[]>('get_player_reports');
+}
+
 export async function getPlayerStatus(id: PlayerId) {
   return invoke<PlayerStatus>('get_player_status', { req: { id } });
 }

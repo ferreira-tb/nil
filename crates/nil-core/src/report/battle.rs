@@ -2,23 +2,26 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 
 use crate::battle::BattleResult;
-use crate::report::Report;
+use crate::report::ReportId;
 use crate::resources::Resources;
 use crate::ruler::Ruler;
 use bon::Builder;
 use jiff::Zoned;
+use nil_core_macros::Report;
 use serde::{Deserialize, Serialize};
 
-#[derive(Builder, Clone, Debug, Deserialize, Serialize)]
+#[derive(Report, Builder, Clone, Debug, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct BattleReport {
-  attacker: Ruler,
-  defenders: Box<[Ruler]>,
-  hauled_resources: Resources,
-  result: BattleResult,
-
+  #[builder(skip)]
+  id: ReportId,
   #[builder(skip = Zoned::now())]
   timestamp: Zoned,
+
+  attacker: Ruler,
+  defender: Ruler,
+  hauled_resources: Resources,
+  result: BattleResult,
 }
 
 impl BattleReport {
@@ -28,8 +31,8 @@ impl BattleReport {
   }
 
   #[inline]
-  pub fn defenders(&self) -> &[Ruler] {
-    &self.defenders
+  pub fn defender(&self) -> &Ruler {
+    &self.defender
   }
 
   #[inline]
@@ -40,11 +43,5 @@ impl BattleReport {
   #[inline]
   pub fn result(&self) -> &BattleResult {
     &self.result
-  }
-}
-
-impl Report for BattleReport {
-  fn timestamp(&self) -> &Zoned {
-    &self.timestamp
   }
 }

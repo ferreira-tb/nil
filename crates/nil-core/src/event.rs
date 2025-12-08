@@ -4,7 +4,7 @@
 use crate::chat::ChatMessage;
 use crate::continent::Coord;
 use crate::player::PlayerId;
-use crate::report::battle::BattleReport;
+use crate::report::ReportId;
 use crate::round::Round;
 use bytes::Bytes;
 use nil_util::serde::{from_slice, to_bytes};
@@ -66,9 +66,6 @@ impl fmt::Debug for Emitter {
 #[strum(serialize_all = "kebab-case")]
 #[remain::sorted]
 pub enum Event {
-  /// A battle report was generated.
-  BattleReport { report: Box<BattleReport> },
-
   /// A new message has been sent in the chat.
   ChatUpdated { message: ChatMessage },
 
@@ -95,6 +92,9 @@ pub enum Event {
   /// Unlike [`Event::CityUpdated`], which is emitted only to the city owner,
   /// this event is sent to all players in the world.
   PublicCityUpdated { coord: Coord },
+
+  /// A report was generated.
+  Report { report: ReportId },
 
   /// Indicates changes in the round, such as the end of a player's turn or
   /// the transition from one round to another, after all players have completed their actions.
