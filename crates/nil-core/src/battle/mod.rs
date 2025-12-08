@@ -67,22 +67,14 @@ impl BattleResult {
       BattleWinner::Attacker => {
         for squad in attacking_squads {
           let squad_size = f64::from(squad.size());
-          match squad.kind() {
-            UnitKind::Infantry => squad_survivors = squad_size - (squad_size * infantry_losses_ratio),
-            UnitKind::Cavalry => squad_survivors = squad_size - (squad_size * cavalry_losses_ratio),
-            UnitKind::Ranged => squad_survivors = squad_size - (squad_size * ranged_losses_ratio),
-          }
+          squad_survivors = squad_size - (squad_size * losses_ratio);
           attacker_surviving_personnel += Squad::new(squad.id(), SquadSize::from(squad_survivors));
         }
       }
       BattleWinner::Defender => {
         for squad in defending_squads {
           let squad_size = f64::from(squad.size());
-          match squad.kind() {
-            UnitKind::Infantry => squad_survivors = squad_size - (squad_size * infantry_losses_ratio),
-            UnitKind::Cavalry => squad_survivors = squad_size - (squad_size * cavalry_losses_ratio),
-            UnitKind::Ranged => squad_survivors = squad_size - (squad_size * ranged_losses_ratio),
-          }
+          squad_survivors = squad_size - (squad_size * losses_ratio);
           defender_surviving_personnel += Squad::new(squad.id(), SquadSize::from(squad_survivors));
         }
       }
@@ -180,9 +172,6 @@ impl OffensivePower {
 
 struct DefensivePower {
   total: f64,
-  infantry: f64,
-  cavalry: f64,
-  ranged: f64,
 }
 
 impl DefensivePower {
@@ -219,10 +208,6 @@ impl DefensivePower {
 
     let mut total = 0.0;
 
-    let mut infantry_ratio = 0.0;
-    let mut cavalry_ratio = 0.0;
-    let mut ranged_ratio = 0.0;
-
     if army_size > 0.0 {
       let infantry_power_per_unit = infantry_power / army_size;
       let cavalry_power_per_unit = cavalry_power / army_size;
@@ -244,10 +229,6 @@ impl DefensivePower {
       ranged_power = ranged_necessary_units * army_size * ranged_power_per_unit;
 
       total = infantry_power + cavalry_power + ranged_power;
-
-      infantry_ratio = infantry_power / total;
-      cavalry_ratio = cavalry_power / total;
-      ranged_ratio = ranged_power / total;
     }
 
     if let Some(wall_power) = defending_wall {
@@ -256,9 +237,6 @@ impl DefensivePower {
 
     DefensivePower {
       total,
-      infantry: infantry_ratio * total,
-      cavalry: cavalry_ratio * total,
-      ranged: ranged_ratio * total,
     }
   }
 }
