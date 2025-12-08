@@ -15,13 +15,13 @@ use serde::{Deserialize, Serialize};
 pub struct BattleReport {
   #[builder(skip)]
   id: ReportId,
-  #[builder(skip = Zoned::now())]
-  timestamp: Zoned,
-
   attacker: Ruler,
   defender: Ruler,
-  hauled_resources: Resources,
   result: BattleResult,
+  hauled_resources: Resources,
+
+  #[builder(skip = Zoned::now())]
+  timestamp: Zoned,
 }
 
 impl BattleReport {
@@ -36,12 +36,12 @@ impl BattleReport {
   }
 
   #[inline]
-  pub fn hauled_resources(&self) -> &Resources {
-    &self.hauled_resources
+  pub fn result(&self) -> &BattleResult {
+    &self.result
   }
 
   #[inline]
-  pub fn result(&self) -> &BattleResult {
-    &self.result
+  pub fn hauled_resources(&self) -> &Resources {
+    &self.hauled_resources
   }
 }
