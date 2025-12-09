@@ -5,13 +5,13 @@ use crate::error::Result;
 use crate::event::Emitter;
 use crate::savedata::Savedata;
 use crate::world::World;
-use jiff::Zoned;
+use uuid::Uuid;
 
 impl World {
   pub(super) fn consume_pending_save(&mut self) -> Result<()> {
     if let Some(mut path) = self.pending_save.take() {
       let mut data = Savedata::from(&*self);
-      path.set_extension("nil");
+      path.push(format!("{}.nil", Uuid::now_v7()));
       data.write(&path)?;
     }
 
@@ -33,8 +33,6 @@ impl From<&World> for Savedata {
       config: world.config.clone(),
       stats: world.stats.clone(),
       chat: world.chat.clone(),
-
-      saved_at: Zoned::now(),
     }
   }
 }

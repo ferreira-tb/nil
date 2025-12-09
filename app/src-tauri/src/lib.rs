@@ -118,6 +118,7 @@ pub fn run() {
       command::server::stop_server,
       command::world::get_world_config,
       command::world::get_world_stats,
+      command::world::read_savedata_info,
       command::world::save_world,
     ])
     .run(tauri::generate_context!())

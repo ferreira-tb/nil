@@ -7,7 +7,6 @@ use crate::player::PlayerId;
 use crate::report::ReportId;
 use crate::round::Round;
 use bytes::Bytes;
-use nil_util::serde::{from_slice, to_bytes};
 use serde::{Deserialize, Serialize};
 use std::fmt;
 use strum::Display;
@@ -107,13 +106,15 @@ pub enum Event {
 
 impl From<Event> for Bytes {
   fn from(event: Event) -> Self {
-    to_bytes(&event).unwrap()
+    serde_json::to_vec(&event)
+      .map(Bytes::from)
+      .unwrap()
   }
 }
 
 impl From<Bytes> for Event {
   fn from(bytes: Bytes) -> Self {
-    from_slice(&bytes).unwrap()
+    serde_json::from_slice(&bytes).unwrap()
   }
 }
 

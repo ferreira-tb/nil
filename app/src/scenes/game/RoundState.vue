@@ -16,7 +16,7 @@ const { round } = NIL.round.refs();
 <template>
   <div class="flex flex-col items-center justify-center">
     <span v-if="round" class="text-sm font-semibold">
-      {{ `${t('round')} ${round.id}` }}
+      {{ t('round-x', [round.id]) }}
     </span>
     <span class="text-muted-foreground text-sm">
       {{ isPlayerReady ? t('your-turn') : t('waiting-players') }}
