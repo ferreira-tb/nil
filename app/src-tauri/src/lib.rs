@@ -121,7 +121,7 @@ pub fn run() {
       command::world::save_world,
     ])
     .run(tauri::generate_context!())
-    .expect("Failed to start nil");
+    .expect("Failed to start Call of Nil app");
 }
 
 #[cfg(desktop)]
