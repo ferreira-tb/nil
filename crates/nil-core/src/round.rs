@@ -79,6 +79,11 @@ impl Round {
   }
 
   #[inline]
+  pub fn id(&self) -> RoundId {
+    self.id
+  }
+
+  #[inline]
   pub fn is_idle(&self) -> bool {
     self.state.is_idle()
   }

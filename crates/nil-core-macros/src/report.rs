@@ -14,12 +14,17 @@ pub fn impl_report(ast: &DeriveInput) -> TokenStream {
     mod __impl_report {
       use super::#name;
       use crate::report::{Report, ReportId, ReportKind};
+      use crate::round::RoundId;
       use jiff::Zoned;
       use std::sync::Arc;
 
       impl Report for #name {
         fn id(&self) -> ReportId {
           self.id
+        }
+
+        fn round(&self) -> RoundId {
+          self.round
         }
 
         fn timestamp(&self) -> &Zoned {

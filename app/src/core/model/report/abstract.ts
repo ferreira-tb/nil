@@ -13,11 +13,13 @@ import { type ComposerTranslation, useI18n } from 'vue-i18n';
 
 export abstract class ReportImpl implements Report_ {
   public readonly id: ReportId;
+  public readonly round: RoundId;
   public readonly timestamp: string;
   public readonly date: Date;
 
   protected constructor(report: Report_) {
     this.id = report.id;
+    this.round = report.round;
     this.timestamp = report.timestamp;
     this.date = fromZoned(report.timestamp);
   }

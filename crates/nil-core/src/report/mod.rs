@@ -5,6 +5,7 @@ mod battle;
 
 use crate::error::{Error, Result};
 use crate::player::PlayerId;
+use crate::round::RoundId;
 use itertools::Itertools;
 use jiff::Zoned;
 use serde::{Deserialize, Serialize};
@@ -16,6 +17,7 @@ pub use battle::BattleReport;
 
 pub trait Report {
   fn id(&self) -> ReportId;
+  fn round(&self) -> RoundId;
   fn timestamp(&self) -> &Zoned;
 }
 

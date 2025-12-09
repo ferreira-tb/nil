@@ -3,6 +3,7 @@
 
 interface Report_ {
   readonly id: ReportId;
+  readonly round: RoundId;
   readonly timestamp: string;
 }
 
