@@ -9,7 +9,7 @@ use crate::military::army::{Army, ArmyState};
 use crate::military::maneuver::{Maneuver, ManeuverDirection, ManeuverHaul, ManeuverKind};
 use crate::military::unit::stats::haul::Haul;
 use crate::player::PlayerId;
-use crate::report::{BattleReport, Report};
+use crate::report::BattleReport;
 use crate::resources::Resources;
 use crate::ruler::Ruler;
 use crate::world::World;
@@ -70,10 +70,11 @@ impl World {
           .attacker(rulers.sender)
           .defender(rulers.destination_ruler)
           .result(battle_result)
+          .city(self.city(destination)?.into())
           .hauled_resources(hauled_resources)
           .build();
 
-        emit_battle_report(self, &report);
+        self.emit_battle_report(&report);
         self.report.manage(report.into(), players);
       }
       ManeuverKind::Support => {
@@ -217,15 +218,4 @@ fn calculate_hauled_resources(world: &World, target: Coord, base: Haul) -> Resul
   set!(warehouse_resources, wood, warehouse_haul);
 
   Ok(hauled)
-}
-
-fn emit_battle_report(world: &World, report: &BattleReport) {
-  if let Some(attacker) = report.attacker().player().cloned() {
-    world.emit_report(attacker, report.id());
-  }
-
-  if let Some(defender) = report.defender().player().cloned() {
-    debug_assert_ne!(report.attacker().player(), Some(&defender));
-    world.emit_report(defender, report.id());
-  }
 }
