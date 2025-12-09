@@ -6,6 +6,7 @@ import { useI18n } from 'vue-i18n';
 import enUS from '@/locale/en-US/scenes/game/report.json';
 import ptBR from '@/locale/pt-BR/scenes/game/report.json';
 import { useReports } from '@/composables/report/useReports';
+import { useBreakpoints } from '@/composables/util/useBreakpoints';
 import {
   Card,
   CardContent,
@@ -28,6 +29,8 @@ const { t } = useI18n({
 
 const { reports: reportIds } = NIL.report.refs();
 const { reports } = useReports(reportIds);
+
+const { md } = useBreakpoints();
 </script>
 
 <template>
@@ -44,7 +47,8 @@ const { reports } = useReports(reportIds);
           <TableHeader>
             <TableRow class="hover:bg-card">
               <TableHead>{{ t('title') }}</TableHead>
-              <TableHead>{{ t('date') }}</TableHead>
+              <TableHead>{{ t('round') }}</TableHead>
+              <TableHead v-if="md">{{ t('date') }}</TableHead>
             </TableRow>
           </TableHeader>
 
@@ -58,7 +62,8 @@ const { reports } = useReports(reportIds);
               @click="() => report.goToView()"
             >
               <TableCell>{{ report.getTitle() }}</TableCell>
-              <TableCell>{{ report.formatDate() }}</TableCell>
+              <TableCell>{{ report.round }}</TableCell>
+              <TableCell v-if="md">{{ report.formatDate() }}</TableCell>
             </TableRow>
           </TableBody>
         </Table>

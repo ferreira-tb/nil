@@ -72,6 +72,7 @@ impl World {
           .result(battle_result)
           .city(self.city(destination)?.into())
           .hauled_resources(hauled_resources)
+          .round(self.round.id())
           .build();
 
         self.emit_battle_report(&report);

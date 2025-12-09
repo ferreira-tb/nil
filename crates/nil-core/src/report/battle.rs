@@ -5,6 +5,7 @@ use crate::battle::BattleResult;
 use crate::city::PublicCity;
 use crate::report::ReportId;
 use crate::resources::Resources;
+use crate::round::RoundId;
 use crate::ruler::Ruler;
 use jiff::Zoned;
 use nil_core_macros::Report;
@@ -19,6 +20,7 @@ pub struct BattleReport {
   result: BattleResult,
   city: PublicCity,
   hauled_resources: Resources,
+  round: RoundId,
   timestamp: Zoned,
 }
 
@@ -31,6 +33,7 @@ impl BattleReport {
     result: BattleResult,
     city: PublicCity,
     hauled_resources: Resources,
+    round: RoundId,
   ) -> Self {
     Self {
       id: ReportId::new(),
@@ -39,6 +42,7 @@ impl BattleReport {
       result,
       city,
       hauled_resources,
+      round,
       timestamp: Zoned::now(),
     }
   }
