@@ -23,11 +23,28 @@ const player = localRef<WritablePartial<PlayerOptions>>('load-game:player', {
 });
 
 const savedata = ref<Option<SavedataFile>>();
-const { state: files } = asyncRef([], getSavedataFiles);
+const { state: files, isLoading, execute } = asyncRef([], getSavedataFiles);
 
 const { locked, lock } = useMutex();
 const isValidPlayer = computed(() => isPlayerOptions(player.value));
-const canLoad = computed(() => Boolean(savedata.value) && isValidPlayer.value);
+
+const canLoad = computed(() => {
+  return (
+    Boolean(savedata.value) &&
+    isValidPlayer.value &&
+    !isLoading.value &&
+    !locked.value
+  );
+});
+
+const canRemove = computed(() => {
+  return (
+    files.value.length > 0 &&
+    Boolean(savedata.value) &&
+    !isLoading.value &&
+    !locked.value
+  );
+});
 
 onMounted(() => {
   if (typeof route.query.playerId === 'string') {
@@ -39,6 +56,16 @@ async function load() {
   await lock(async () => {
     if (savedata.value && isPlayerOptions(player.value)) {
       await hostWithSavedata(savedata.value.path, player.value);
+    }
+  });
+}
+
+async function remove() {
+  await lock(async () => {
+    if (savedata.value) {
+      await savedata.value.remove();
+      savedata.value = null;
+      await execute();
     }
   });
 }
@@ -55,22 +82,26 @@ async function load() {
         <div class="flex flex-col items-start gap-1 p-0">
           <Button
             v-for="file of files"
-            :key="file.path"
+            :key="file.name"
             :variant="file.path === savedata?.path ? 'secondary' : 'ghost'"
             class="h-16 w-full flex flex-col items-start gap-1"
             @click="() => (savedata = file)"
           >
-            <span class="ellipsis">{{ file.name }}</span>
-            <span class="text-muted-foreground text-xs">
-              {{ formatDate(file.date, 'dd/MM/yyyy HH:mm:ss') }}
-            </span>
+            <span class="ellipsis">{{ file.info.worldName }}</span>
+            <div class="flex gap-4 text-muted-foreground text-xs">
+              <span>{{ t('round-x', [file.info.round]) }}</span>
+              <span>{{ formatDate(file.date, 'dd/MM/yyyy HH:mm:ss') }}</span>
+            </div>
           </Button>
         </div>
       </CardContent>
 
-      <CardFooter class="grid grid-cols-2">
-        <Button :disabled="locked || !canLoad" @click="load">
+      <CardFooter class="grid grid-cols-3">
+        <Button :disabled="!canLoad" @click="load">
           {{ t('load') }}
+        </Button>
+        <Button variant="destructive" :disabled="!canRemove" @click="remove">
+          {{ t('delete') }}
         </Button>
         <Button variant="secondary" @click="() => router.back()">
           <span>{{ t('cancel') }}</span>

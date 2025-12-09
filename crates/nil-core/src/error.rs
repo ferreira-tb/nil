@@ -16,6 +16,7 @@ use std::result::Result as StdResult;
 use strum::EnumIs;
 
 pub type Result<T, E = Error> = StdResult<T, E>;
+pub type AnyResult<T> = anyhow::Result<T>;
 
 #[derive(Clone, Debug, EnumIs, thiserror::Error)]
 #[remain::sorted]

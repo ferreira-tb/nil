@@ -2,22 +2,30 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 
 import * as commands from '@/commands';
-import { exists, mkdir, readDir } from '@tauri-apps/plugin-fs';
-import { appDataDir, extname, join } from '@tauri-apps/api/path';
-import { compareDesc as compareDateDesc, formatDate, parse } from 'date-fns';
+import { Semaphore } from 'es-toolkit';
+import { fromZoned } from '@/lib/date';
+import { compareDesc as compareDateDesc } from 'date-fns';
+import { appDataDir, basename, extname, join } from '@tauri-apps/api/path';
+import { exists, mkdir, readDir, remove as removeFile } from '@tauri-apps/plugin-fs';
 
-export interface SavedataFile {
-  readonly name: string;
-  readonly path: string;
-  readonly date: Date;
+export class SavedataFile {
+  constructor(
+    public readonly path: string,
+    public readonly name: string,
+    public readonly date: Date,
+    public readonly info: SavedataInfo,
+  ) {}
+
+  public async remove() {
+    await removeFile(this.path);
+  }
 }
 
-const REGEX = /^(.+?)-(\d+?)\.nil$/i;
-const DATE_FORMAT = 'yyyyMMddHHmmss';
-
-export async function savedataDir() {
-  const dataDir = await appDataDir();
-  return join(dataDir, 'savedata');
+export interface SavedataInfo {
+  readonly worldName: string;
+  readonly round: RoundId;
+  readonly version: string;
+  readonly savedAt: string;
 }
 
 export async function getSavedataFiles() {
@@ -29,31 +37,43 @@ export async function getSavedataFiles() {
   }
 
   const entries = await readDir(dir);
-  const referenceDate = new Date();
+  const semaphore = new Semaphore(10);
 
-  await Promise.all(entries.map(async (entry) => {
-    if (entry.isFile && await extname(entry.name) === 'nil') {
-      const matches = REGEX.exec(entry.name);
-      if (matches?.[1] && matches[2]) {
-        const name = matches[1];
-        const path = await join(dir, entry.name);
-        const date = parse(matches[2], DATE_FORMAT, referenceDate);
-        files.push({ name, path, date });
+  if (entries.length > 0) {
+    await Promise.all(entries.map(async (entry) => {
+      await semaphore.acquire();
+      try {
+        if (entry.isFile && await extname(entry.name) === 'nil') {
+          const path = await join(dir, entry.name);
+          const name = await basename(path, '.nil');
+          const info = await commands.readSavedataInfo(path);
+          const date = fromZoned(info.savedAt);
+
+          files.push(new SavedataFile(path, name, date, info));
+        }
       }
-    }
-  }));
+      catch (err) {
+        if (__DEBUG_ASSERTIONS__) {
+          console.error(err);
+        }
+      }
+      finally {
+        semaphore.release();
+      }
+    }));
 
-  files.sort((a, b) => compareDateDesc(a.date, b.date));
+    files.sort((a, b) => compareDateDesc(a.date, b.date));
+  }
 
   return files;
 }
 
 export async function saveGame() {
-  const world = NIL.world.getConfig()?.name;
-  if (world) {
-    const dir = await savedataDir();
-    const date = formatDate(Date.now(), DATE_FORMAT);
-    const path = await join(dir, `${world}-${date}.nil`);
-    await commands.saveWorld(path);
-  }
+  const path = await savedataDir();
+  await commands.saveWorld(path);
+}
+
+export async function savedataDir() {
+  const dataDir = await appDataDir();
+  return join(dataDir, 'savedata');
 }

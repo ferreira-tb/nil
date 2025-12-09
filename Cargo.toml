@@ -3,7 +3,7 @@ resolver = "3"
 members = ["app/src-tauri", "crates/*"]
 
 [workspace.package]
-version = "0.1.12"
+version = "0.1.13"
 edition = "2024"
 rust-version = "1.93"
 license-file = "./LICENSE"
@@ -57,6 +57,7 @@ regex = "1.12"
 remain = "0.2"
 serde_json = "1.0"
 subenum = "1.1"
+tar = "0.4"
 tauri-plugin-clipboard-manager = "2.3"
 tauri-plugin-dialog = "2.4"
 tauri-plugin-fs = "2.4"
