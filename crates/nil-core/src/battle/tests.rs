@@ -27,6 +27,30 @@ fn offensive_power() {
 }
 
 #[test]
+fn offensive_power_max_luck() {
+  let attacker = [s(Axeman, 100), s(Swordsman, 50)];
+  let battle = Battle::builder()
+    .attacker(&attacker)
+    .attacker_luck(Luck::new(20))
+    .build();
+
+  let power = offensive(&battle);
+  assert_eq!(power.total, 6300.0);
+}
+
+#[test]
+fn offensive_power_min_luck() {
+  let attacker = [s(Axeman, 100), s(Swordsman, 50)];
+  let battle = Battle::builder()
+    .attacker(&attacker)
+    .attacker_luck(Luck::new(-20))
+    .build();
+
+  let power = offensive(&battle);
+  assert_eq!(power.total, 4200.0);
+}
+
+#[test]
 fn offensive_power_cavalry() {
   let attacker = [s(HeavyCavalry, 100)];
   let battle = Battle::builder()
