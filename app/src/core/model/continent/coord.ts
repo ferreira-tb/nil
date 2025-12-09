@@ -95,7 +95,7 @@ export class CoordImpl implements Coord {
   }
 
   public toContinentIndexString() {
-    return this.toContinentIndex().toString(10);
+    return CoordImpl.toContinentIndexString(this);
   }
 
   public toJSON() {
@@ -138,20 +138,24 @@ export class CoordImpl implements Coord {
     return coord.y * size + coord.x;
   }
 
+  public static toContinentIndexString(coord: Coord) {
+    return this.toContinentIndex(coord).toString(10);
+  }
+
   public static fromWasmCoord(coord: WasmCoord) {
-    return CoordImpl.create({ x: coord.x(), y: coord.y() });
+    return this.create({ x: coord.x(), y: coord.y() });
   }
 
   public static format(coord: Coord) {
-    return `${CoordImpl.formatX(coord)}|${CoordImpl.formatY(coord)}`;
+    return `${this.formatX(coord)}|${this.formatY(coord)}`;
   }
 
   public static formatX(coord: Coord) {
-    return CoordImpl.intl.format(coord.x);
+    return this.intl.format(coord.x);
   }
 
   public static formatY(coord: Coord) {
-    return CoordImpl.intl.format(coord.y);
+    return this.intl.format(coord.y);
   }
 
   private static readonly intl = new Intl.NumberFormat('default', {
