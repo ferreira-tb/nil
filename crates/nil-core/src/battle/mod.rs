@@ -6,6 +6,7 @@ mod luck;
 #[cfg(test)]
 mod tests;
 
+use crate::battle::luck::Luck;
 use crate::infrastructure::building::wall::WallStats;
 use crate::infrastructure::prelude::BuildingLevel;
 use crate::military::army::ArmyPersonnel;
@@ -22,13 +23,16 @@ pub struct Battle<'a> {
   #[builder(default)]
   defender: &'a [Squad],
 
+  #[builder(default)]
+  attacker_luck: Luck,
+
   wall: Option<&'a WallStats>,
 }
 
 impl Battle<'_> {
   #[inline]
   pub fn result(self) -> BattleResult {
-    BattleResult::new(self.attacker, self.defender, self.wall)
+    BattleResult::new(self.attacker, self.attacker_luck, self.defender, self.wall)
   }
 }
 
@@ -41,12 +45,13 @@ pub struct BattleResult {
   defender_surviving_personnel: ArmyPersonnel,
   wall_level: BuildingLevel,
   winner: BattleWinner,
+  attacker_luck: Luck,
 }
 
 impl BattleResult {
   #[rustfmt::skip]
-  fn new(attacking_squads: &[Squad], defending_squads: &[Squad], wall: Option<&WallStats>) -> Self {
-    let attacker_power = OffensivePower::new(attacking_squads);
+  fn new(attacking_squads: &[Squad], attacker_luck:Luck, defending_squads: &[Squad], wall: Option<&WallStats>) -> Self {
+    let attacker_power = OffensivePower::new(attacking_squads, attacker_luck);
     let defender_power = DefensivePower::new(defending_squads, &attacker_power, wall);
 
     let winner = BattleWinner::determine(&attacker_power, &defender_power);
@@ -91,6 +96,7 @@ impl BattleResult {
       defender_surviving_personnel,
       wall_level,
       winner,
+      attacker_luck,
     }
   }
 
@@ -133,10 +139,11 @@ struct OffensivePower {
   infantry: f64,
   cavalry: f64,
   ranged: f64,
+  luck: Luck,
 }
 
 impl OffensivePower {
-  fn new(squads: &[Squad]) -> Self {
+  fn new(squads: &[Squad], luck: Luck) -> Self {
     let mut infantry = 0.0;
     let mut cavalry = 0.0;
     let mut ranged = 0.0;
@@ -163,10 +170,22 @@ impl OffensivePower {
     if ranged_size / army_size > 0.3 {
       ranged *= sum_ranged_debuff(squads);
     }
+    infantry += infantry * luck;
+    cavalry += cavalry * luck;
+    ranged += ranged * luck;
 
     let total = infantry + cavalry + ranged;
 
-    OffensivePower { total, infantry, cavalry, ranged }
+    #[cfg(debug_assertions)]
+    tracing::debug!(?luck);
+
+    OffensivePower {
+      total,
+      infantry,
+      cavalry,
+      ranged,
+      luck,
+    }
   }
 }
 
