@@ -24,7 +24,6 @@ const { t } = useI18n({
   <Table>
     <TableHeader>
       <TableRow class="hover:bg-card">
-        <TableHead></TableHead>
         <TableHead>{{ t('pikeman') }}</TableHead>
         <TableHead>{{ t('swordsman') }}</TableHead>
         <TableHead>{{ t('axeman') }}</TableHead>
@@ -36,7 +35,6 @@ const { t } = useI18n({
 
     <TableBody>
       <TableRow class="hover:bg-card">
-        <TableHead>{{ t('quantity') }}</TableHead>
         <TableCell>{{ personnel.pikeman.size }}</TableCell>
         <TableCell>{{ personnel.swordsman.size }}</TableCell>
         <TableCell>{{ personnel.axeman.size }}</TableCell>
@@ -46,7 +44,6 @@ const { t } = useI18n({
       </TableRow>
 
       <TableRow class="hover:bg-card">
-        <TableHead>{{ t('losses') }}</TableHead>
         <TableCell>{{ losses.pikeman.size }}</TableCell>
         <TableCell>{{ losses.swordsman.size }}</TableCell>
         <TableCell>{{ losses.axeman.size }}</TableCell>
