@@ -100,6 +100,14 @@ impl PrefectureBuildQueue {
   pub fn is_empty(&self) -> bool {
     self.orders.is_empty()
   }
+
+  pub fn sum_workforce(&self) -> Workforce {
+    self
+      .iter()
+      .map(|order| u32::from(order.workforce))
+      .sum::<u32>()
+      .into()
+  }
 }
 
 impl InfrastructureQueue<PrefectureBuildOrder> for PrefectureBuildQueue {

@@ -1,18 +1,10 @@
 // Copyright (C) Call of Nil contributors
 // SPDX-License-Identifier: AGPL-3.0-only
 
-use std::collections::{BTreeMap, HashMap, HashSet, VecDeque};
+use std::collections::{HashMap, HashSet, VecDeque};
 use std::hash::Hash;
 
 pub trait IterExt: Iterator {
-  fn collect_btree_map<K, V>(self) -> BTreeMap<K, V>
-  where
-    Self: Sized + Iterator<Item = (K, V)>,
-    K: Ord,
-  {
-    self.collect()
-  }
-
   fn collect_deque(self) -> VecDeque<Self::Item>
   where
     Self: Sized,

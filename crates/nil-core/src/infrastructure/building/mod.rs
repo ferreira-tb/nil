@@ -54,6 +54,14 @@ pub trait Building: Send + Sync {
   /// Decreases the level of the building by a certain amount, if possible.
   fn decrease_level_by(&mut self, amount: u8);
 
+  fn is_min_level(&self) -> bool {
+    self.level() == self.min_level()
+  }
+
+  fn is_max_level(&self) -> bool {
+    self.level() >= self.max_level()
+  }
+
   /// Total cost for the **minimum** level of the building.
   fn min_cost(&self) -> Cost;
   /// Total cost for the **maximum** level of the building.
