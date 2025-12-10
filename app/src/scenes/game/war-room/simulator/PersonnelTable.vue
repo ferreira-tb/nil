@@ -18,6 +18,7 @@ import {
 
 const attacker = defineModel<ArmyPersonnel>('attacker', { required: true });
 const defender = defineModel<ArmyPersonnel>('defender', { required: true });
+const luck = defineModel<Luck>('luck', { required: true });
 const wallLevel = defineModel<Option<BuildingLevel>>('wall', { required: true });
 
 const { t } = useI18n();
@@ -71,6 +72,24 @@ const { stats } = NIL.world.refs();
             v-model="wallLevel"
             :min="stats?.getBuildingMinLevel('wall')"
             :max="stats?.getBuildingMaxLevel('wall')"
+            :step="1"
+            :default-value="0"
+          >
+            <NumberFieldContent>
+              <NumberFieldInput class="dark:bg-input/40 max-sm:h-6 max-sm:max-w-28 max-sm:text-xs" />
+            </NumberFieldContent>
+          </NumberField>
+        </TableCell>
+      </TableRow>
+
+      <TableRow>
+        <TableCell>{{ t('luck') }}</TableCell>
+        <TableCell />
+        <TableCell>
+          <NumberField
+            v-model="luck"
+            :min="-20"
+            :max="20"
             :step="1"
             :default-value="0"
           >

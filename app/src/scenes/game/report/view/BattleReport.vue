@@ -46,6 +46,11 @@ const losses = useBattleLosses(() => props.report.result);
 
     <Table class="max-w-[800px]">
       <TableBody>
+        <TableRow class="hover:bg-card">
+          <TableHead>{{ t('attacker-luck') }}</TableHead>
+          <TableCell>{{ report.result.formatLuck() }}</TableCell>
+        </TableRow>
+
         <TableRow v-if="!report.hauledResources.isEmpty()" class="hover:bg-card">
           <TableHead>{{ t('haul') }}</TableHead>
           <TableCell>

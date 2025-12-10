@@ -19,7 +19,7 @@ fn offensive_power() {
   let attacker = [s(Axeman, 100), s(Swordsman, 50)];
   let battle = Battle::builder()
     .attacker(&attacker)
-    .attacker_luck(Luck::new(0))
+    .luck(Luck::new(0))
     .build();
 
   let power = offensive(&battle);
@@ -31,7 +31,7 @@ fn offensive_power_max_luck() {
   let attacker = [s(Axeman, 100), s(Swordsman, 50)];
   let battle = Battle::builder()
     .attacker(&attacker)
-    .attacker_luck(Luck::new(20))
+    .luck(Luck::new(20))
     .build();
 
   let power = offensive(&battle);
@@ -43,7 +43,7 @@ fn offensive_power_min_luck() {
   let attacker = [s(Axeman, 100), s(Swordsman, 50)];
   let battle = Battle::builder()
     .attacker(&attacker)
-    .attacker_luck(Luck::new(-20))
+    .luck(Luck::new(-20))
     .build();
 
   let power = offensive(&battle);
@@ -55,7 +55,7 @@ fn offensive_power_cavalry() {
   let attacker = [s(HeavyCavalry, 100)];
   let battle = Battle::builder()
     .attacker(&attacker)
-    .attacker_luck(Luck::new(0))
+    .luck(Luck::new(0))
     .build();
 
   let power = offensive(&battle);
@@ -67,7 +67,7 @@ fn offensive_power_mixed() {
   let attacker = [s(HeavyCavalry, 100), s(Pikeman, 500)];
   let battle = Battle::builder()
     .attacker(&attacker)
-    .attacker_luck(Luck::new(0))
+    .luck(Luck::new(0))
     .build();
 
   let power = offensive(&battle);
@@ -81,7 +81,7 @@ fn defensive_power() {
   let battle = Battle::builder()
     .attacker(&attacker)
     .defender(&defender)
-    .attacker_luck(Luck::new(0))
+    .luck(Luck::new(0))
     .build();
 
   let power = defensive(&battle);
@@ -100,7 +100,7 @@ fn defensive_power_with_wall() {
   let battle = Battle::builder()
     .attacker(&attacker)
     .defender(&defender)
-    .attacker_luck(Luck::new(0))
+    .luck(Luck::new(0))
     .wall(wall)
     .build();
 
@@ -122,7 +122,7 @@ fn battle_result() {
   let battle = Battle::builder()
     .attacker(&attacker)
     .defender(&defender)
-    .attacker_luck(Luck::new(0))
+    .luck(Luck::new(0))
     .wall(wall)
     .build();
 
@@ -148,7 +148,7 @@ fn ranged_attack_no_debuff() {
   let battle = Battle::builder()
     .attacker(&attacker)
     .defender(&defender)
-    .attacker_luck(Luck::new(0))
+    .luck(Luck::new(0))
     .build();
 
   let attack_power = offensive(&battle);
@@ -160,7 +160,7 @@ fn no_defenders() {
   let attacker = [s(Axeman, 8000), s(LightCavalry, 5000)];
   let result = Battle::builder()
     .attacker(&attacker)
-    .attacker_luck(Luck::new(0))
+    .luck(Luck::new(0))
     .build()
     .result();
 
@@ -177,7 +177,7 @@ fn s(id: UnitId, amount: u32) -> Squad {
 }
 
 fn offensive(battle: &Battle<'_>) -> OffensivePower {
-  OffensivePower::new(battle.attacker, battle.attacker_luck)
+  OffensivePower::new(battle.attacker, battle.luck)
 }
 
 fn defensive(battle: &Battle<'_>) -> DefensivePower {

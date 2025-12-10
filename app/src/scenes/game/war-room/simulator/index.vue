@@ -4,6 +4,7 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n';
 import { computed, ref } from 'vue';
+import { toI8, toU8 } from '@/lib/number';
 import { handleError } from '@/lib/error';
 import { Button } from '@tb-dev/vue-components';
 import PersonnelTable from './PersonnelTable.vue';
@@ -26,6 +27,7 @@ const result = ref<Option<BattleResultImpl>>();
 
 const attacker = ref(ArmyPersonnelImpl.createEmpty());
 const defender = ref(ArmyPersonnelImpl.createEmpty());
+const luck = ref(0);
 const wallLevel = ref(stats.value?.getBuildingMinLevel('wall'));
 
 const canSimulate = computed(() => !attacker.value.isEmpty());
@@ -35,7 +37,8 @@ async function simulate() {
     result.value = await BattleResultImpl.simulate({
       attacker: attacker.value.getSquads(),
       defender: defender.value.getSquads(),
-      wall: wallLevel.value,
+      luck: toI8(luck.value),
+      wall: toU8(wallLevel.value ?? 0),
     });
   }
   catch (err) {
@@ -56,6 +59,7 @@ function clear() {
       <PersonnelTable
         v-model:attacker="attacker"
         v-model:defender="defender"
+        v-model:luck="luck"
         v-model:wall="wallLevel"
       />
 

@@ -1,6 +1,7 @@
 // Copyright (C) Call of Nil contributors
 // SPDX-License-Identifier: AGPL-3.0-only
 
+import { toI8 } from '@/lib/number';
 import { simulateBattle } from '@/commands/battle';
 import { ArmyPersonnelImpl } from '@/core/model/military/army-personnel';
 
@@ -11,6 +12,7 @@ export class BattleResultImpl implements BattleResult {
   public readonly defenderPersonnel: ArmyPersonnelImpl;
   public readonly defenderSurvivingPersonnel: ArmyPersonnelImpl;
   public readonly wallLevel: BuildingLevel;
+  public readonly luck: Luck;
 
   private constructor(result: BattleResult) {
     this.winner = result.winner;
@@ -19,6 +21,7 @@ export class BattleResultImpl implements BattleResult {
     this.defenderPersonnel = ArmyPersonnelImpl.create(result.defenderPersonnel);
     this.defenderSurvivingPersonnel = ArmyPersonnelImpl.create(result.defenderSurvivingPersonnel);
     this.wallLevel = result.wallLevel;
+    this.luck = result.luck;
   }
 
   public getAttackerLosses() {
@@ -35,6 +38,10 @@ export class BattleResultImpl implements BattleResult {
     );
   }
 
+  public formatLuck() {
+    return BattleResultImpl.formatLuck(this.luck);
+  }
+
   public static create(result: BattleResult) {
     if (result instanceof BattleResultImpl) {
       return result;
@@ -49,5 +56,9 @@ export class BattleResultImpl implements BattleResult {
 
   public static getLosses(personnel: ArmyPersonnel, surviving: ArmyPersonnel) {
     return ArmyPersonnelImpl.sub(personnel, surviving);
+  }
+
+  public static formatLuck(luck: Luck) {
+    return `${toI8(luck)}%`;
   }
 }

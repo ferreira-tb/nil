@@ -8,6 +8,9 @@ interface BattleResult {
   readonly defenderSurvivingPersonnel: ArmyPersonnel;
   readonly wallLevel: BuildingLevel;
   readonly winner: BattleWinner;
+  readonly luck: Luck;
 }
 
 type BattleWinner = 'attacker' | 'defender';
+
+type Luck = number;

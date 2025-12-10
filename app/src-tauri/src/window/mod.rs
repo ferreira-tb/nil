@@ -44,6 +44,8 @@ fn script() -> String {
 #[derive(Serialize)]
 #[serde(rename_all = "camelCase")]
 struct Constants {
+  i8_min: i8,
+  i8_max: i8,
   i16_min: i16,
   i16_max: i16,
   u8_max: u8,
@@ -54,6 +56,8 @@ struct Constants {
 impl Default for Constants {
   fn default() -> Self {
     Self {
+      i8_min: i8::MIN,
+      i8_max: i8::MAX,
       i16_min: i16::MIN,
       i16_max: i16::MAX,
       u8_max: u8::MAX,

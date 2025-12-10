@@ -6,7 +6,6 @@ mod luck;
 #[cfg(test)]
 mod tests;
 
-use crate::battle::luck::Luck;
 use crate::infrastructure::building::wall::WallStats;
 use crate::infrastructure::prelude::BuildingLevel;
 use crate::military::army::ArmyPersonnel;
@@ -14,6 +13,8 @@ use crate::military::squad::{Squad, SquadSize};
 use crate::military::unit::UnitKind;
 use bon::Builder;
 use serde::{Deserialize, Serialize};
+
+pub use luck::Luck;
 
 #[derive(Builder)]
 pub struct Battle<'a> {
@@ -24,7 +25,7 @@ pub struct Battle<'a> {
   defender: &'a [Squad],
 
   #[builder(default)]
-  attacker_luck: Luck,
+  luck: Luck,
 
   wall: Option<&'a WallStats>,
 }
@@ -32,7 +33,7 @@ pub struct Battle<'a> {
 impl Battle<'_> {
   #[inline]
   pub fn result(self) -> BattleResult {
-    BattleResult::new(self.attacker, self.attacker_luck, self.defender, self.wall)
+    BattleResult::new(self.attacker, self.defender, self.luck, self.wall)
   }
 }
 
@@ -45,13 +46,18 @@ pub struct BattleResult {
   defender_surviving_personnel: ArmyPersonnel,
   wall_level: BuildingLevel,
   winner: BattleWinner,
-  attacker_luck: Luck,
+  luck: Luck,
 }
 
 impl BattleResult {
   #[rustfmt::skip]
-  fn new(attacking_squads: &[Squad], attacker_luck:Luck, defending_squads: &[Squad], wall: Option<&WallStats>) -> Self {
-    let attacker_power = OffensivePower::new(attacking_squads, attacker_luck);
+  fn new(
+    attacking_squads: &[Squad],
+    defending_squads: &[Squad],
+    luck: Luck,
+    wall: Option<&WallStats>
+  ) -> Self {
+    let attacker_power = OffensivePower::new(attacking_squads, luck);
     let defender_power = DefensivePower::new(defending_squads, &attacker_power, wall);
 
     let winner = BattleWinner::determine(&attacker_power, &defender_power);
@@ -96,7 +102,7 @@ impl BattleResult {
       defender_surviving_personnel,
       wall_level,
       winner,
-      attacker_luck,
+      luck,
     }
   }
 
@@ -139,7 +145,6 @@ struct OffensivePower {
   infantry: f64,
   cavalry: f64,
   ranged: f64,
-  luck: Luck,
 }
 
 impl OffensivePower {
@@ -176,16 +181,7 @@ impl OffensivePower {
 
     let total = infantry + cavalry + ranged;
 
-    #[cfg(debug_assertions)]
-    tracing::debug!(?luck);
-
-    OffensivePower {
-      total,
-      infantry,
-      cavalry,
-      ranged,
-      luck,
-    }
+    OffensivePower { total, infantry, cavalry, ranged }
   }
 }
 
