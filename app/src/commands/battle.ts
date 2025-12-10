@@ -9,10 +9,12 @@ import { SquadImpl } from '@/core/model/military/squad';
 export async function simulateBattle(args: {
   attacker?: Option<readonly Squad[]>;
   defender?: Option<readonly Squad[]>;
+  luck?: Option<Luck>;
   wall?: Option<BuildingLevel>;
 }) {
   args.attacker ??= [];
   args.defender ??= [];
+  args.luck ??= 0;
   args.wall ??= 0;
 
   if (args.attacker.length > 0) {

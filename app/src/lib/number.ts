@@ -3,7 +3,12 @@
 
 import { clamp } from 'es-toolkit';
 
-export function toi16(value: number) {
+export function toI8(value: number) {
+  if (!Number.isFinite(value)) return 0;
+  return Math.trunc(clamp(value, __CONSTS__.i8Min, __CONSTS__.i16Max));
+}
+
+export function toI16(value: number) {
   if (!Number.isFinite(value)) return 0;
   return Math.trunc(clamp(value, __CONSTS__.i16Min, __CONSTS__.i16Max));
 }

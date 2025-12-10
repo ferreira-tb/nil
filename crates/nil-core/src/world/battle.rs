@@ -1,7 +1,7 @@
 // Copyright (C) Call of Nil contributors
 // SPDX-License-Identifier: AGPL-3.0-only
 
-use crate::battle::{Battle, BattleResult};
+use crate::battle::{Battle, BattleResult, Luck};
 use crate::error::Result;
 use crate::infrastructure::prelude::BuildingLevel;
 use crate::military::squad::Squad;
@@ -12,6 +12,7 @@ impl World {
     &self,
     attacker: &[Squad],
     defender: &[Squad],
+    luck: Luck,
     wall: BuildingLevel,
   ) -> Result<BattleResult> {
     let wall_stats = (wall > BuildingLevel::ZERO)
@@ -21,6 +22,7 @@ impl World {
     let result = Battle::builder()
       .attacker(attacker)
       .defender(defender)
+      .luck(luck)
       .maybe_wall(wall_stats)
       .build()
       .result();

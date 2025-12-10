@@ -20,6 +20,8 @@ declare global {
   var __MOBILE__: boolean;
 
   var __CONSTS__: {
+    readonly i8Min: number;
+    readonly i8Max: number;
     readonly i16Min: number;
     readonly i16Max: number;
     readonly u8Max: number;

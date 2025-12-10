@@ -39,8 +39,12 @@
     "**/index.ts": "${dirname}/index.ts",
     "**/index.vue": "${dirname}/index.vue",
     "**/mod.rs": "${dirname}/mod.rs",
+    "**/package.json": "${dirname}/package.json",
+    "**/tsconfig.json": "${dirname}/tsconfig.json",
     "*/*/**/lib.rs": "${dirname(1)}/lib.rs",
     "*/*/**/main.rs": "${dirname(1)}/main.rs",
-    "*/Cargo.toml": "<workspace>/Cargo.toml"
+    "*/Cargo.toml": "<workspace>/Cargo.toml",
+    "*/package.json": "<workspace>/package.json",
+    "*/tsconfig.json": "<workspace>/tsconfig.json"
   }
 }
