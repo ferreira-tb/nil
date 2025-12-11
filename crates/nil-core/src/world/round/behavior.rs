@@ -11,7 +11,13 @@ use itertools::Itertools;
 use nil_util::iter::IterExt;
 
 impl World {
-  pub(super) fn process_bot_behavior(&mut self) -> Result<()> {
+  pub(super) fn process_npc_behavior(&mut self) -> Result<()> {
+    self.process_bot_behavior()?;
+    self.process_precursor_behavior()?;
+    Ok(())
+  }
+
+  fn process_bot_behavior(&mut self) -> Result<()> {
     let bots = self
       .bots()
       .map(|bot| Ruler::from(bot.id()))
@@ -26,7 +32,7 @@ impl World {
     Ok(())
   }
 
-  pub(super) fn process_precursor_behavior(&mut self) -> Result<()> {
+  fn process_precursor_behavior(&mut self) -> Result<()> {
     let precursors = self
       .precursors()
       .map(|precursor| Ruler::from(precursor.id()))

@@ -31,8 +31,6 @@ impl World {
     self.round.set_ready(player, is_ready);
 
     if self.round.is_done() {
-      self.process_bot_behavior()?;
-      self.process_precursor_behavior()?;
       self.next_round()?;
     } else {
       self.emit_round_updated();
@@ -63,6 +61,7 @@ impl World {
     self.collapse_armies();
     self.process_maneuvers()?;
     self.update_ranking()?;
+    self.process_npc_behavior()?;
     Ok(())
   }
 
