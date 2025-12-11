@@ -1,12 +1,13 @@
 // Copyright (C) Call of Nil contributors
 // SPDX-License-Identifier: AGPL-3.0-only
 
-pub mod index;
+pub mod build;
+pub mod idle;
 
-use crate::behavior::index::IdleBehavior;
 use crate::error::Result;
 use crate::world::World;
 use derive_more::Into;
+use idle::IdleBehavior;
 use rand::rngs::ThreadRng;
 use rand::seq::{IndexedRandom, SliceRandom};
 use std::any::Any;
@@ -95,8 +96,7 @@ impl Iterator for BehaviorProcessor<'_> {
 
     let idx = self
       .candidates
-      .choose_weighted(&mut self.rng, |(_, score)| *score)
-      .ok()
+      .choose(&mut self.rng)
       .map(|(idx, _)| *idx)
       .filter(|idx| !self.is_idle(*idx))?;
 

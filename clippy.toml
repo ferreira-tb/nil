@@ -1,1 +1,1 @@
-allowed-wildcard-imports = ["index"]
+allowed-wildcard-imports = []

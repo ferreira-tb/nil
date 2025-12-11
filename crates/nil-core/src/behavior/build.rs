@@ -1,7 +1,7 @@
 // Copyright (C) Call of Nil contributors
 // SPDX-License-Identifier: AGPL-3.0-only
 
-use crate::behavior::index::IdleBehavior;
+use crate::behavior::idle::IdleBehavior;
 use crate::behavior::{Behavior, BehaviorProcessor, BehaviorScore};
 use crate::continent::Coord;
 use crate::error::Result;

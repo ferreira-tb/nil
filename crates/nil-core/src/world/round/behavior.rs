@@ -1,7 +1,8 @@
 // Copyright (C) Call of Nil contributors
 // SPDX-License-Identifier: AGPL-3.0-only
 
-use crate::behavior::index::*;
+use crate::behavior::build::BuildBehavior;
+use crate::behavior::idle::IdleBehavior;
 use crate::behavior::{Behavior, BehaviorProcessor};
 use crate::error::Result;
 use crate::ruler::Ruler;
