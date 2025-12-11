@@ -132,7 +132,7 @@ export class CoordImpl implements Coord {
   }
 
   public static fromContinentKeyOrCurrent(key?: Option<ContinentKey>) {
-    if (isNil(key) || !Number.isFinite(key)) {
+    if (isNil(key)) {
       return NIL.city.getCoord();
     }
     else {
