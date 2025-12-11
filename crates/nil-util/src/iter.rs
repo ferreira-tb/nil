@@ -3,6 +3,7 @@
 
 use std::collections::{HashMap, HashSet, VecDeque};
 use std::hash::Hash;
+use std::ops::{ControlFlow, Try};
 
 pub trait IterExt: Iterator {
   fn collect_deque(self) -> VecDeque<Self::Item>
@@ -26,6 +27,20 @@ pub trait IterExt: Iterator {
     Self::Item: Hash + Eq,
   {
     self.collect()
+  }
+
+  fn try_each<R>(self) -> R
+  where
+    Self: Iterator<Item = R> + Sized,
+    R: Try<Output = ()>,
+  {
+    for item in self {
+      if let ControlFlow::Break(e) = item.branch() {
+        return R::from_residual(e);
+      }
+    }
+
+    R::from_output(())
   }
 }
 

@@ -85,6 +85,12 @@ impl Prefecture {
     self.level.into()
   }
 
+  pub fn resolve_level(&self, building: BuildingId, current_level: BuildingLevel) -> BuildingLevel {
+    self
+      .build_queue
+      .resolve_level(building, current_level)
+  }
+
   pub fn turns_in_queue(&self) -> f64 {
     let turn = self.workforce();
     let queue = self.build_queue.sum_workforce();

@@ -7,14 +7,17 @@ use crate::behavior::index::IdleBehavior;
 use crate::error::Result;
 use crate::world::World;
 use derive_more::Into;
-use rand::seq::IndexedRandom;
+use rand::rngs::ThreadRng;
+use rand::seq::{IndexedRandom, SliceRandom};
 use std::any::Any;
 use std::cmp::Ordering;
-use std::ops::{Add, Div, Mul, Sub};
+use std::collections::HashSet;
+use std::fmt::Debug;
+use std::ops::{Add, ControlFlow, Div, Mul, Sub};
 
-pub trait Behavior: Any {
+pub trait Behavior: Any + Debug {
   fn score(&self, world: &World) -> Result<BehaviorScore>;
-  fn behave(&self, world: &mut World) -> Result<()>;
+  fn behave(&self, world: &mut World) -> Result<ControlFlow<()>>;
 
   fn boxed(self) -> Box<dyn Behavior>
   where
@@ -24,56 +27,99 @@ pub trait Behavior: Any {
   }
 }
 
-pub(crate) fn process(world: &mut World, behaviors: &[Box<dyn Behavior>]) -> Result<()> {
-  let mut buffer = Vec::with_capacity(behaviors.len());
-  let mut candidates = Vec::new();
-  let mut rng = rand::rng();
-  loop {
-    for (idx, behavior) in behaviors.iter().enumerate() {
-      buffer.push((idx, behavior.score(world)?));
-    }
-
-    buffer.sort_unstable_by_key(|(_, score)| *score);
-
-    if buffer
-      .last()
-      .is_none_or(|(idx, _)| is_idle(behaviors, *idx))
-    {
-      break;
-    }
-
-    let (_, highest_score) = buffer[buffer.len() - 1];
-    buffer
-      .iter()
-      .filter(|(_, score)| highest_score.is_within_range(*score, 0.2))
-      .map(|(idx, score)| (*idx, f64::from(*score)))
-      .collect_into(&mut candidates);
-
-    let Some(idx) = candidates
-      .choose_weighted(&mut rng, |(_, score)| *score)
-      .ok()
-      .map(|(idx, _)| *idx)
-      .filter(|idx| !is_idle(behaviors, *idx))
-    else {
-      break;
-    };
-
-    buffer.clear();
-    candidates.clear();
-    behaviors[idx].behave(world)?;
-  }
-
-  Ok(())
+#[must_use]
+pub struct BehaviorProcessor<'a> {
+  world: &'a mut World,
+  behaviors: Vec<Box<dyn Behavior>>,
+  buffer: Vec<(usize, BehaviorScore)>,
+  candidates: Vec<(usize, f64)>,
+  broken: HashSet<usize>,
+  rng: ThreadRng,
 }
 
-fn is_idle(behaviors: &[Box<dyn Behavior>], idx: usize) -> bool {
-  (behaviors[idx].as_ref() as &dyn Any).is::<IdleBehavior>()
+impl<'a> BehaviorProcessor<'a> {
+  pub(crate) fn new(world: &'a mut World, mut behaviors: Vec<Box<dyn Behavior>>) -> Self {
+    let buffer = Vec::with_capacity(behaviors.len());
+    let candidates = Vec::new();
+    let broken = HashSet::new();
+
+    let mut rng = rand::rng();
+    behaviors.shuffle(&mut rng);
+
+    Self {
+      world,
+      behaviors,
+      buffer,
+      candidates,
+      broken,
+      rng,
+    }
+  }
+
+  fn is_idle(&self, idx: usize) -> bool {
+    (self.behaviors[idx].as_ref() as &dyn Any).is::<IdleBehavior>()
+  }
+}
+
+impl Iterator for BehaviorProcessor<'_> {
+  type Item = Result<()>;
+
+  fn next(&mut self) -> Option<Self::Item> {
+    self.buffer.clear();
+    self.candidates.clear();
+
+    for (idx, behavior) in self.behaviors.iter().enumerate() {
+      if !self.broken.contains(&idx) {
+        match behavior.score(self.world) {
+          Ok(score) => self.buffer.push((idx, score)),
+          Err(err) => return Some(Err(err)),
+        }
+      }
+    }
+
+    self
+      .buffer
+      .sort_unstable_by_key(|(_, score)| *score);
+
+    let last = self.buffer.last()?;
+    if self.is_idle(last.0) {
+      return None;
+    }
+
+    self
+      .buffer
+      .iter()
+      .filter(|(_, score)| last.1.is_within_range(*score, 0.2))
+      .map(|(idx, score)| (*idx, f64::from(*score)))
+      .collect_into(&mut self.candidates);
+
+    let idx = self
+      .candidates
+      .choose_weighted(&mut self.rng, |(_, score)| *score)
+      .ok()
+      .map(|(idx, _)| *idx)
+      .filter(|idx| !self.is_idle(*idx))?;
+
+    let behavior = &self.behaviors[idx];
+    match behavior.behave(self.world) {
+      Ok(cf) => {
+        if let ControlFlow::Break(()) = cf {
+          self.broken.insert(idx);
+        }
+
+        Some(Ok(()))
+      }
+      Err(err) => Some(Err(err)),
+    }
+  }
 }
 
 #[derive(Clone, Copy, Debug, Into)]
 pub struct BehaviorScore(f64);
 
 impl BehaviorScore {
+  pub const ZERO: Self = BehaviorScore::new(0.0);
+
   #[inline]
   pub const fn new(score: f64) -> Self {
     debug_assert!(score.is_finite());

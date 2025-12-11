@@ -2,11 +2,12 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 
 use crate::behavior::index::*;
-use crate::behavior::{self, Behavior};
+use crate::behavior::{Behavior, BehaviorProcessor};
 use crate::error::Result;
 use crate::ruler::Ruler;
 use crate::world::World;
 use itertools::Itertools;
+use nil_util::iter::IterExt;
 
 impl World {
   pub(super) fn process_bot_behavior(&mut self) -> Result<()> {
@@ -18,7 +19,7 @@ impl World {
     for bot in bots {
       let mut behaviors = vec![IdleBehavior.boxed()];
       behaviors.extend(build(self, &bot));
-      behavior::process(self, &behaviors)?;
+      BehaviorProcessor::new(self, behaviors).try_each()?;
     }
 
     Ok(())
@@ -33,7 +34,7 @@ impl World {
     for precursor in precursors {
       let mut behaviors = vec![IdleBehavior.boxed()];
       behaviors.extend(build(self, &precursor));
-      behavior::process(self, &behaviors)?;
+      BehaviorProcessor::new(self, behaviors).try_each()?;
     }
 
     Ok(())

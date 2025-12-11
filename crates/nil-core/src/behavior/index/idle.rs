@@ -4,6 +4,7 @@
 use crate::behavior::{Behavior, BehaviorScore};
 use crate::error::Result;
 use crate::world::World;
+use std::ops::ControlFlow;
 
 #[derive(Debug)]
 pub struct IdleBehavior;
@@ -17,7 +18,7 @@ impl Behavior for IdleBehavior {
     Ok(Self::SCORE)
   }
 
-  fn behave(&self, _: &mut World) -> Result<()> {
-    Ok(())
+  fn behave(&self, _: &mut World) -> Result<ControlFlow<()>> {
+    Ok(ControlFlow::Break(()))
   }
 }
