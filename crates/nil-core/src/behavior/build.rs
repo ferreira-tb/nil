@@ -16,13 +16,14 @@ use crate::world::World;
 use bon::Builder;
 use nil_util::iter::IterExt;
 use rand::random_range;
+use serde::{Deserialize, Serialize};
 use std::fmt::Debug;
 use std::marker::PhantomData;
 use std::ops::ControlFlow;
 use std::sync::LazyLock;
 use strum::IntoEnumIterator;
 
-static TEMPLATE: LazyLock<Vec<BuildStep>> = LazyLock::new(generate_template);
+pub(crate) static TEMPLATE: LazyLock<Vec<BuildStep>> = LazyLock::new(generate_template);
 
 #[derive(Builder, Debug)]
 pub struct BuildBehavior {
@@ -191,8 +192,9 @@ where
   }
 }
 
-#[derive(Debug)]
-struct BuildStep {
+#[derive(Clone, Debug, Deserialize, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct BuildStep {
   id: BuildingId,
   level: BuildingLevel,
 }
@@ -202,7 +204,7 @@ impl BuildStep {
     Self { id, level }
   }
 
-  fn is_done(&self, infrastructure: &Infrastructure) -> bool {
+  pub fn is_done(&self, infrastructure: &Infrastructure) -> bool {
     self.level <= infrastructure.building(self.id).level()
   }
 }
