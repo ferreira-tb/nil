@@ -89,6 +89,7 @@ declare global {
       readonly getBuildingStatsWithLevel: (typeof WorldEntity)['getBuildingStatsWithLevel'];
       readonly getConfig: (typeof WorldEntity)['getConfig'];
       readonly getContinentSize: (typeof WorldEntity)['getContinentSize'];
+      readonly getId: (typeof WorldEntity)['getId'];
       readonly getInfrastructureStats: (typeof WorldEntity)['getInfrastructureStats'];
       readonly getMineStats: (typeof WorldEntity)['getMineStats'];
       readonly getMineStatsWithLevel: (typeof WorldEntity)['getMineStatsWithLevel'];
