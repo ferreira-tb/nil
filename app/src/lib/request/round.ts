@@ -2,14 +2,14 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 
 export interface GetRoundRequest {
-  readonly world: WorldId,
+  readonly world: WorldId;
 }
 
 export interface SetPlayerReadyRequest {
-  readonly world: WorldId,
-  readonly is_ready: boolean,
+  readonly world: WorldId;
+  readonly isReady: boolean;
 }
 
 export interface StartRoundRequest {
-  readonly world: WorldId,
+  readonly world: WorldId;
 }

@@ -2,10 +2,10 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 
 export interface GetRankingRequest {
-  readonly world: WorldId,
+  readonly world: WorldId;
 }
 
 export interface GetRankRequest {
-  readonly world: WorldId,
-  readonly ruler: Ruler,
+  readonly world: WorldId;
+  readonly ruler: Ruler;
 }
