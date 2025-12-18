@@ -3,11 +3,10 @@
 
 use crate::middleware::CurrentPlayer;
 use crate::res;
-use crate::response::from_core_err;
+use crate::response::EitherExt;
 use crate::state::App;
 use axum::extract::{Extension, Json, State};
 use axum::response::Response;
-use futures::TryFutureExt;
 use nil_core::ruler::Ruler;
 use nil_payload::cheat::infrastructure::{
   CheatGetAcademyRecruitQueueRequest,
@@ -24,10 +23,12 @@ pub async fn get_academy_recruit_queue(
   Json(req): Json<CheatGetAcademyRecruitQueueRequest>,
 ) -> Response {
   app
-    .world(|world| world.cheat_get_academy_recruit_queue(req.coord))
-    .map_ok(|queue| res!(OK, Json(queue)))
-    .unwrap_or_else(from_core_err)
+    .world(req.world, |world| {
+      world.cheat_get_academy_recruit_queue(req.coord)
+    })
     .await
+    .try_map_left(|queue| res!(OK, Json(queue)))
+    .into_inner()
 }
 
 pub async fn get_infrastructure(
@@ -35,10 +36,10 @@ pub async fn get_infrastructure(
   Json(req): Json<CheatGetInfrastructureRequest>,
 ) -> Response {
   app
-    .world(|world| world.cheat_get_infrastructure(req.coord))
-    .map_ok(|infrastructure| res!(OK, Json(infrastructure)))
-    .unwrap_or_else(from_core_err)
+    .world(req.world, |world| world.cheat_get_infrastructure(req.coord))
     .await
+    .try_map_left(|infrastructure| res!(OK, Json(infrastructure)))
+    .into_inner()
 }
 
 pub async fn get_prefecture_build_queue(
@@ -46,10 +47,12 @@ pub async fn get_prefecture_build_queue(
   Json(req): Json<CheatGetPrefectureBuildQueueRequest>,
 ) -> Response {
   app
-    .world(|world| world.cheat_get_prefecture_build_queue(req.coord))
-    .map_ok(|queue| res!(OK, Json(queue)))
-    .unwrap_or_else(from_core_err)
+    .world(req.world, |world| {
+      world.cheat_get_prefecture_build_queue(req.coord)
+    })
     .await
+    .try_map_left(|queue| res!(OK, Json(queue)))
+    .into_inner()
 }
 
 pub async fn get_stable_recruit_queue(
@@ -57,10 +60,12 @@ pub async fn get_stable_recruit_queue(
   Json(req): Json<CheatGetStableRecruitQueueRequest>,
 ) -> Response {
   app
-    .world(|world| world.cheat_get_stable_recruit_queue(req.coord))
-    .map_ok(|queue| res!(OK, Json(queue)))
-    .unwrap_or_else(from_core_err)
+    .world(req.world, |world| {
+      world.cheat_get_stable_recruit_queue(req.coord)
+    })
     .await
+    .try_map_left(|queue| res!(OK, Json(queue)))
+    .into_inner()
 }
 
 pub async fn get_storage_capacity(
@@ -73,10 +78,10 @@ pub async fn get_storage_capacity(
     .unwrap_or_else(|| Ruler::from(player));
 
   app
-    .world(|world| world.cheat_get_storage_capacity(ruler))
-    .map_ok(|capacity| res!(OK, Json(capacity)))
-    .unwrap_or_else(from_core_err)
+    .world(req.world, |world| world.cheat_get_storage_capacity(ruler))
     .await
+    .try_map_left(|capacity| res!(OK, Json(capacity)))
+    .into_inner()
 }
 
 pub async fn set_building_level(
@@ -84,10 +89,12 @@ pub async fn set_building_level(
   Json(req): Json<CheatSetBuildingLevelRequest>,
 ) -> Response {
   app
-    .world_mut(|world| world.cheat_set_building_level(req.coord, req.id, req.level))
-    .map_ok(|()| res!(OK))
-    .unwrap_or_else(from_core_err)
+    .world_mut(req.world, |world| {
+      world.cheat_set_building_level(req.coord, req.id, req.level)
+    })
     .await
+    .try_map_left(|()| res!(OK))
+    .into_inner()
 }
 
 pub async fn set_max_infrastructure(
@@ -95,8 +102,10 @@ pub async fn set_max_infrastructure(
   Json(req): Json<CheatSetMaxInfrastructureRequest>,
 ) -> Response {
   app
-    .world_mut(|world| world.cheat_set_max_infrastructure(req.coord))
-    .map_ok(|()| res!(OK))
-    .unwrap_or_else(from_core_err)
+    .world_mut(req.world, |world| {
+      world.cheat_set_max_infrastructure(req.coord)
+    })
     .await
+    .try_map_left(|()| res!(OK))
+    .into_inner()
 }

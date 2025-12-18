@@ -40,6 +40,10 @@ export class WorldEntity extends Entity {
     return this.use().config.value ?? null;
   }
 
+  public static getId() {
+    return this.getConfig()?.id ?? null;
+  }
+
   public static getContinentSize() {
     return this.use().continentSize.value;
   }
@@ -91,6 +95,7 @@ export class WorldEntity extends Entity {
         getBuildingStatsWithLevel: WorldEntity.getBuildingStatsWithLevel.bind(WorldEntity),
         getConfig: WorldEntity.getConfig.bind(WorldEntity),
         getContinentSize: WorldEntity.getContinentSize.bind(WorldEntity),
+        getId: WorldEntity.getId.bind(WorldEntity),
         getInfrastructureStats: WorldEntity.getInfrastructureStats.bind(WorldEntity),
         getMineStats: WorldEntity.getMineStats.bind(WorldEntity),
         getMineStatsWithLevel: WorldEntity.getMineStatsWithLevel.bind(WorldEntity),

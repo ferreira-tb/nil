@@ -5,8 +5,8 @@ import { go } from '@/router';
 import * as commands from '@/commands';
 import { handleError } from '@/lib/error';
 import { Entity } from '@/core/entity/abstract';
+import { SocketAddrV4 } from '@/lib/net/addr-v4';
 import { exit } from '@tauri-apps/plugin-process';
-import type { SocketAddrV4 } from '@/lib/net/addr-v4';
 
 export async function joinGame(player: PlayerOptions, serverAddr: SocketAddrV4) {
   const id = player.id;
@@ -31,13 +31,15 @@ export async function joinGame(player: PlayerOptions, serverAddr: SocketAddrV4) 
 }
 
 export async function hostGame(player: PlayerOptions, world: WorldOptions) {
-  const addr = await commands.startServerWithOptions(world);
-  await joinGame(player, addr.asLocal());
+  const server = await commands.startServerWithOptions(world);
+  const addr = SocketAddrV4.parse(server.addr);
+  await joinGame(player, addr.asLoopback());
 }
 
 export async function hostWithSavedata(path: string, player: PlayerOptions) {
-  const addr = await commands.startServerWithSavedata(path);
-  await joinGame(player, addr.asLocal());
+  const server = await commands.startServerWithSavedata(path);
+  const addr = SocketAddrV4.parse(server.addr);
+  await joinGame(player, addr.asLoopback());
 }
 
 export async function leaveGame() {

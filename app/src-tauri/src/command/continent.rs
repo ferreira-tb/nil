@@ -4,13 +4,20 @@
 use crate::error::Result;
 use crate::manager::ManagerExt;
 use nil_core::continent::{ContinentSize, Coord, PublicField};
-use nil_payload::continent::{GetPublicFieldRequest, GetPublicFieldsRequest};
+use nil_payload::continent::{
+  GetContinentSizeRequest,
+  GetPublicFieldRequest,
+  GetPublicFieldsRequest,
+};
 use tauri::AppHandle;
 
 #[tauri::command]
-pub async fn get_continent_size(app: AppHandle) -> Result<ContinentSize> {
+pub async fn get_continent_size(
+  app: AppHandle,
+  req: GetContinentSizeRequest,
+) -> Result<ContinentSize> {
   app
-    .client(async |cl| cl.get_continent_size().await)
+    .client(async |cl| cl.get_continent_size(req).await)
     .await?
     .map_err(Into::into)
 }

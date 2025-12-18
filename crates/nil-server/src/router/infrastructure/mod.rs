@@ -19,14 +19,19 @@ pub async fn toggle(
   Extension(player): Extension<CurrentPlayer>,
   Json(req): Json<ToggleBuildingRequest>,
 ) -> Response {
-  let result = try {
-    let mut world = app.world.write().await;
-    bail_not_pending!(world, &player.0);
-    bail_not_owned_by!(world, &player.0, req.coord);
-    world.toggle_building(req.coord, req.id, req.enabled)?;
-  };
+  match app.get(req.world) {
+    Ok(world) => {
+      let result = try {
+        let mut world = world.write().await;
+        bail_not_pending!(world, &player.0);
+        bail_not_owned_by!(world, &player.0, req.coord);
+        world.toggle_building(req.coord, req.id, req.enabled)?;
+      };
 
-  result
-    .map(|()| res!(OK))
-    .unwrap_or_else(from_core_err)
+      result
+        .map(|()| res!(OK))
+        .unwrap_or_else(from_core_err)
+    }
+    Err(err) => Response::from(err),
+  }
 }

@@ -14,13 +14,18 @@ pub async fn request_maneuver(
   Extension(player): Extension<CurrentPlayer>,
   Json(req): Json<RequestManeuverRequest>,
 ) -> Response {
-  let result = try {
-    let mut world = app.world.write().await;
-    bail_not_pending!(world, &player.0);
-    world.request_maneuver(req.request)?
-  };
+  match app.get(req.world) {
+    Ok(world) => {
+      let result = try {
+        let mut world = world.write().await;
+        bail_not_pending!(world, &player.0);
+        world.request_maneuver(req.request)?
+      };
 
-  result
-    .map(|id| res!(OK, Json(id)))
-    .unwrap_or_else(from_core_err)
+      result
+        .map(|id| res!(OK, Json(id)))
+        .unwrap_or_else(from_core_err)
+    }
+    Err(err) => Response::from(err),
+  }
 }

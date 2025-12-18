@@ -18,13 +18,11 @@ export async function isServerReady() {
 }
 
 export async function startServerWithOptions(worldOptions: WorldOptions) {
-  const addr = await invoke<string>('start_server_with_options', { worldOptions });
-  return SocketAddrV4.parse(addr);
+  return invoke<LocalServer>('start_server_with_options', { worldOptions });
 }
 
 export async function startServerWithSavedata(savedata: string) {
-  const addr = await invoke<string>('start_server_with_savedata', { savedata });
-  return SocketAddrV4.parse(addr);
+  return invoke<LocalServer>('start_server_with_savedata', { savedata });
 }
 
 export async function stopServer() {

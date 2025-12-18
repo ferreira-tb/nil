@@ -5,7 +5,6 @@ use crate::res;
 use crate::state::App;
 use axum::extract::{Json, State};
 use axum::response::Response;
-use futures::FutureExt;
 use itertools::Itertools;
 use nil_core::npc::precursor::PublicPrecursor;
 use nil_payload::npc::precursor::{GetPrecursorCoordsRequest, GetPublicPrecursorRequest};
@@ -15,9 +14,10 @@ pub async fn get_coords(
   Json(req): Json<GetPrecursorCoordsRequest>,
 ) -> Response {
   app
-    .continent(|k| k.coords_of(req.id).collect_vec())
-    .map(|coords| res!(OK, Json(coords)))
+    .continent(req.world, |k| k.coords_of(req.id).collect_vec())
     .await
+    .map_left(|coords| res!(OK, Json(coords)))
+    .into_inner()
 }
 
 pub async fn get_public(
@@ -25,7 +25,8 @@ pub async fn get_public(
   Json(req): Json<GetPublicPrecursorRequest>,
 ) -> Response {
   app
-    .precursor_manager(|pm| PublicPrecursor::new(pm.precursor(req.id)))
-    .map(|precursor| res!(OK, Json(precursor)))
+    .precursor_manager(req.world, |pm| PublicPrecursor::new(pm.precursor(req.id)))
     .await
+    .map_left(|precursor| res!(OK, Json(precursor)))
+    .into_inner()
 }

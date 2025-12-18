@@ -14,3 +14,18 @@ pub mod ranking;
 pub mod report;
 pub mod round;
 pub mod world;
+
+use nil_core::world::WorldId;
+use serde::{Deserialize, Serialize};
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct LeaveRequest {
+  pub world: WorldId,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct WebsocketRequest {
+  pub world: WorldId,
+}

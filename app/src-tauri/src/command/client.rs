@@ -3,19 +3,19 @@
 
 use crate::error::Result;
 use crate::manager::ManagerExt;
+use nil_client::ServerAddr;
 use nil_core::player::PlayerId;
-use std::net::SocketAddrV4;
 use tauri::AppHandle;
 
 #[tauri::command]
 pub async fn start_client(
   app: AppHandle,
+  server_addr: ServerAddr,
   player_id: PlayerId,
-  server_addr: SocketAddrV4,
 ) -> Result<()> {
   app
     .nil()
-    .start_client(player_id, server_addr)
+    .start_client(server_addr, player_id)
     .await
 }
 
